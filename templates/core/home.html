@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+
+{% block title %}FeedbackLoop - Give feedback to get feedback{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <!-- Hero Section -->
+    <div class="text-center py-12">
+        <h1 class="text-4xl md:text-5xl font-bold text-indigo-700 mb-4">Give feedback to get feedback.</h1>
+        <p class="text-xl text-gray-600 mb-8">Exchange quality feedback on projects with other creators.</p>
+        
+        {% if not user.is_authenticated %}
+        <div class="flex flex-col sm:flex-row justify-center gap-4">
+            <a href="{% url 'signup' %}" class="inline-block bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300">
+                Sign Up
+            </a>
+            <a href="{% url 'login' %}" class="inline-block bg-white hover:bg-gray-100 text-indigo-600 font-bold py-3 px-6 rounded-lg border border-indigo-600 transition duration-300">
+                Login
+            </a>
+        </div>
+        {% else %}
+        <div class="flex flex-col sm:flex-row justify-center gap-4">
+            <a href="{% url 'feedback_dashboard' %}" class="inline-block bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300">
+                Give Feedback
+            </a>
+            <a href="{% url 'submit_project' %}" class="inline-block bg-white hover:bg-gray-100 text-indigo-600 font-bold py-3 px-6 rounded-lg border border-indigo-600 transition duration-300">
+                Submit Project
+            </a>
+        </div>
+        {% endif %}
+    </div>
+    
+    <!-- How It Works Section -->
+    <div class="py-12">
+        <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">How It Works</h2>
+        
+        <div class="grid md:grid-cols-3 gap-8">
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <div class="text-indigo-600 text-4xl font-bold mb-4">1.</div>
+                <h3 class="text-xl font-semibold mb-2">Submit Your Project</h3>
+                <p class="text-gray-600">Share your website, app, or design with our community of creators.</p>
+            </div>
+            
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <div class="text-indigo-600 text-4xl font-bold mb-4">2.</div>
+                <h3 class="text-xl font-semibold mb-2">Give Quality Feedback</h3>
+                <p class="text-gray-600">Provide thoughtful feedback to other creators' projects to earn credits.</p>
+            </div>
+            
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <div class="text-indigo-600 text-4xl font-bold mb-4">3.</div>
+                <h3 class="text-xl font-semibold mb-2">Get Valuable Feedback</h3>
+                <p class="text-gray-600">Use your earned credits to receive structured feedback on your own project.</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Features Section -->
+    <div class="py-12">
+        <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">Why FeedbackLoop?</h2>
+        
+        <div class="grid md:grid-cols-2 gap-8">
+            <div class="flex items-start">
+                <div class="bg-indigo-100 p-3 rounded-full mr-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold mb-2">Structured Feedback</h3>
+                    <p class="text-gray-600">Our guided feedback format ensures you get comprehensive, actionable insights.</p>
+                </div>
+            </div>
+            
+            <div class="flex items-start">
+                <div class="bg-indigo-100 p-3 rounded-full mr-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold mb-2">Credit System</h3>
+                    <p class="text-gray-600">Fair exchange - earn credits by giving quality feedback that others find helpful.</p>
+                </div>
+            </div>
+            
+            <div class="flex items-start">
+                <div class="bg-indigo-100 p-3 rounded-full mr-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold mb-2">Quality Control</h3>
+                    <p class="text-gray-600">Like helpful feedback or report low-quality submissions to maintain high standards.</p>
+                </div>
+            </div>
+            
+            <div class="flex items-start">
+                <div class="bg-indigo-100 p-3 rounded-full mr-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold mb-2">Community Focus</h3>
+                    <p class="text-gray-600">Connect with fellow creators in a supportive environment focused on growth.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

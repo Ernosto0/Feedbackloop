@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Sign Up - FeedbackLoop{% endblock %}
+
+{% block content %}
+<div class="max-w-md mx-auto bg-white p-8 rounded-lg shadow-md">
+    <h2 class="text-2xl font-bold text-center mb-6 text-indigo-700">Sign Up</h2>
+    
+    <form method="post" class="space-y-4">
+        {% csrf_token %}
+        {{ form|crispy }}
+        
+        <div class="flex justify-between items-center mt-6">
+            <a href="{% url 'login' %}" class="text-indigo-600 hover:underline">
+                Already have an account?
+            </a>
+            <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-6 rounded-lg">
+                Sign Up
+            </button>
+        </div>
+    </form>
+    
+    <div class="mt-8 border-t pt-6 text-gray-600 text-sm">
+        <p>By signing up, you agree to our Terms of Service and Privacy Policy.</p>
+        <p class="mt-4">You'll start with 1 free credit to receive feedback on your project!</p>
+    </div>
+</div>
+{% endblock %} 

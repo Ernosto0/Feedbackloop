@@ -1,0 +1,5 @@
+memory-bank
+venv
+.env
+.cursorrules
+db.sqlite3

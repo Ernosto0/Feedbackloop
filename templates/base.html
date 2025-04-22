@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}FeedbackLoop{% endblock %}</title>
+    
+    <!-- Tailwind CSS via CDN for now (will install properly later) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+   
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+    <!-- Navigation -->
+    <nav class="bg-indigo-600 text-white shadow-md">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <a href="{% url 'home' %}" class="text-xl font-bold">FeedbackLoop</a>
+                
+                <div class="flex space-x-4 items-center">
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'feedback_dashboard' %}" class="hover:text-indigo-200">Give Feedback</a>
+                        <a href="{% url 'submit_project' %}" class="hover:text-indigo-200">Submit Project</a>
+                        <a href="{% url 'profile' %}" class="hover:text-indigo-200">
+                            Profile ({{ user.profile.credits }} credits)
+                        </a>
+                        <a href="{% url 'logout' %}" class="bg-indigo-700 px-4 py-2 rounded hover:bg-indigo-800">Logout</a>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="hover:text-indigo-200">Login</a>
+                        <a href="{% url 'signup' %}" class="bg-indigo-700 px-4 py-2 rounded hover:bg-indigo-800">Sign Up</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Messages/Alerts -->
+    {% if messages %}
+        <div class="container mx-auto px-4 py-2">
+            {% for message in messages %}
+                <div class="p-4 my-2 {% if message.tags == 'error' %}bg-red-100 text-red-700{% elif message.tags == 'success' %}bg-green-100 text-green-700{% elif message.tags == 'warning' %}bg-yellow-100 text-yellow-700{% else %}bg-blue-100 text-blue-700{% endif %} rounded">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-6 flex-grow">
+        {% block content %}{% endblock %}
+    </main>
+    
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-6">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center">
+                <div>
+                    <p>© 2025 FeedbackLoop</p>
+                </div>
+                <div>
+                    <a href="#" class="text-gray-300 hover:text-white mx-2">About</a>
+                    <a href="#" class="text-gray-300 hover:text-white mx-2">Privacy</a>
+                    <a href="#" class="text-gray-300 hover:text-white mx-2">Terms</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Optional: JavaScript -->
+    {% block extra_js %}{% endblock %}
+</body>
+</html> 
