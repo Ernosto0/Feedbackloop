@@ -35,6 +35,13 @@
                         </a>
                     </div>
                     
+                    {% if project.tech_stack %}
+                    <div class="mb-4">
+                        <h3 class="text-sm font-semibold text-gray-600 mb-1">Tech Stack:</h3>
+                        <p class="text-gray-700">{{ project.tech_stack }}</p>
+                    </div>
+                    {% endif %}
+                    
                     {% if project.tags.all %}
                     <div class="mb-4">
                         <h3 class="text-sm font-semibold text-gray-600 mb-1">Tags:</h3>
@@ -45,6 +52,30 @@
                             </span>
                             {% endfor %}
                         </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if project.feedback_type_wanted %}
+                    <div class="mb-4">
+                        <h3 class="text-sm font-semibold text-gray-600 mb-1">Feedback Requested:</h3>
+                        <div class="flex flex-wrap gap-2">
+                            {% for feedback_type in project.feedback_type_wanted %}
+                                {% if feedback_type == 'ui' %}
+                                    <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">UI / Design</span>
+                                {% elif feedback_type == 'ux' %}
+                                    <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">UX / Usability</span>
+                                {% elif feedback_type == 'bug' %}
+                                    <span class="bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full">Bug Finding</span>
+                                {% elif feedback_type == 'copy' %}
+                                    <span class="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">Copywriting / Clarity</span>
+                                {% elif feedback_type == 'ideas' %}
+                                    <span class="bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded-full">New Feature Ideas</span>
+                                {% elif feedback_type == 'overall' %}
+                                    <span class="bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded-full">Overall Impression</span>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        <p class="text-gray-500 text-xs mt-2">Please focus your feedback on these areas</p>
                     </div>
                     {% endif %}
                 </div>

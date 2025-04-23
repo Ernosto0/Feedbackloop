@@ -56,6 +56,16 @@
                     {% endif %}
                 </div>
 
+                <!-- Tech Stack -->
+                <div>
+                    <label for="{{ form.tech_stack.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">{{ form.tech_stack.label }}</label>
+                    {{ form.tech_stack }}
+                    <p class="text-gray-500 text-xs mt-1">{{ form.tech_stack.help_text }}</p>
+                    {% if form.tech_stack.errors %}
+                        <p class="text-red-500 text-xs mt-1">{{ form.tech_stack.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
                 <!-- Project Tags -->
                 <div>
                     <label for="{{ form.tags_input.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Project Tags</label>
@@ -63,6 +73,22 @@
                     <p class="text-gray-500 text-xs mt-1">{{ form.tags_input.help_text }}</p>
                     {% if form.tags_input.errors %}
                         <p class="text-red-500 text-xs mt-1">{{ form.tags_input.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Feedback Type Wanted -->
+                <div>
+                    <label for="{{ form.feedback_type_wanted.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">{{ form.feedback_type_wanted.label }}</label>
+                    <div class="grid grid-cols-2 gap-3">
+                        {% for choice in form.feedback_type_wanted %}
+                            <div class="flex items-start">
+                                {{ choice.tag }}
+                                <label for="{{ choice.id_for_label }}" class="ml-2 text-sm text-gray-700">{{ choice.choice_label }}</label>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    {% if form.feedback_type_wanted.errors %}
+                        <p class="text-red-500 text-xs mt-1">{{ form.feedback_type_wanted.errors.0 }}</p>
                     {% endif %}
                 </div>
 
@@ -121,6 +147,10 @@
             <div class="flex items-start">
                 <span class="flex-shrink-0 h-5 w-5 text-indigo-600 mr-2">•</span>
                 <p>Adding a screenshot or image helps others understand your project before visiting it.</p>
+            </div>
+            <div class="flex items-start">
+                <span class="flex-shrink-0 h-5 w-5 text-indigo-600 mr-2">•</span>
+                <p>Specify the type of feedback you're looking for to help reviewers focus on what matters most to you.</p>
             </div>
             <div class="flex items-start">
                 <span class="flex-shrink-0 h-5 w-5 text-indigo-600 mr-2">•</span>

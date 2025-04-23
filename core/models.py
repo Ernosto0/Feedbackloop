@@ -42,6 +42,10 @@ class Project(models.Model):
     is_active = models.BooleanField(default=True)
     total_votes = models.IntegerField(default=0)
     
+    # New fields
+    feedback_type_wanted = models.JSONField(blank=True, null=True, default=list)
+    tech_stack = models.CharField(max_length=200, blank=True)
+    
     def __str__(self):
         return self.title
     

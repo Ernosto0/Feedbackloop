@@ -61,7 +61,7 @@ def submit_project(request):
             # Process tags (save_m2m is needed for ManyToMany fields)
             form.save_m2m()
             
-            messages.success(request, 'Project submitted successfully! You spent 1 credit.')
+            messages.success(request, 'Project submitted successfully! Use credits to get feedback.')
             return redirect('project_detail', pk=project.id)
     else:
         form = ProjectForm()
