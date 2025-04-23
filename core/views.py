@@ -4,8 +4,9 @@ from django.contrib import messages
 from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse
 from django.contrib.auth import login, authenticate
-from .models import Project, Feedback
+from .models import Project, Feedback, Notification
 from .forms import ProjectForm, FeedbackForm, SignUpForm
+from .utils import create_feedback_notification, create_liked_feedback_notification, get_user_notifications, get_unread_notification_count, get_time_ago
 
 def home(request):
     """Home page view."""
@@ -33,11 +34,13 @@ def profile(request):
     user_projects = Project.objects.filter(owner=request.user)
     received_feedback = Feedback.objects.filter(project__owner=request.user)
     given_feedback = Feedback.objects.filter(giver=request.user)
+    user_notifications = get_user_notifications(request.user, limit=5)
     
     context = {
         'user_projects': user_projects,
         'received_feedback': received_feedback,
         'given_feedback': given_feedback,
+        'user_notifications': user_notifications,
     }
     return render(request, 'core/profile.html', context)
 
@@ -121,6 +124,9 @@ def give_feedback(request, project_id):
             feedback.giver = request.user
             feedback.save()
             
+            # Create notification for project owner
+            create_feedback_notification(feedback)
+            
             # Deduct credit from user
             profile = request.user.profile
             profile.credits += 1
@@ -131,7 +137,7 @@ def give_feedback(request, project_id):
             # owner_profile.credits += 1
             # owner_profile.save()
             
-            messages.success(request, "Thank you for your feedback! You've used 1 credit.")
+            messages.success(request, "Thank you for your feedback! You've gained 1 credit.")
             return redirect('feedback_dashboard')
     else:
         form = FeedbackForm()
@@ -159,6 +165,14 @@ def like_feedback(request, feedback_id):
     # Set feedback as liked and award credit to giver
     feedback.is_liked = True
     feedback.save()
+    
+    # Add credit to project owner
+    owner_profile = feedback.project.owner.profile
+    owner_profile.credits += 1
+    owner_profile.save()
+    
+    # Create notification for feedback giver
+    create_liked_feedback_notification(feedback)
     
     # Award credit to feedback giver (will be implemented in models)
     feedback.award_credit()
@@ -239,5 +253,72 @@ def get_feedback(request, project_id, credits):
     # Handle regular request    
     messages.success(request, f"You will get {credits} feedback(s) for your project soon!")
     return redirect('profile')
+
+@login_required
+def get_notification_count(request):
+    """API endpoint to get notification count"""
+    count = get_unread_notification_count(request.user)
+    return JsonResponse({'count': count})
+
+@login_required
+def user_notifications(request):
+    """View to display user notifications"""
+    # Get notification type filter
+    notification_type = request.GET.get('type')
+    
+    # Apply filter if specified
+    if notification_type and notification_type != 'all':
+        notifications = Notification.objects.filter(
+            recipient=request.user,
+            notification_type=notification_type
+        ).order_by('-created_at')[:50]
+    else:
+        notifications = Notification.objects.filter(
+            recipient=request.user
+        ).order_by('-created_at')[:50]
+    
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        # Return JSON for AJAX requests
+        data = [
+            {
+                'id': n.id,
+                'message': n.message,
+                'type': n.notification_type,
+                'created_at': n.created_at.strftime('%Y-%m-%d %H:%M'),
+                'time_ago': get_time_ago(n.created_at),
+                'is_viewed': n.is_viewed,
+            } for n in notifications
+        ]
+        return JsonResponse({'notifications': data})
+    
+    # Render notifications page for non-AJAX requests
+    return render(request, 'core/user_notifications.html', {'notifications': notifications})
+
+@login_required
+def notification_detail(request, notification_id):
+    notification = get_object_or_404(Notification, id=notification_id, recipient=request.user)
+    
+    # Mark notification as viewed
+    if not notification.is_viewed:
+        notification.is_viewed = True
+        notification.save()
+    
+    # Redirect based on notification type
+    if notification.feedback:
+        # Redirect to the project to view the feedback
+        return redirect('project_detail', pk=notification.feedback.project.id)
+    
+    # If no specific redirect, go to notifications page
+    return redirect('user_notifications')
+
+@login_required
+def mark_all_notifications_read(request):
+    """Mark all user notifications as read."""
+    if request.method == 'POST':
+        Notification.objects.filter(recipient=request.user, is_viewed=False).update(is_viewed=True)
+        messages.success(request, "All notifications marked as read.")
+    
+    # Redirect back to notifications page
+    return redirect('user_notifications')
     
     

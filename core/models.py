@@ -94,3 +94,26 @@ class Feedback(models.Model):
     class Meta:
         # Prevent multiple feedback from the same user on the same project
         unique_together = ('project', 'giver')
+
+class Notification(models.Model):
+    """User notifications for feedback events."""
+    NOTIFICATION_TYPES = (
+        ('feedback_received', 'Feedback Received'),
+        ('feedback_liked', 'Feedback Liked'),
+    )
+    
+    recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
+    notification_type = models.CharField(max_length=20, choices=NOTIFICATION_TYPES)
+    feedback = models.ForeignKey(Feedback, on_delete=models.CASCADE, null=True, blank=True)
+    message = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_viewed = models.BooleanField(default=False)
+    
+    class Meta:
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['recipient', 'is_viewed', 'created_at']),
+        ]
+    
+    def __str__(self):
+        return f"Notification for {self.recipient.username}: {self.message[:30]}"

@@ -18,11 +18,15 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from core import views as core_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('core.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
+    path('notifications/', core_views.user_notifications, name='user_notifications'),
+    path('notification/<int:notification_id>/', core_views.notification_detail, name='notification_detail'),
+    path('notifications/count/', core_views.get_notification_count, name='notification_count'),
 ]
 
 if settings.DEBUG:
