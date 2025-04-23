@@ -35,10 +35,12 @@ class Project(models.Model):
     title = models.CharField(max_length=100)
     url = models.URLField()
     description = models.TextField()
+    photo = models.ImageField(upload_to='project_photos/', blank=True, null=True)
     tags = models.ManyToManyField(Tag, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
+    total_votes = models.IntegerField(default=0)
     
     def __str__(self):
         return self.title
@@ -55,6 +57,11 @@ class Project(models.Model):
     def get_liked_feedback_count(self):
         """Get the count of liked feedback."""
         return self.feedback_set.filter(is_liked=True).count()
+    
+    def increment_votes(self):
+        """Increment the total votes counter."""
+        self.total_votes += 1
+        self.save()
 
 class Feedback(models.Model):
     """Feedback for a project."""

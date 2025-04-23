@@ -8,6 +8,11 @@
     <!-- Tailwind CSS via CDN for now (will install properly later) -->
     <script src="https://cdn.tailwindcss.com"></script>
     
+    <style>
+        .inline {
+            display: inline;
+        }
+    </style>
    
     {% block extra_css %}{% endblock %}
 </head>
@@ -25,7 +30,10 @@
                         <a href="{% url 'profile' %}" class="hover:text-indigo-200">
                             Profile ({{ user.profile.credits }} credits)
                         </a>
-                        <a href="{% url 'logout' %}" class="bg-indigo-700 px-4 py-2 rounded hover:bg-indigo-800">Logout</a>
+                        <form method="post" action="{% url 'logout' %}" class="inline">
+                            {% csrf_token %}
+                            <button type="submit" class="bg-indigo-700 px-4 py-2 rounded hover:bg-indigo-800">Logout</button>
+                        </form>
                     {% else %}
                         <a href="{% url 'login' %}" class="hover:text-indigo-200">Login</a>
                         <a href="{% url 'signup' %}" class="bg-indigo-700 px-4 py-2 rounded hover:bg-indigo-800">Sign Up</a>

@@ -1,0 +1,195 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Give Feedback - {{ project.title }} - FeedbackLoop{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <!-- Project Information -->
+    <div class="bg-white rounded-lg shadow-md overflow-hidden mb-8">
+        <div class="bg-indigo-600 px-6 py-4">
+            <h1 class="text-2xl font-bold text-white">Give Feedback on This Project</h1>
+            <p class="text-indigo-100 mt-1">Provide thoughtful, constructive feedback to help improve this project</p>
+        </div>
+        
+        <!-- Project Summary -->
+        <div class="p-6">
+            <div class="flex flex-col md:flex-row gap-6">
+                <!-- Project Info -->
+                <div class="md:w-2/3">
+                    <h2 class="text-xl font-bold text-gray-800 mb-2">{{ project.title }}</h2>
+                    <p class="text-gray-500 text-sm mb-4">Submitted by {{ project.owner.username }} on {{ project.created_at|date:"F j, Y" }}</p>
+                    
+                    <div class="mb-4">
+                        <h3 class="text-sm font-semibold text-gray-600 mb-1">Project Description:</h3>
+                        <p class="text-gray-700">{{ project.description|truncatewords:50 }}</p>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <h3 class="text-sm font-semibold text-gray-600 mb-1">Project URL:</h3>
+                        <a href="{{ project.url }}" target="_blank" rel="noopener noreferrer" class="text-indigo-600 hover:text-indigo-800 break-all flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                            Open Project (opens in new tab)
+                        </a>
+                    </div>
+                    
+                    {% if project.tags.all %}
+                    <div class="mb-4">
+                        <h3 class="text-sm font-semibold text-gray-600 mb-1">Tags:</h3>
+                        <div class="flex flex-wrap gap-2">
+                            {% for tag in project.tags.all %}
+                            <span class="bg-indigo-100 text-indigo-800 text-xs px-2 py-1 rounded-full">
+                                {{ tag.name }}
+                            </span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Project Image -->
+                <div class="md:w-1/3">
+                    {% if project.photo %}
+                    <div class="rounded-lg overflow-hidden border border-gray-200">
+                        <img src="{{ project.photo.url }}" alt="{{ project.title }}" class="w-full h-auto object-cover">
+                    </div>
+                    {% else %}
+                    <div class="bg-gray-100 rounded-lg p-8 text-center border border-gray-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-16 w-16 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        <p class="mt-2 text-gray-500">No image available</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Feedback Form -->
+    <div class="bg-white rounded-lg shadow-md overflow-hidden mb-8">
+        <div class="bg-gray-50 px-6 py-4 border-b">
+            <h2 class="text-lg font-medium text-gray-900">Your Feedback</h2>
+            <p class="text-sm text-gray-600 mt-1">Please visit the project before providing feedback</p>
+        </div>
+        
+        <div class="p-6">
+            <form method="post" class="space-y-6">
+                {% csrf_token %}
+                
+                <!-- What's Good -->
+                <div>
+                    <label for="{{ form.positives.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">{{ form.positives.label }}</label>
+                    {{ form.positives }}
+                    {% if form.positives.errors %}
+                        <p class="text-red-500 text-xs mt-1">{{ form.positives.errors.0 }}</p>
+                    {% endif %}
+                    <p class="text-gray-500 text-xs mt-1">Highlight the strengths and positive aspects of the project.</p>
+                </div>
+                
+                <!-- What Can Be Improved -->
+                <div>
+                    <label for="{{ form.improvements.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">{{ form.improvements.label }}</label>
+                    {{ form.improvements }}
+                    {% if form.improvements.errors %}
+                        <p class="text-red-500 text-xs mt-1">{{ form.improvements.errors.0 }}</p>
+                    {% endif %}
+                    <p class="text-gray-500 text-xs mt-1">Suggest specific areas that could be enhanced or fixed.</p>
+                </div>
+                
+                <!-- Additional Suggestions -->
+                <div>
+                    <label for="{{ form.suggestions.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">{{ form.suggestions.label }}</label>
+                    {{ form.suggestions }}
+                    {% if form.suggestions.errors %}
+                        <p class="text-red-500 text-xs mt-1">{{ form.suggestions.errors.0 }}</p>
+                    {% endif %}
+                    <p class="text-gray-500 text-xs mt-1">Optional - Include any additional ideas, resources, or references that might help.</p>
+                </div>
+                
+                <!-- Submit Button -->
+                <div class="flex justify-between">
+                    <a href="{% url 'feedback_dashboard' %}" class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                        Back to Selection
+                    </a>
+                    <button type="submit" class="inline-flex justify-center py-2 px-6 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        Submit Feedback
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Tips Section -->
+    <div class="bg-white rounded-lg shadow-md overflow-hidden mb-8">
+        <div class="bg-gray-50 px-6 py-4 border-b">
+            <h2 class="text-lg font-medium text-gray-900">Tips for Quality Feedback</h2>
+        </div>
+        <div class="p-6">
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="space-y-4 text-sm">
+                    <h3 class="font-medium text-gray-900">Do's:</h3>
+                    <ul class="space-y-2">
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-green-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                            </svg>
+                            <span>Be specific with examples</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-green-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                            </svg>
+                            <span>Balance positive and constructive feedback</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-green-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                            </svg>
+                            <span>Suggest potential solutions</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-green-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                            </svg>
+                            <span>Consider both technical and user experience aspects</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="space-y-4 text-sm">
+                    <h3 class="font-medium text-gray-900">Don'ts:</h3>
+                    <ul class="space-y-2">
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-red-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                            <span>Give vague or generic comments</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-red-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                            <span>Focus only on negatives</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-red-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                            <span>Make personal criticism instead of focusing on the project</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-red-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                            <span>Submit without exploring the project thoroughly</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+
+{% block title %}Give Feedback - FeedbackLoop{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <!-- Header -->
+    <div class="bg-white rounded-lg shadow-md overflow-hidden mb-8">
+        <div class="bg-indigo-600 px-6 py-4">
+            <h1 class="text-2xl font-bold text-white">Give Feedback</h1>
+            <p class="text-indigo-100 mt-1">Choose a project to review and earn credits for quality feedback</p>
+        </div>
+        
+        <div class="p-6">
+            <!-- Current Credits -->
+            <div class="bg-indigo-50 rounded-lg p-4 mb-6 flex items-center">
+                <div class="bg-indigo-100 rounded-full p-2 mr-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <div>
+                    <h2 class="font-medium text-indigo-900">Your Credits: {{ user.profile.credits }}</h2>
+                    <p class="text-sm text-indigo-700">Earn credits when project owners like your feedback</p>
+                </div>
+            </div>
+            
+            <!-- Instructions -->
+            <div class="mb-8">
+                <h2 class="text-lg font-medium text-gray-900 mb-2">How It Works</h2>
+                <ol class="list-decimal pl-5 space-y-2 text-gray-700">
+                    <li>Choose one of the randomly selected projects below</li>
+                    <li>Provide thoughtful, constructive feedback</li>
+                    <li>If the project owner likes your feedback, you'll earn a credit</li>
+                    <li>Use earned credits to receive feedback on your own projects</li>
+                </ol>
+            </div>
+            
+            <!-- Project Selection -->
+            {% if random_projects %}
+                <h2 class="text-lg font-medium text-gray-900 mb-4">Available Projects</h2>
+                <p class="text-gray-600 mb-6">Select one of these projects to provide feedback:</p>
+                
+                <div class="grid md:grid-cols-3 gap-6">
+                    {% for project in random_projects %}
+                    <div class="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden hover:shadow-md transition duration-200">
+                        <div class="h-36 bg-gray-100 relative">
+                            {% if project.photo %}
+                                <img src="{{ project.photo.url }}" alt="{{ project.title }}" class="w-full h-full object-cover">
+                            {% else %}
+                                <div class="flex items-center justify-center h-full">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                </div>
+                            {% endif %}
+                            <div class="absolute top-2 right-2">
+                                <span class="bg-indigo-800 text-white text-xs px-2 py-1 rounded-full">
+                                    {{ project.total_votes }} votes
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="p-4">
+                            <h3 class="font-medium text-gray-900 truncate">{{ project.title }}</h3>
+                            <p class="text-gray-500 text-sm mb-3">By {{ project.owner.username }}</p>
+                            
+                            {% if project.tags.all %}
+                            <div class="flex flex-wrap gap-1 mb-4">
+                                {% for tag in project.tags.all|slice:":3" %}
+                                <span class="bg-indigo-100 text-indigo-800 text-xs px-2 py-1 rounded-full">
+                                    {{ tag.name }}
+                                </span>
+                                {% endfor %}
+                                {% if project.tags.all.count > 3 %}
+                                <span class="bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded-full">
+                                    +{{ project.tags.all.count|add:"-3" }}
+                                </span>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+                            
+                            <p class="text-gray-600 text-sm line-clamp-2 mb-4">{{ project.description|truncatechars:100 }}</p>
+                            
+                            <a href="{% url 'give_feedback' project.id %}" class="block text-center bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded transition duration-200">
+                                Give Feedback
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center py-12">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <h3 class="mt-2 text-sm font-medium text-gray-900">No projects available</h3>
+                    <p class="mt-1 text-sm text-gray-500">There are no projects available for review at the moment.</p>
+                    <p class="mt-4 text-sm text-gray-500">Check back later or submit your own project to get started!</p>
+                    
+                    <div class="mt-6">
+                        <a href="{% url 'submit_project' %}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700">
+                            Submit a Project
+                        </a>
+                    </div>
+                </div>
+            {% endif %}
+            
+            <!-- Refresh Option -->
+            <div class="flex justify-center mt-8">
+                <a href="{% url 'feedback_dashboard' %}" class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                    Refresh Projects
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Tips Section -->
+    <div class="bg-white rounded-lg shadow-md overflow-hidden mb-8">
+        <div class="bg-gray-50 px-6 py-4 border-b">
+            <h2 class="text-lg font-medium text-gray-900">Tips for Giving Great Feedback</h2>
+        </div>
+        <div class="p-6 space-y-4 text-sm text-gray-600">
+            <div class="flex items-start">
+                <span class="flex-shrink-0 h-5 w-5 text-indigo-600 mr-2">•</span>
+                <p>Be specific in your feedback. Highlight exact elements that work well or need improvement.</p>
+            </div>
+            <div class="flex items-start">
+                <span class="flex-shrink-0 h-5 w-5 text-indigo-600 mr-2">•</span>
+                <p>Balance your criticism with positive observations. Start with what's working well.</p>
+            </div>
+            <div class="flex items-start">
+                <span class="flex-shrink-0 h-5 w-5 text-indigo-600 mr-2">•</span>
+                <p>Be constructive: suggest solutions rather than just pointing out problems.</p>
+            </div>
+            <div class="flex items-start">
+                <span class="flex-shrink-0 h-5 w-5 text-indigo-600 mr-2">•</span>
+                <p>Consider the user experience, design, functionality, and content in your review.</p>
+            </div>
+            <div class="flex items-start">
+                <span class="flex-shrink-0 h-5 w-5 text-indigo-600 mr-2">•</span>
+                <p>Quality feedback is more likely to be liked, which earns you credits!</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

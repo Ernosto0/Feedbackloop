@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse
 from django.contrib.auth import login, authenticate
 from .models import Project, Feedback
@@ -44,21 +44,22 @@ def profile(request):
 @login_required
 def submit_project(request):
     """Submit a new project."""
-    # Check if user already has an active project
-    if Project.objects.filter(owner=request.user, is_active=True).exists():
-        messages.warning(request, 'You already have an active project. Please deactivate it before submitting a new one.')
-        return redirect('profile')
     
+
     if request.method == 'POST':
-        form = ProjectForm(request.POST)
+        form = ProjectForm(request.POST, request.FILES)
         if form.is_valid():
+            # Create project but don't save to DB yet
             project = form.save(commit=False)
             project.owner = request.user
             project.is_active = True
             project.save()
-            form.save_m2m()  # Save tags
-            messages.success(request, 'Project submitted successfully!')
-            return redirect('profile')
+            
+            # Process tags (save_m2m is needed for ManyToMany fields)
+            form.save_m2m()
+            
+            messages.success(request, 'Project submitted successfully! You spent 1 credit.')
+            return redirect('project_detail', pk=project.id)
     else:
         form = ProjectForm()
     
@@ -69,6 +70,17 @@ def project_detail(request, pk):
     """View project details."""
     project = get_object_or_404(Project, pk=pk)
     feedback_list = Feedback.objects.filter(project=project)
+    
+    # Handle toggle_active if POST request
+    if request.method == 'POST' and 'toggle_active' in request.POST:
+        # Ensure only the owner can toggle active status
+        if request.user == project.owner:
+            project.toggle_active()
+            status = "activated" if project.is_active else "deactivated"
+            messages.success(request, f"Project {status} successfully.")
+        else:
+            messages.error(request, "You don't have permission to perform this action.")
+        return redirect('project_detail', pk=project.id)
     
     context = {
         'project': project,
@@ -89,14 +101,18 @@ def feedback_dashboard(request):
 
 @login_required
 def give_feedback(request, project_id):
-    """Give feedback to a project."""
-    project = get_object_or_404(Project, pk=project_id, is_active=True)
+    project = get_object_or_404(Project, id=project_id)
     
     # Prevent users from giving feedback to their own projects
     if project.owner == request.user:
-        messages.warning(request, 'You cannot give feedback to your own project.')
+        messages.error(request, "You cannot give feedback to your own project.")
         return redirect('feedback_dashboard')
     
+    # Check if user has already given feedback to this project
+    if Feedback.objects.filter(project=project, giver=request.user).exists():
+        messages.error(request, "You have already provided feedback for this project.") # Add a error handling for this at the future.
+        return redirect('feedback_dashboard')
+        
     if request.method == 'POST':
         form = FeedbackForm(request.POST)
         if form.is_valid():
@@ -104,16 +120,26 @@ def give_feedback(request, project_id):
             feedback.project = project
             feedback.giver = request.user
             feedback.save()
-            messages.success(request, 'Feedback submitted successfully!')
+            
+            # Deduct credit from user
+            profile = request.user.profile
+            profile.credits += 1
+            profile.save()
+            
+            # Add credit to project owner
+            # owner_profile = project.owner.profile
+            # owner_profile.credits += 1
+            # owner_profile.save()
+            
+            messages.success(request, "Thank you for your feedback! You've used 1 credit.")
             return redirect('feedback_dashboard')
     else:
         form = FeedbackForm()
     
-    context = {
+    return render(request, 'core/give_feedback.html', {
         'project': project,
         'form': form,
-    }
-    return render(request, 'core/give_feedback.html', context)
+    })
 
 @login_required
 def like_feedback(request, feedback_id):
@@ -156,3 +182,49 @@ def report_feedback(request, feedback_id):
     
     messages.success(request, 'Feedback reported for review.')
     return HttpResponseRedirect(reverse('project_detail', args=[feedback.project.id]))
+
+
+@login_required
+def get_feedback(request, project_id):
+    """Get feedback for a project."""
+    project = get_object_or_404(Project, id=project_id)
+    
+    # Check if user is the project owner
+    if request.user != project.owner:
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({'success': False, 'message': 'You can only get feedback for your own projects.'}, status=403)
+        messages.error(request, "You can only get feedback for your own projects.")
+        return redirect('profile')
+    
+    # Check if user has enough credits
+    owner_profile = project.owner.profile
+    if owner_profile.credits < 1:
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({'success': False, 'message': 'You don\'t have enough credits to request feedback.'}, status=400)
+        messages.error(request, "You don't have enough credits to request feedback.")
+        return redirect('profile')
+    
+    # Check if project already has feedback
+    if project.get_feedback_count() > 0:
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({'success': False, 'message': 'This project already has feedback.'}, status=400)
+        messages.error(request, "This project already has feedback.")
+        return redirect('profile')
+    
+    # remove 1 credit to project owner to get feedback
+    owner_profile.credits -= 1
+    owner_profile.save()
+    
+    # Handle AJAX request
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return JsonResponse({
+            'success': True,
+            'message': 'You will get feedback for your project soon!',
+            'credits': owner_profile.credits
+        })
+    
+    # Handle regular request    
+    messages.success(request, "You will get feedback for your project soon!")
+    return redirect('profile')
+    
+    

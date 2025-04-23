@@ -21,9 +21,24 @@ class ProjectForm(forms.ModelForm):
     
     class Meta:
         model = Project
-        fields = ['title', 'url', 'description']
+        fields = ['title', 'url', 'description', 'photo']
         widgets = {
-            'description': forms.Textarea(attrs={'rows': 4}),
+            'title': forms.TextInput(attrs={'class': 'w-full', 'placeholder': 'My Awesome Project'}),
+            'url': forms.URLInput(attrs={'class': 'w-full', 'placeholder': 'https://myproject.com'}),
+            'description': forms.Textarea(attrs={
+                'rows': 4, 
+                'class': 'w-full',
+                'placeholder': 'Describe your project in detail. What is it about? What technologies did you use?'
+            }),
+        }
+        labels = {
+            'title': 'Project Name',
+            'url': 'Project Link',
+            'description': 'Project Description',
+            'photo': 'Project Screenshot/Image',
+        }
+        help_texts = {
+            'photo': 'Upload a screenshot or representative image of your project (optional)',
         }
     
     def __init__(self, *args, **kwargs):
@@ -50,15 +65,40 @@ class ProjectForm(forms.ModelForm):
         return instance
 
 class FeedbackForm(forms.ModelForm):
-    """Form for submitting feedback."""
+    positives = forms.CharField(
+        label="What's Good",
+        widget=forms.Textarea(attrs={
+            'class': 'w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500',
+            'rows': 4,
+            'placeholder': 'What aspects of the project do you like? What works well?'
+        }),
+        help_text="Highlight positive aspects of the project"
+    )
+    
+    improvements = forms.CharField(
+        label="What Can Be Improved",
+        widget=forms.Textarea(attrs={
+            'class': 'w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500',
+            'rows': 4,
+            'placeholder': 'What aspects could be improved? Be specific and constructive.'
+        }),
+        help_text="Suggest areas for improvement"
+    )
+    
+    suggestions = forms.CharField(
+        label="Additional Suggestions",
+        widget=forms.Textarea(attrs={
+            'class': 'w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500',
+            'rows': 4,
+            'placeholder': 'Any other suggestions, ideas, or resources that might help? (Optional)'
+        }),
+        required=False,
+        help_text="Optional additional suggestions or resources"
+    )
+    
     class Meta:
         model = Feedback
         fields = ['positives', 'improvements', 'suggestions']
-        widgets = {
-            'positives': forms.Textarea(attrs={'rows': 4, 'placeholder': 'What aspects of the project are well done?'}),
-            'improvements': forms.Textarea(attrs={'rows': 4, 'placeholder': 'What could be improved?'}),
-            'suggestions': forms.Textarea(attrs={'rows': 4, 'placeholder': 'Any additional suggestions or ideas?'}),
-        }
 
 class ProfileUpdateForm(forms.ModelForm):
     """Form for updating user profile."""

@@ -11,4 +11,5 @@ urlpatterns = [
     path('feedback/<int:project_id>/give/', views.give_feedback, name='give_feedback'),
     path('feedback/<int:feedback_id>/like/', views.like_feedback, name='like_feedback'),
     path('feedback/<int:feedback_id>/report/', views.report_feedback, name='report_feedback'),
+    path('project/<int:project_id>/get-feedback/', views.get_feedback, name='get_feedback'),
 ] 
