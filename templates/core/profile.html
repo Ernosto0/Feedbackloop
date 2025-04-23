@@ -44,7 +44,7 @@
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                     </svg>
-                    Sub mit New Project
+                    Submit New Project
                 </a>
                 <a href="{% url 'feedback_dashboard' %}" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -104,19 +104,111 @@
                                 View Project
                             </a>
                             {% if project.get_feedback_count > 0 %}
-                            <button 
-                                disabled
-                                class="block w-full text-center bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded transition duration-200 mt-2"
-                                id="feedback-btn-{{ project.id }}">
-                                Feedback Received
-                            </button>
+                            <div class="mt-2">
+                                <div class="flex gap-2 items-center mb-2">
+                                    <span class="text-green-600 bg-green-50 border border-green-200 rounded-full px-3 py-1 text-xs inline-flex items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                        </svg>
+                                        {{ project.get_feedback_count }} Feedback Received
+                                    </span>
+                                </div>
+                                {% if user.profile.credits > 0 %}
+                                <div class="flex items-center gap-2 mb-2">
+                                    <label for="credit-input-{{ project.id }}" class="text-sm text-gray-600">Credits to use:</label>
+                                    <div class="flex items-center border border-gray-300 rounded overflow-hidden">
+                                        <button 
+                                            type="button" 
+                                            onclick="decrementCredits('credit-input-{{ project.id }}')" 
+                                            class="px-2 py-1 bg-gray-100 hover:bg-gray-200 border-r border-gray-300 focus:outline-none"
+                                            aria-label="Decrease credits">
+                                            -
+                                        </button>
+                                        <input 
+                                            type="number" 
+                                            id="credit-input-{{ project.id }}" 
+                                            min="1" 
+                                            max="{{ user.profile.credits }}" 
+                                            value="1" 
+                                            class="w-16 py-1 px-2 text-center focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                                            aria-label="Number of credits">
+                                        <button 
+                                            type="button" 
+                                            onclick="incrementCredits('credit-input-{{ project.id }}', {{ user.profile.credits }})" 
+                                            class="px-2 py-1 bg-gray-100 hover:bg-gray-200 border-l border-gray-300 focus:outline-none"
+                                            aria-label="Increase credits">
+                                            +
+                                        </button>
+                                    </div>
+                                    <span class="text-xs text-gray-500">(Max: {{ user.profile.credits }})</span>
+                                </div>
+                                <button 
+                                    onclick="getFeedback({{ project.id }}, this, document.getElementById('credit-input-{{ project.id }}').value)" 
+                                    class="block w-full text-center bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded transition duration-200"
+                                    id="feedback-btn-{{ project.id }}">
+                                    Get More Feedback
+                                </button>
+                                {% else %}
+                                <div class="bg-amber-50 border border-amber-200 rounded-md p-3 mb-2">
+                                    <p class="text-amber-700 text-sm">You need at least 1 credit to get more feedback.</p>
+                                </div>
+                                <button 
+                                    disabled
+                                    class="block w-full text-center bg-gray-400 text-white py-2 px-4 rounded transition duration-200 cursor-not-allowed"
+                                    id="feedback-btn-{{ project.id }}">
+                                    Insufficient Credits
+                                </button>
+                                {% endif %}
+                            </div>
                             {% else %}
-                            <button 
-                                onclick="getFeedback({{ project.id }}, this)" 
-                                class="block w-full text-center bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded transition duration-200 mt-2"
-                                id="feedback-btn-{{ project.id }}">
-                                Get Feedback
-                            </button>
+                            <div class="mt-2">
+                                {% if user.profile.credits > 0 %}
+                                <div class="flex items-center gap-2 mb-2">
+                                    <label for="credit-input-{{ project.id }}" class="text-sm text-gray-600">Credits to use:</label>
+                                    <div class="flex items-center border border-gray-300 rounded overflow-hidden">
+                                        <button 
+                                            type="button" 
+                                            onclick="decrementCredits('credit-input-{{ project.id }}')" 
+                                            class="px-2 py-1 bg-gray-100 hover:bg-gray-200 border-r border-gray-300 focus:outline-none"
+                                            aria-label="Decrease credits">
+                                            -
+                                        </button>
+                                        <input 
+                                            type="number" 
+                                            id="credit-input-{{ project.id }}" 
+                                            min="1" 
+                                            max="{{ user.profile.credits }}" 
+                                            value="1" 
+                                            class="w-16 py-1 px-2 text-center focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                                            aria-label="Number of credits">
+                                        <button 
+                                            type="button" 
+                                            onclick="incrementCredits('credit-input-{{ project.id }}', {{ user.profile.credits }})" 
+                                            class="px-2 py-1 bg-gray-100 hover:bg-gray-200 border-l border-gray-300 focus:outline-none"
+                                            aria-label="Increase credits">
+                                            +
+                                        </button>
+                                    </div>
+                                    <span class="text-xs text-gray-500">(Max: {{ user.profile.credits }})</span>
+                                </div>
+                                <button 
+                                    onclick="getFeedback({{ project.id }}, this, document.getElementById('credit-input-{{ project.id }}').value)" 
+                                    class="block w-full text-center bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded transition duration-200"
+                                    id="feedback-btn-{{ project.id }}">
+                                    Get Feedback
+                                </button>
+                                {% else %}
+                                <div class="bg-amber-50 border border-amber-200 rounded-md p-3 mb-2">
+                                    <p class="text-amber-700 text-sm">You need at least 1 credit to get feedback.</p>
+                                </div>
+                                <button 
+                                    disabled
+                                    class="block w-full text-center bg-gray-400 text-white py-2 px-4 rounded transition duration-200 cursor-not-allowed"
+                                    id="feedback-btn-{{ project.id }}">
+                                    Insufficient Credits
+                                </button>
+                                {% endif %}
+                            </div>
                             {% endif %}
                         </div>
                     </div>
@@ -293,7 +385,8 @@
 
 <!-- Dynamic message container -->
 <div id="message-container" class="fixed top-20 right-5 max-w-md z-50 hidden">
-    <div id="message-box" class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded shadow-lg" role="alert">
+    <div id="message-box" class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded shadow-lg transition-all duration-300" 
+         style="transform: translateX(100%); opacity: 0;" role="alert">
         <div class="flex items-center">
             <div class="py-1">
                 <svg id="success-icon" class="h-6 w-6 text-green-500 mr-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -304,7 +397,7 @@
                 </svg>
             </div>
             <div>
-                <p id="message-text">You will get feedback for your project soon!</p>
+                <p id="message-text" class="font-medium">You will get feedback for your project soon!</p>
             </div>
             <div class="ml-auto">
                 <button onclick="closeMessage()" class="text-green-700 hover:text-green-900" id="close-btn">
@@ -336,10 +429,15 @@
     function showMessage(message, isError = false) {
         document.getElementById('message-text').textContent = message;
         
+        const messageContainer = document.getElementById('message-container');
         const messageBox = document.getElementById('message-box');
         const successIcon = document.getElementById('success-icon');
         const errorIcon = document.getElementById('error-icon');
         const closeBtn = document.getElementById('close-btn');
+        
+        // Reset any existing animations
+        messageBox.style.transform = 'translateX(100%)';
+        messageBox.style.opacity = '0';
         
         if (isError) {
             // Error styling
@@ -359,7 +457,14 @@
             closeBtn.classList.add('text-green-700', 'hover:text-green-900');
         }
         
-        document.getElementById('message-container').classList.remove('hidden');
+        // Show container first
+        messageContainer.classList.remove('hidden');
+        
+        // Trigger animation after a tiny delay for the browser to recognize the element
+        setTimeout(() => {
+            messageBox.style.transform = 'translateX(0)';
+            messageBox.style.opacity = '1';
+        }, 10);
         
         // Hide message after 5 seconds
         setTimeout(() => {
@@ -368,10 +473,29 @@
     }
     
     function closeMessage() {
-        document.getElementById('message-container').classList.add('hidden');
+        const messageContainer = document.getElementById('message-container');
+        const messageBox = document.getElementById('message-box');
+        
+        // Animate out
+        messageBox.style.transform = 'translateX(100%)';
+        messageBox.style.opacity = '0';
+        
+        // Hide container after animation completes
+        setTimeout(() => {
+            messageContainer.classList.add('hidden');
+        }, 300);
     }
     
-    function getFeedback(projectId, button) {
+    function getFeedback(projectId, button, selectedCredits) {
+        // Convert selectedCredits to a number
+        selectedCredits = parseInt(selectedCredits);
+        
+        // Validate credits
+        if (!selectedCredits || isNaN(selectedCredits) || selectedCredits < 1) {
+            showMessage('Please enter a valid number of credits (minimum 1).', true);
+            return;
+        }
+        
         // Get current credits
         const creditElement = document.querySelector('.font-medium.text-indigo-900');
         let currentCredits = 0;
@@ -382,8 +506,8 @@
         }
         
         // Check if enough credits
-        if (currentCredits < 1) {
-            showMessage('You don\'t have enough credits to request feedback.', true);
+        if (currentCredits < selectedCredits) {
+            showMessage(`You need ${selectedCredits} credits but only have ${currentCredits}.`, true);
             return;
         }
         
@@ -396,7 +520,7 @@
         const csrftoken = getCookie('csrftoken');
         
         // Create fetch request
-        fetch(`/project/${projectId}/get-feedback/`, {
+        fetch(`/project/${projectId}/get-feedback/${selectedCredits}/`, {
             method: 'POST',
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',
@@ -422,23 +546,225 @@
                 creditElement.textContent = `${data.credits} Credits`;
             }
             
-            // Update button state to final
+            // Check if the button's parent has the feedback count indicator
+            const parentDiv = button.closest('div');
+            const feedbackCountLabel = parentDiv.querySelector('.flex.gap-2.items-center span');
+            
+            // If this project already had feedback, update the count
+            if (feedbackCountLabel) {
+                // Extract the current count from the label and update it
+                const currentCount = parseInt(feedbackCountLabel.textContent.trim().split(' ')[0]);
+                feedbackCountLabel.textContent = `${currentCount + selectedCredits} Feedback Received`;
+            } else {
+                // Add the feedback count indicator since this is the first feedback
+                // We'll reload the page to get the proper UI update
+                window.location.reload();
+                return;
+            }
+            
+            // Update button state to indicate success but keep it enabled
             button.classList.remove('bg-indigo-700');
             button.classList.add('bg-green-600', 'hover:bg-green-700');
-            button.textContent = 'Feedback Requested';
+            button.textContent = 'Get More Feedback';
             
-            // Disable button
-            button.disabled = true;
+            // Update the max value of the credit input if credits are now lower
+            const creditInput = document.getElementById(`credit-input-${projectId}`);
+            if (creditInput && parseInt(creditInput.max) !== data.credits) {
+                creditInput.max = data.credits;
+                
+                // If current value is now greater than max, adjust it
+                if (parseInt(creditInput.value) > data.credits) {
+                    creditInput.value = data.credits;
+                }
+                
+                // Update the max label
+                const maxLabel = creditInput.closest('.flex.items-center.gap-2').querySelector('.text-xs.text-gray-500');
+                if (maxLabel) {
+                    maxLabel.textContent = `(Max: ${data.credits})`;
+                }
+                
+                // Initialize button states for the updated input
+                const minusBtn = creditInput.previousElementSibling;
+                const plusBtn = creditInput.nextElementSibling;
+                
+                // Check if minus button should be disabled
+                if (parseInt(creditInput.value) <= 1) {
+                    minusBtn.disabled = true;
+                    minusBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                    minusBtn.classList.remove('hover:bg-gray-200');
+                }
+                
+                // Check if plus button should be disabled
+                if (parseInt(creditInput.value) >= data.credits) {
+                    plusBtn.disabled = true;
+                    plusBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                    plusBtn.classList.remove('hover:bg-gray-200');
+                }
+            }
+            
+            // Handle case where user has zero credits left
+            if (data.credits === 0) {
+                // Replace input area with insufficient credits message
+                const inputContainer = document.getElementById(`credit-input-${projectId}`).closest('.flex.items-center.gap-2');
+                const mainContainer = inputContainer.parentElement;
+                
+                // Remove the credit input UI
+                inputContainer.remove();
+                
+                // Add insufficient credits message
+                const insufficientCreditsMsg = document.createElement('div');
+                insufficientCreditsMsg.className = 'bg-amber-50 border border-amber-200 rounded-md p-3 mb-2';
+                insufficientCreditsMsg.innerHTML = '<p class="text-amber-700 text-sm">You need at least 1 credit to get more feedback.</p>';
+                mainContainer.insertBefore(insufficientCreditsMsg, button);
+                
+                // Disable the button
+                button.disabled = true;
+                button.textContent = 'Insufficient Credits';
+                button.className = 'block w-full text-center bg-gray-400 text-white py-2 px-4 rounded transition duration-200 cursor-not-allowed';
+            }
         })
         .catch(error => {
             console.error('Error:', error);
             showMessage(error.message || 'An error occurred. Please try again.', true);
             
             // Restore button state
-            button.textContent = 'Get Feedback';
+            const parentDiv = button.closest('div');
+            const buttonIsForMore = button.textContent.includes('More') || 
+                                   (parentDiv && parentDiv.querySelector('.flex.gap-2.items-center span'));
+            button.textContent = buttonIsForMore ? 'Get More Feedback' : 'Get Feedback';
             button.classList.remove('bg-indigo-700');
             button.classList.add('bg-indigo-600', 'hover:bg-indigo-700');
         });
     }
+
+    function decrementCredits(inputId) {
+        const input = document.getElementById(inputId);
+        const minusBtn = input.previousElementSibling;
+        const plusBtn = input.nextElementSibling;
+        
+        let value = parseInt(input.value);
+        if (value > 1) {
+            value--;
+            input.value = value;
+            
+            // Enable plus button if it was disabled and we're no longer at max
+            if (plusBtn.disabled && value < parseInt(input.max)) {
+                plusBtn.disabled = false;
+                plusBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                plusBtn.classList.add('hover:bg-gray-200');
+            }
+            
+            // Disable minus button if we've reached the minimum
+            if (value === 1) {
+                minusBtn.disabled = true;
+                minusBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                minusBtn.classList.remove('hover:bg-gray-200');
+            }
+        }
+    }
+    
+    function incrementCredits(inputId, max) {
+        const input = document.getElementById(inputId);
+        const minusBtn = input.previousElementSibling;
+        const plusBtn = input.nextElementSibling;
+        
+        let value = parseInt(input.value);
+        if (value < max) {
+            value++;
+            input.value = value;
+            
+            // Enable minus button if it was disabled and we're no longer at min
+            if (minusBtn.disabled && value > 1) {
+                minusBtn.disabled = false;
+                minusBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                minusBtn.classList.add('hover:bg-gray-200');
+            }
+            
+            // Disable plus button if we've reached the maximum
+            if (value === max) {
+                plusBtn.disabled = true;
+                plusBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                plusBtn.classList.remove('hover:bg-gray-200');
+            }
+        }
+    }
+    
+    // Add input validation to all credit inputs when the page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        const creditInputs = document.querySelectorAll('input[id^="credit-input-"]');
+        
+        creditInputs.forEach(input => {
+            const minusBtn = input.previousElementSibling;
+            const plusBtn = input.nextElementSibling;
+            
+            // Initialize button states
+            if (parseInt(input.value) <= 1) {
+                minusBtn.disabled = true;
+                minusBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                minusBtn.classList.remove('hover:bg-gray-200');
+            }
+            
+            if (parseInt(input.value) >= parseInt(input.max)) {
+                plusBtn.disabled = true;
+                plusBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                plusBtn.classList.remove('hover:bg-gray-200');
+            }
+            
+            // When user manually types a value
+            input.addEventListener('input', function() {
+                let value = parseInt(this.value);
+                const min = parseInt(this.min);
+                const max = parseInt(this.max);
+                
+                // If not a number or empty, set to min
+                if (isNaN(value) || this.value === '') {
+                    value = min;
+                }
+                
+                // Enforce min/max constraints
+                if (value < min) {
+                    value = min;
+                } else if (value > max) {
+                    value = max;
+                }
+                
+                // Update the field if the value was changed
+                if (parseInt(this.value) !== value) {
+                    this.value = value;
+                }
+                
+                // Update button states
+                if (value <= min) {
+                    minusBtn.disabled = true;
+                    minusBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                    minusBtn.classList.remove('hover:bg-gray-200');
+                } else {
+                    minusBtn.disabled = false;
+                    minusBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                    minusBtn.classList.add('hover:bg-gray-200');
+                }
+                
+                if (value >= max) {
+                    plusBtn.disabled = true;
+                    plusBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                    plusBtn.classList.remove('hover:bg-gray-200');
+                } else {
+                    plusBtn.disabled = false;
+                    plusBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                    plusBtn.classList.add('hover:bg-gray-200');
+                }
+            });
+            
+            // When user leaves the field
+            input.addEventListener('blur', function() {
+                if (this.value === '') {
+                    this.value = this.min;
+                    minusBtn.disabled = true;
+                    minusBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                    minusBtn.classList.remove('hover:bg-gray-200');
+                }
+            });
+        });
+    });
 </script>
 {% endblock %} 

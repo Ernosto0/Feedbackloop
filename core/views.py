@@ -185,9 +185,24 @@ def report_feedback(request, feedback_id):
 
 
 @login_required
-def get_feedback(request, project_id):
+def get_feedback(request, project_id, credits):
     """Get feedback for a project."""
     project = get_object_or_404(Project, id=project_id)
+    
+    # Convert credits to integer to ensure proper data type
+    try:
+        credits = int(credits)
+        # Ensure credits is a positive number
+        if credits <= 0:
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({'success': False, 'message': 'Number of credits must be positive.'}, status=400)
+            messages.error(request, "Number of credits must be positive.")
+            return redirect('profile')
+    except (ValueError, TypeError):
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({'success': False, 'message': 'Invalid credit amount.'}, status=400)
+        messages.error(request, "Invalid credit amount.")
+        return redirect('profile')
     
     # Check if user is the project owner
     if request.user != project.owner:
@@ -198,33 +213,31 @@ def get_feedback(request, project_id):
     
     # Check if user has enough credits
     owner_profile = project.owner.profile
-    if owner_profile.credits < 1:
+    if owner_profile.credits < credits:
         if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
             return JsonResponse({'success': False, 'message': 'You don\'t have enough credits to request feedback.'}, status=400)
         messages.error(request, "You don't have enough credits to request feedback.")
         return redirect('profile')
     
-    # Check if project already has feedback
-    if project.get_feedback_count() > 0:
-        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-            return JsonResponse({'success': False, 'message': 'This project already has feedback.'}, status=400)
-        messages.error(request, "This project already has feedback.")
-        return redirect('profile')
-    
-    # remove 1 credit to project owner to get feedback
-    owner_profile.credits -= 1
+    # Deduct the specified number of credits
+    owner_profile.credits -= credits
     owner_profile.save()
     
     # Handle AJAX request
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        # Get current feedback count for the message
+        current_feedback_count = project.get_feedback_count()
+        feedback_message = f'You will get {credits} more feedback for your project soon!' if current_feedback_count > 0 else f'You will get {credits} feedback for your project soon!'
+        
         return JsonResponse({
             'success': True,
-            'message': 'You will get feedback for your project soon!',
-            'credits': owner_profile.credits
+            'message': feedback_message,
+            'credits': owner_profile.credits,
+            'current_feedback_count': current_feedback_count
         })
     
     # Handle regular request    
-    messages.success(request, "You will get feedback for your project soon!")
+    messages.success(request, f"You will get {credits} feedback(s) for your project soon!")
     return redirect('profile')
     
     
