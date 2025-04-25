@@ -5,48 +5,58 @@
 {% block content %}
 <div class="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
     <!-- Profile Header -->
-    <div class="bg-white rounded-lg shadow-md overflow-hidden mb-8">
-        <div class="bg-indigo-600 px-6 py-4">
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-8 transition-all duration-300 hover:shadow-xl">
+        <div class="bg-gradient-to-r from-indigo-600 to-purple-700 px-6 py-5">
             <h1 class="text-2xl font-bold text-white">My Profile</h1>
-            <p class="text-indigo-100 mt-1">Manage your projects and track your feedback activity</p>
+            <p class="text-indigo-100 mt-1 opacity-90">Manage your projects and track your feedback activity</p>
         </div>
         
-        <div class="p-6">
+        <div class="p-7">
             <!-- User Info -->
-            <div class="flex items-center mb-6">
-                <div class="bg-indigo-100 rounded-full p-3 mr-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
+            <div class="flex flex-col md:flex-row md:items-center gap-6 mb-8">
+                <div class="flex items-center">
+                    <div class="bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full p-4 mr-5 shadow-md">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-semibold text-gray-800">{{ user.username }}</h2>
+                        <p class="text-gray-600">{{ user.email }}</p>
+                    </div>
                 </div>
-                <div>
-                    <h2 class="text-xl font-semibold text-gray-800">{{ user.username }}</h2>
-                    <p class="text-gray-600">{{ user.email }}</p>
-                </div>
-                <div class="ml-auto bg-indigo-50 rounded-lg px-4 py-2 flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <div class="bg-gradient-to-r from-indigo-50 to-indigo-100/70 rounded-xl p-4 md:ml-auto flex items-center shadow-sm border border-indigo-100">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    <span class="font-medium text-indigo-900">{{ user.profile.credits }} Credits</span>
+                    <div>
+                        <span class="font-medium text-indigo-900 text-lg">{{ user.profile.credits }} Credits</span>
+                        <p class="text-xs text-indigo-700 mt-1">Used for receiving feedback</p>
+                    </div>
                 </div>
             </div>
             
             {% if user.profile.bio %}
-            <div class="mb-6 bg-gray-50 rounded-lg p-4">
-                <h3 class="text-sm font-medium text-gray-700 mb-2">About Me</h3>
-                <p class="text-gray-600">{{ user.profile.bio }}</p>
+            <div class="mb-6 bg-gray-50/70 rounded-xl p-5 border border-gray-100 shadow-sm">
+                <h3 class="text-sm font-medium text-gray-700 mb-2 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                    About Me
+                </h3>
+                <p class="text-gray-600 leading-relaxed">{{ user.profile.bio }}</p>
             </div>
             {% endif %}
             
             <!-- Actions -->
             <div class="flex flex-wrap gap-4">
-                <a href="{% url 'submit_project' %}" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <a href="{% url 'submit_project' %}" class="inline-flex items-center px-5 py-2.5 border border-transparent rounded-lg shadow-md text-sm font-medium text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-[1.02]">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                     </svg>
                     Submit New Project
                 </a>
-                <a href="{% url 'feedback_dashboard' %}" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                <a href="{% url 'feedback_dashboard' %}" class="inline-flex items-center px-5 py-2.5 border border-transparent rounded-lg shadow-md text-sm font-medium text-white bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700 transition-all duration-300 transform hover:scale-[1.02]">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
                     </svg>
@@ -57,72 +67,91 @@
     </div>
     
     <!-- Projects -->
-    <div class="bg-white rounded-lg shadow-md overflow-hidden mb-8">
-        <div class="bg-gray-50 px-6 py-4 border-b">
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-8 transition-all duration-300 hover:shadow-xl">
+        <div class="bg-gradient-to-r from-gray-50 to-gray-100 px-6 py-4 border-b flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+            </svg>
             <h2 class="text-lg font-medium text-gray-900">My Projects</h2>
         </div>
         
-        <div class="p-6">
+        <div class="p-7">
             {% if user_projects %}
                 <div class="grid gap-6 md:grid-cols-2">
                     {% for project in user_projects %}
-                    <div class="border rounded-lg overflow-hidden hover:shadow-md transition duration-200">
-                        <div class="h-36 bg-gray-100 relative">
+                    <div class="bg-white rounded-xl border border-gray-200 shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 transform hover:scale-[1.01] group">
+                        <div class="h-40 bg-gray-100 relative overflow-hidden">
                             {% if project.photo %}
-                                <img src="{{ project.photo.url }}" alt="{{ project.title }}" class="w-full h-full object-cover">
+                                <img src="{{ project.photo.url }}" alt="{{ project.title }}" class="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500">
                             {% else %}
-                                <div class="flex items-center justify-center h-full">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <div class="flex items-center justify-center h-full bg-gradient-to-br from-gray-50 to-gray-200">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-14 w-14 text-gray-400/70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                     </svg>
                                 </div>
                             {% endif %}
                             
-                            <div class="absolute top-2 right-2">
+                            <div class="absolute top-3 right-3">
                                 {% if project.is_active %}
-                                    <span class="bg-green-600 text-white text-xs px-2 py-1 rounded-full">Active</span>
+                                    <span class="bg-green-600/90 backdrop-blur-sm text-white text-xs px-3 py-1.5 rounded-full font-medium shadow-sm">Active</span>
                                 {% else %}
-                                    <span class="bg-gray-600 text-white text-xs px-2 py-1 rounded-full">Inactive</span>
+                                    <span class="bg-gray-700/80 backdrop-blur-sm text-white text-xs px-3 py-1.5 rounded-full font-medium shadow-sm">Inactive</span>
                                 {% endif %}
                             </div>
                         </div>
                         
-                        <div class="p-4">
-                            <h3 class="font-medium text-gray-900 truncate">{{ project.title }}</h3>
-                            <p class="text-gray-500 text-sm mb-3">{{ project.created_at|date:"F j, Y" }}</p>
+                        <div class="p-5">
+                            <h3 class="font-medium text-lg text-gray-900 truncate mb-1">{{ project.title }}</h3>
+                            <p class="text-gray-500 text-sm mb-3 flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                                {{ project.created_at|date:"F j, Y" }}
+                            </p>
                             
-                            <div class="flex justify-between items-center text-sm mb-3">
-                                <span class="text-gray-600">
+                            <div class="flex justify-between items-center mb-4">
+                                <span class="text-indigo-600 bg-indigo-50 border border-indigo-200/60 rounded-full px-3 py-1 text-xs font-medium inline-flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+                                    </svg>
                                     {{ project.get_feedback_count }} feedback(s)
                                 </span>
-                                <span class="text-gray-600">
+                                <span class="text-green-600 bg-green-50 border border-green-200/60 rounded-full px-3 py-1 text-xs font-medium inline-flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
+                                    </svg>
                                     {{ project.get_liked_feedback_count }} liked
                                 </span>
                             </div>
                             
-                            <a href="{% url 'project_detail' pk=project.id %}" class="block text-center bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded transition duration-200">
+                            <a href="{% url 'project_detail' pk=project.id %}" class="block text-center bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white py-2.5 px-4 rounded-lg shadow-md transition-all duration-300 transform hover:scale-[1.02] font-medium mb-4">
                                 View Project
                             </a>
-                            {% if project.get_feedback_count > 0 %}
+                            
                             <div class="mt-2">
+                                {% if project.get_feedback_count > 0 %}
                                 <div class="flex gap-2 items-center mb-2">
-                                    <span class="text-green-600 bg-green-50 border border-green-200 rounded-full px-3 py-1 text-xs inline-flex items-center">
+                                    <span class="text-green-600 bg-green-50 border border-green-200/60 rounded-full px-3 py-1 text-xs inline-flex items-center">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                         </svg>
                                         {{ project.get_feedback_count }} Feedback Received
                                     </span>
                                 </div>
+                                {% endif %}
+                                
                                 {% if user.profile.credits > 0 %}
-                                <div class="flex items-center gap-2 mb-2">
-                                    <label for="credit-input-{{ project.id }}" class="text-sm text-gray-600">Credits to use:</label>
-                                    <div class="flex items-center border border-gray-300 rounded overflow-hidden">
+                                <div class="flex items-center gap-2 mb-3">
+                                    <label for="credit-input-{{ project.id }}" class="text-sm font-medium text-gray-700">Credits to use:</label>
+                                    <div class="flex items-center border border-gray-300 rounded-lg overflow-hidden shadow-sm">
                                         <button 
                                             type="button" 
                                             onclick="decrementCredits('credit-input-{{ project.id }}')" 
-                                            class="px-2 py-1 bg-gray-100 hover:bg-gray-200 border-r border-gray-300 focus:outline-none"
+                                            class="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 border-r border-gray-300 focus:outline-none transition-colors"
                                             aria-label="Decrease credits">
-                                            -
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" />
+                                            </svg>
                                         </button>
                                         <input 
                                             type="number" 
@@ -130,100 +159,60 @@
                                             min="1" 
                                             max="{{ user.profile.credits }}" 
                                             value="1" 
-                                            class="w-16 py-1 px-2 text-center focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                                            class="w-16 py-1.5 px-2 text-center focus:outline-none focus:ring-1 focus:ring-indigo-500"
                                             aria-label="Number of credits">
                                         <button 
                                             type="button" 
                                             onclick="incrementCredits('credit-input-{{ project.id }}', {{ user.profile.credits }})" 
-                                            class="px-2 py-1 bg-gray-100 hover:bg-gray-200 border-l border-gray-300 focus:outline-none"
+                                            class="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 border-l border-gray-300 focus:outline-none transition-colors"
                                             aria-label="Increase credits">
-                                            +
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v12M6 12h12" />
+                                            </svg>
                                         </button>
                                     </div>
                                     <span class="text-xs text-gray-500">(Max: {{ user.profile.credits }})</span>
                                 </div>
                                 <button 
                                     onclick="getFeedback({{ project.id }}, this, document.getElementById('credit-input-{{ project.id }}').value)" 
-                                    class="block w-full text-center bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded transition duration-200"
+                                    class="block w-full text-center bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white py-2.5 px-4 rounded-lg shadow-md transition-all duration-300 transform hover:scale-[1.02] font-medium"
                                     id="feedback-btn-{{ project.id }}">
-                                    Get More Feedback
+                                    Get <span id="credit-count-{{ project.id }}">1</span> Feedback
                                 </button>
                                 {% else %}
-                                <div class="bg-amber-50 border border-amber-200 rounded-md p-3 mb-2">
-                                    <p class="text-amber-700 text-sm">You need at least 1 credit to get more feedback.</p>
+                                <div class="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-3 shadow-sm">
+                                    <p class="text-amber-700 text-sm flex items-start">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 flex-shrink-0 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                        </svg>
+                                        You need at least 1 credit to get feedback.
+                                    </p>
                                 </div>
                                 <button 
                                     disabled
-                                    class="block w-full text-center bg-gray-400 text-white py-2 px-4 rounded transition duration-200 cursor-not-allowed"
+                                    class="block w-full text-center bg-gray-400 text-white py-2.5 px-4 rounded-lg shadow-md transition-all duration-200 cursor-not-allowed font-medium"
                                     id="feedback-btn-{{ project.id }}">
                                     Insufficient Credits
                                 </button>
                                 {% endif %}
                             </div>
-                            {% else %}
-                            <div class="mt-2">
-                                {% if user.profile.credits > 0 %}
-                                <div class="flex items-center gap-2 mb-2">
-                                    <label for="credit-input-{{ project.id }}" class="text-sm text-gray-600">Credits to use:</label>
-                                    <div class="flex items-center border border-gray-300 rounded overflow-hidden">
-                                        <button 
-                                            type="button" 
-                                            onclick="decrementCredits('credit-input-{{ project.id }}')" 
-                                            class="px-2 py-1 bg-gray-100 hover:bg-gray-200 border-r border-gray-300 focus:outline-none"
-                                            aria-label="Decrease credits">
-                                            -
-                                        </button>
-                                        <input 
-                                            type="number" 
-                                            id="credit-input-{{ project.id }}" 
-                                            min="1" 
-                                            max="{{ user.profile.credits }}" 
-                                            value="1" 
-                                            class="w-16 py-1 px-2 text-center focus:outline-none focus:ring-1 focus:ring-indigo-500"
-                                            aria-label="Number of credits">
-                                        <button 
-                                            type="button" 
-                                            onclick="incrementCredits('credit-input-{{ project.id }}', {{ user.profile.credits }})" 
-                                            class="px-2 py-1 bg-gray-100 hover:bg-gray-200 border-l border-gray-300 focus:outline-none"
-                                            aria-label="Increase credits">
-                                            +
-                                        </button>
-                                    </div>
-                                    <span class="text-xs text-gray-500">(Max: {{ user.profile.credits }})</span>
-                                </div>
-                                <button 
-                                    onclick="getFeedback({{ project.id }}, this, document.getElementById('credit-input-{{ project.id }}').value)" 
-                                    class="block w-full text-center bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded transition duration-200"
-                                    id="feedback-btn-{{ project.id }}">
-                                    Get Feedback
-                                </button>
-                                {% else %}
-                                <div class="bg-amber-50 border border-amber-200 rounded-md p-3 mb-2">
-                                    <p class="text-amber-700 text-sm">You need at least 1 credit to get feedback.</p>
-                                </div>
-                                <button 
-                                    disabled
-                                    class="block w-full text-center bg-gray-400 text-white py-2 px-4 rounded transition duration-200 cursor-not-allowed"
-                                    id="feedback-btn-{{ project.id }}">
-                                    Insufficient Credits
-                                </button>
-                                {% endif %}
-                            </div>
-                            {% endif %}
                         </div>
                     </div>
                     {% endfor %}
                 </div>
             {% else %}
-                <div class="text-center py-12">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <div class="text-center py-12 bg-gray-50/50 rounded-xl border border-gray-100">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-16 w-16 text-gray-400/70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                     </svg>
-                    <h3 class="mt-2 text-sm font-medium text-gray-900">No projects found</h3>
-                    <p class="mt-1 text-sm text-gray-500">Get started by submitting your first project.</p>
+                    <h3 class="mt-4 text-lg font-medium text-gray-900">No projects found</h3>
+                    <p class="mt-2 text-gray-500 max-w-md mx-auto">Get started by submitting your first project.</p>
                     
                     <div class="mt-6">
-                        <a href="{% url 'submit_project' %}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700">
+                        <a href="{% url 'submit_project' %}" class="inline-flex items-center px-5 py-2.5 border border-transparent text-sm font-medium rounded-lg shadow-md text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-[1.02]">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                            </svg>
                             Submit a Project
                         </a>
                     </div>
@@ -233,26 +222,44 @@
     </div>
     
     <!-- Feedback Received -->
-    <div class="bg-white rounded-lg shadow-md overflow-hidden mb-8">
-        <div class="bg-gray-50 px-6 py-4 border-b">
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-8 transition-all duration-300 hover:shadow-xl">
+        <div class="bg-gradient-to-r from-gray-50 to-gray-100 px-6 py-4 border-b flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+            </svg>
             <h2 class="text-lg font-medium text-gray-900">Feedback Received</h2>
         </div>
         
-        <div class="p-6">
+        <div class="p-7">
             {% if received_feedback %}
                 <div class="space-y-6">
                     {% for feedback in received_feedback %}
-                    <div class="border rounded-lg overflow-hidden p-4 {% if feedback.is_liked %}bg-green-50 border-green-200{% endif %}">
-                        <div class="flex justify-between items-start mb-3">
+                    <div class="rounded-xl overflow-hidden {% if feedback.is_liked %}bg-gradient-to-r from-green-50 to-green-100/30 border border-green-200/60 shadow-md{% else %}border border-gray-200 shadow-sm bg-white hover:shadow-md{% endif %} transition-all duration-200 p-5">
+                        <div class="flex flex-wrap justify-between items-start mb-4 gap-3">
                             <div>
-                                <h3 class="font-medium text-gray-900">Feedback for {{ feedback.project.title }}</h3>
-                                <p class="text-gray-500 text-sm">From {{ feedback.giver.username }} on {{ feedback.created_at|date:"F j, Y" }}</p>
+                                <h3 class="font-medium text-gray-900 flex items-center gap-2 mb-1">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                    </svg>
+                                    Feedback for {{ feedback.project.title }}
+                                </h3>
+                                <p class="text-gray-500 text-sm flex items-center gap-1.5">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                    </svg>
+                                    From {{ feedback.giver.username }}
+                                    <span class="mx-1.5">•</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                    {{ feedback.created_at|date:"F j, Y" }}
+                                </p>
                             </div>
-                            <div class="flex space-x-2">
+                            <div class="flex space-x-2 flex-shrink-0">
                                 {% if not feedback.is_liked %}
                                 <form method="post" action="{% url 'like_feedback' feedback.id %}">
                                     {% csrf_token %}
-                                    <button type="submit" class="text-green-600 hover:text-green-800 border border-green-600 hover:bg-green-50 rounded-full px-3 py-1 text-xs flex items-center">
+                                    <button type="submit" class="text-green-600 hover:text-green-800 border border-green-600 hover:bg-green-50 rounded-full px-3 py-1 text-xs flex items-center transition-colors duration-200">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
                                         </svg>
@@ -271,7 +278,7 @@
                                 {% if not feedback.is_reported %}
                                 <form method="post" action="{% url 'report_feedback' feedback.id %}">
                                     {% csrf_token %}
-                                    <button type="submit" class="text-red-600 hover:text-red-800 border border-red-600 hover:bg-red-50 rounded-full px-3 py-1 text-xs flex items-center">
+                                    <button type="submit" class="text-red-600 hover:text-red-800 border border-red-600 hover:bg-red-50 rounded-full px-3 py-1 text-xs flex items-center transition-colors duration-200">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                                         </svg>
@@ -290,80 +297,138 @@
                         </div>
                         
                         <div class="grid md:grid-cols-2 gap-4">
-                            <div class="bg-white p-3 rounded border">
-                                <h4 class="font-semibold text-sm text-gray-700 mb-1">What's Good:</h4>
-                                <p class="text-gray-600 text-sm">{{ feedback.positives }}</p>
+                            <div class="bg-white rounded-lg p-4 border border-gray-100 shadow-sm">
+                                <h4 class="font-semibold text-green-700 text-sm mb-2 flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
+                                    </svg>
+                                    What's Good:
+                                </h4>
+                                <p class="text-gray-600 text-sm leading-relaxed">{{ feedback.positives }}</p>
                             </div>
-                            <div class="bg-white p-3 rounded border">
-                                <h4 class="font-semibold text-sm text-gray-700 mb-1">What Can Be Improved:</h4>
-                                <p class="text-gray-600 text-sm">{{ feedback.improvements }}</p>
+                            <div class="bg-white rounded-lg p-4 border border-gray-100 shadow-sm">
+                                <h4 class="font-semibold text-amber-700 text-sm mb-2 flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                    </svg>
+                                    What Can Be Improved:
+                                </h4>
+                                <p class="text-gray-600 text-sm leading-relaxed">{{ feedback.improvements }}</p>
                             </div>
                         </div>
                         
                         {% if feedback.suggestions %}
-                        <div class="mt-3 bg-white p-3 rounded border">
-                            <h4 class="font-semibold text-sm text-gray-700 mb-1">Additional Suggestions:</h4>
-                            <p class="text-gray-600 text-sm">{{ feedback.suggestions }}</p>
+                        <div class="mt-4">
+                            <div class="bg-white rounded-lg p-4 border border-gray-100 shadow-sm">
+                                <h4 class="font-semibold text-indigo-700 text-sm mb-2 flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                                    </svg>
+                                    Additional Suggestions:
+                                </h4>
+                                <p class="text-gray-600 text-sm leading-relaxed">{{ feedback.suggestions }}</p>
+                            </div>
                         </div>
                         {% endif %}
                     </div>
                     {% endfor %}
                 </div>
             {% else %}
-                <div class="text-center py-8">
-                    <p class="text-gray-500">No feedback received yet.</p>
+                <div class="text-center py-8 bg-gray-50/50 rounded-xl border border-gray-100">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-12 w-12 text-gray-400/70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                    </svg>
+                    <p class="text-gray-500 mt-4">No feedback received yet.</p>
+                    <p class="text-sm text-gray-400 mt-2">When you receive feedback on your projects, it will appear here.</p>
                 </div>
             {% endif %}
         </div>
     </div>
     
     <!-- Feedback Given -->
-    <div class="bg-white rounded-lg shadow-md overflow-hidden mb-8">
-        <div class="bg-gray-50 px-6 py-4 border-b">
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-8 transition-all duration-300 hover:shadow-xl">
+        <div class="bg-gradient-to-r from-gray-50 to-gray-100 px-6 py-4 border-b flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
             <h2 class="text-lg font-medium text-gray-900">Feedback Given</h2>
         </div>
         
-        <div class="p-6">
+        <div class="p-7">
             {% if given_feedback %}
                 <div class="space-y-6">
                     {% for feedback in given_feedback %}
-                    <div class="border rounded-lg overflow-hidden p-4">
-                        <div class="mb-3">
-                            <h3 class="font-medium text-gray-900">Feedback for {{ feedback.project.title }}</h3>
-                            <p class="text-gray-500 text-sm">On {{ feedback.created_at|date:"F j, Y" }}</p>
-                            <a href="{% url 'project_detail' pk=feedback.project.id %}" class="text-indigo-600 hover:text-indigo-800 text-sm">
-                                View Project
-                            </a>
+                    <div class="rounded-xl overflow-hidden border border-gray-200 shadow-sm bg-white hover:shadow-md transition-all duration-200 p-5">
+                        <div class="mb-4">
+                            <h3 class="font-medium text-gray-900 flex items-center gap-2 mb-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+                                Feedback for {{ feedback.project.title }}
+                            </h3>
+                            <div class="flex items-center justify-between">
+                                <p class="text-gray-500 text-sm flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 mr-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                    {{ feedback.created_at|date:"F j, Y" }}
+                                </p>
+                                <a href="{% url 'project_detail' pk=feedback.project.id %}" class="text-indigo-600 hover:text-indigo-800 text-sm flex items-center group">
+                                    View Project
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1 group-hover:translate-x-0.5 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                    </svg>
+                                </a>
+                            </div>
                         </div>
                         
                         <div class="grid md:grid-cols-2 gap-4">
-                            <div class="bg-gray-50 p-3 rounded">
-                                <h4 class="font-semibold text-sm text-gray-700 mb-1">What's Good:</h4>
-                                <p class="text-gray-600 text-sm">{{ feedback.positives }}</p>
+                            <div class="bg-gray-50/80 p-4 rounded-lg border border-gray-100">
+                                <h4 class="font-semibold text-green-700 text-sm mb-2 flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
+                                    </svg>
+                                    What's Good:
+                                </h4>
+                                <p class="text-gray-600 text-sm leading-relaxed">{{ feedback.positives }}</p>
                             </div>
-                            <div class="bg-gray-50 p-3 rounded">
-                                <h4 class="font-semibold text-sm text-gray-700 mb-1">What Can Be Improved:</h4>
-                                <p class="text-gray-600 text-sm">{{ feedback.improvements }}</p>
+                            <div class="bg-gray-50/80 p-4 rounded-lg border border-gray-100">
+                                <h4 class="font-semibold text-amber-700 text-sm mb-2 flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                    </svg>
+                                    What Can Be Improved:
+                                </h4>
+                                <p class="text-gray-600 text-sm leading-relaxed">{{ feedback.improvements }}</p>
                             </div>
                         </div>
                         
                         {% if feedback.suggestions %}
-                        <div class="mt-3 bg-gray-50 p-3 rounded">
-                            <h4 class="font-semibold text-sm text-gray-700 mb-1">Additional Suggestions:</h4>
-                            <p class="text-gray-600 text-sm">{{ feedback.suggestions }}</p>
+                        <div class="mt-4">
+                            <div class="bg-gray-50/80 p-4 rounded-lg border border-gray-100">
+                                <h4 class="font-semibold text-indigo-700 text-sm mb-2 flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                                    </svg>
+                                    Additional Suggestions:
+                                </h4>
+                                <p class="text-gray-600 text-sm leading-relaxed">{{ feedback.suggestions }}</p>
+                            </div>
                         </div>
                         {% endif %}
                         
-                        <div class="mt-3 text-right">
+                        <div class="mt-4 text-right">
                             {% if feedback.is_liked %}
-                            <span class="text-green-600 border border-green-600 bg-green-50 rounded-full px-3 py-1 text-xs inline-flex items-center">
+                            <span class="text-green-600 border border-green-600 bg-green-50 rounded-full px-3 py-1.5 text-xs inline-flex items-center shadow-sm">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                 </svg>
                                 Liked by project owner
                             </span>
                             {% elif feedback.is_reported %}
-                            <span class="text-red-600 border border-red-600 bg-red-50 rounded-full px-3 py-1 text-xs inline-flex items-center">
+                            <span class="text-red-600 border border-red-600 bg-red-50 rounded-full px-3 py-1.5 text-xs inline-flex items-center shadow-sm">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                                 </svg>
@@ -375,22 +440,40 @@
                     {% endfor %}
                 </div>
             {% else %}
-                <div class="text-center py-8">
-                    <p class="text-gray-500">You haven't given any feedback yet.</p>
+                <div class="text-center py-8 bg-gray-50/50 rounded-xl border border-gray-100">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-12 w-12 text-gray-400/70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                    </svg>
+                    <p class="text-gray-500 mt-4">You haven't given any feedback yet.</p>
+                    <p class="text-sm text-gray-400 mt-2">Check out the feedback dashboard to find projects to review.</p>
+                    
+                    <div class="mt-6">
+                        <a href="{% url 'feedback_dashboard' %}" class="inline-flex items-center px-5 py-2.5 border border-transparent text-sm font-medium rounded-lg shadow-md text-white bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700 transition-all duration-300 transform hover:scale-[1.02]">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+                            </svg>
+                            Give Feedback
+                        </a>
+                    </div>
                 </div>
             {% endif %}
         </div>
     </div>
     
     <!-- Recent Notifications -->
-    <div class="bg-white rounded-lg shadow-md overflow-hidden">
-        <div class="bg-gray-50 px-6 py-4 border-b flex justify-between items-center">
-            <h2 class="text-lg font-medium text-gray-900">Recent Notifications</h2>
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl">
+        <div class="bg-gradient-to-r from-gray-50 to-gray-100 px-6 py-4 border-b flex justify-between items-center">
+            <div class="flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                </svg>
+                <h2 class="text-lg font-medium text-gray-900">Recent Notifications</h2>
+            </div>
             <div class="flex items-center space-x-4">
                 {% if user_notifications %}
                 <form method="post" action="{% url 'mark_all_notifications_read' %}">
                     {% csrf_token %}
-                    <button type="submit" class="text-sm text-indigo-600 hover:text-indigo-800 flex items-center">
+                    <button type="submit" class="text-sm text-indigo-600 hover:text-indigo-800 flex items-center transition-colors duration-200">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                         </svg>
@@ -398,48 +481,61 @@
                     </button>
                 </form>
                 {% endif %}
-                <a href="{% url 'user_notifications' %}" class="text-indigo-600 hover:text-indigo-800 text-sm">View All</a>
+                <a href="{% url 'user_notifications' %}" class="text-indigo-600 hover:text-indigo-800 text-sm flex items-center group transition-colors duration-200">
+                    View All
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1 group-hover:translate-x-0.5 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </a>
             </div>
         </div>
         
-        <div class="p-6">
+        <div class="p-7">
             {% if user_notifications %}
-                <div class="space-y-4">
+                <div class="space-y-3">
                     {% for notification in user_notifications %}
-                    <a href="{% url 'notification_detail' notification_id=notification.id %}" class="block hover:shadow-md transition-shadow duration-200">
-                        <div class="border-l-4 {% if notification.notification_type == 'feedback_received' %}border-indigo-500{% else %}border-green-500{% endif %} {% if not notification.is_viewed %}bg-gray-50{% else %}bg-white{% endif %} p-4 rounded-r">
-                            <div class="flex justify-between">
+                    <a href="{% url 'notification_detail' notification_id=notification.id %}" class="block hover:shadow-md transition-all duration-200 group">
+                        <div class="border-l-4 {% if notification.notification_type == 'feedback_received' %}border-indigo-500{% else %}border-green-500{% endif %} {% if not notification.is_viewed %}bg-indigo-50/50{% else %}bg-white{% endif %} p-4 rounded-r-lg shadow-sm">
+                            <div class="flex justify-between items-start">
                                 <div class="flex items-start">
-                                    <div class="mr-3 mt-1">
+                                    <div class="mr-3 mt-0.5 flex-shrink-0">
                                         {% if notification.notification_type == 'feedback_received' %}
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
-                                        </svg>
+                                        <div class="bg-indigo-100 rounded-full p-1.5">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                                            </svg>
+                                        </div>
                                         {% else %}
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
-                                        </svg>
+                                        <div class="bg-green-100 rounded-full p-1.5">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
+                                            </svg>
+                                        </div>
                                         {% endif %}
                                     </div>
                                     <div>
-                                        <p class="text-gray-700">{{ notification.message }}</p>
+                                        <p class="text-gray-700 leading-relaxed">{{ notification.message }}</p>
                                         {% if not notification.is_viewed %}
-                                        <span class="inline-flex items-center rounded-full bg-blue-100 px-2 py-1 mt-1 text-xs font-medium text-blue-700">
+                                        <span class="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-1 mt-1.5 text-xs font-medium text-blue-700 shadow-sm">
                                             <span class="mr-1 h-1.5 w-1.5 rounded-full bg-blue-700"></span>
                                             New
                                         </span>
                                         {% endif %}
                                     </div>
                                 </div>
-                                <span class="text-xs text-gray-500 whitespace-nowrap ml-4">{{ notification.created_at|timesince }} ago</span>
+                                <span class="text-xs text-gray-500 whitespace-nowrap ml-4 flex-shrink-0">{{ notification.created_at|timesince }} ago</span>
                             </div>
+                            <div class="mt-1 ml-10 text-xs text-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity duration-200">View details</div>
                         </div>
                     </a>
                     {% endfor %}
                 </div>
             {% else %}
-                <div class="text-center py-8">
-                    <p class="text-gray-500">No notifications yet.</p>
+                <div class="text-center py-8 bg-gray-50/50 rounded-xl border border-gray-100">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-12 w-12 text-gray-400/70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                    </svg>
+                    <p class="text-gray-500 mt-4">No notifications yet.</p>
                     <p class="text-sm text-gray-400 mt-2">When you receive feedback on your projects or someone likes your feedback, notifications will appear here.</p>
                 </div>
             {% endif %}
@@ -449,7 +545,7 @@
 
 <!-- Dynamic message container -->
 <div id="message-container" class="fixed top-20 right-5 max-w-md z-50 hidden">
-    <div id="message-box" class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded shadow-lg transition-all duration-300" 
+    <div id="message-box" class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded-lg shadow-lg transition-all duration-300" 
          style="transform: translateX(100%); opacity: 0;" role="alert">
         <div class="flex items-center">
             <div class="py-1">
@@ -576,9 +672,10 @@
         }
         
         // Update button state immediately
+        const originalText = button.innerHTML;
         button.textContent = 'Requesting...';
         button.classList.add('bg-indigo-700');
-        button.classList.remove('bg-indigo-600', 'hover:bg-indigo-700');
+        button.disabled = true;
         
         // Get CSRF token
         const csrftoken = getCookie('csrftoken');
@@ -612,57 +709,49 @@
             
             // Check if the button's parent has the feedback count indicator
             const parentDiv = button.closest('div');
-            const feedbackCountLabel = parentDiv.querySelector('.flex.gap-2.items-center span');
+            const feedbackCountContainer = parentDiv.querySelector('.flex.gap-2.items-center');
             
-            // If this project already had feedback, update the count
-            if (feedbackCountLabel) {
-                // Extract the current count from the label and update it
+            // If this project already had a feedback count indicator, update the count
+            if (feedbackCountContainer) {
+                const feedbackCountLabel = feedbackCountContainer.querySelector('span');
                 const currentCount = parseInt(feedbackCountLabel.textContent.trim().split(' ')[0]);
                 feedbackCountLabel.textContent = `${currentCount + selectedCredits} Feedback Received`;
             } else {
-                // Add the feedback count indicator since this is the first feedback
-                // We'll reload the page to get the proper UI update
-                window.location.reload();
-                return;
+                // This project didn't have feedback before, create the indicator
+                const newFeedbackCountDiv = document.createElement('div');
+                newFeedbackCountDiv.className = 'flex gap-2 items-center mb-2';
+                newFeedbackCountDiv.innerHTML = `
+                    <span class="text-green-600 bg-green-50 border border-green-200/60 rounded-full px-3 py-1 text-xs inline-flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        ${selectedCredits} Feedback Received
+                    </span>
+                `;
+                
+                // Insert it before the credits input container
+                const creditInputContainer = parentDiv.querySelector('.flex.items-center.gap-2');
+                parentDiv.insertBefore(newFeedbackCountDiv, creditInputContainer);
             }
             
             // Update button state to indicate success but keep it enabled
-            button.classList.remove('bg-indigo-700');
-            button.classList.add('bg-green-600', 'hover:bg-green-700');
-            button.textContent = 'Get More Feedback';
+            button.disabled = false;
+            button.innerHTML = 'Get <span id="credit-count-' + projectId + '">1</span> Feedback';
             
             // Update the max value of the credit input if credits are now lower
             const creditInput = document.getElementById(`credit-input-${projectId}`);
-            if (creditInput && parseInt(creditInput.max) !== data.credits) {
-                creditInput.max = data.credits;
+            if (creditInput) {
+                // Reset the value to 1
+                creditInput.value = 1;
                 
-                // If current value is now greater than max, adjust it
-                if (parseInt(creditInput.value) > data.credits) {
-                    creditInput.value = data.credits;
-                }
-                
-                // Update the max label
-                const maxLabel = creditInput.closest('.flex.items-center.gap-2').querySelector('.text-xs.text-gray-500');
-                if (maxLabel) {
-                    maxLabel.textContent = `(Max: ${data.credits})`;
-                }
-                
-                // Initialize button states for the updated input
-                const minusBtn = creditInput.previousElementSibling;
-                const plusBtn = creditInput.nextElementSibling;
-                
-                // Check if minus button should be disabled
-                if (parseInt(creditInput.value) <= 1) {
-                    minusBtn.disabled = true;
-                    minusBtn.classList.add('opacity-50', 'cursor-not-allowed');
-                    minusBtn.classList.remove('hover:bg-gray-200');
-                }
-                
-                // Check if plus button should be disabled
-                if (parseInt(creditInput.value) >= data.credits) {
-                    plusBtn.disabled = true;
-                    plusBtn.classList.add('opacity-50', 'cursor-not-allowed');
-                    plusBtn.classList.remove('hover:bg-gray-200');
+                if (parseInt(creditInput.max) !== data.credits) {
+                    creditInput.max = data.credits;
+                    
+                    // Update the max label
+                    const maxLabel = creditInput.closest('.flex.items-center.gap-2').querySelector('.text-xs.text-gray-500');
+                    if (maxLabel) {
+                        maxLabel.textContent = `(Max: ${data.credits})`;
+                    }
                 }
             }
             
@@ -677,14 +766,14 @@
                 
                 // Add insufficient credits message
                 const insufficientCreditsMsg = document.createElement('div');
-                insufficientCreditsMsg.className = 'bg-amber-50 border border-amber-200 rounded-md p-3 mb-2';
-                insufficientCreditsMsg.innerHTML = '<p class="text-amber-700 text-sm">You need at least 1 credit to get more feedback.</p>';
+                insufficientCreditsMsg.className = 'bg-amber-50 border border-amber-200 rounded-lg p-3 mb-3 shadow-sm';
+                insufficientCreditsMsg.innerHTML = '<p class="text-amber-700 text-sm flex items-start"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 flex-shrink-0 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>You need at least 1 credit to get feedback.</p>';
                 mainContainer.insertBefore(insufficientCreditsMsg, button);
                 
                 // Disable the button
                 button.disabled = true;
                 button.textContent = 'Insufficient Credits';
-                button.className = 'block w-full text-center bg-gray-400 text-white py-2 px-4 rounded transition duration-200 cursor-not-allowed';
+                button.className = 'block w-full text-center bg-gray-400 text-white py-2.5 px-4 rounded-lg shadow-md transition-all duration-200 cursor-not-allowed font-medium';
             }
         })
         .catch(error => {
@@ -692,27 +781,26 @@
             showMessage(error.message || 'An error occurred. Please try again.', true);
             
             // Restore button state
-            const parentDiv = button.closest('div');
-            const buttonIsForMore = button.textContent.includes('More') || 
-                                   (parentDiv && parentDiv.querySelector('.flex.gap-2.items-center span'));
-            button.textContent = buttonIsForMore ? 'Get More Feedback' : 'Get Feedback';
-            button.classList.remove('bg-indigo-700');
-            button.classList.add('bg-indigo-600', 'hover:bg-indigo-700');
+            button.disabled = false;
+            button.innerHTML = originalText;
         });
     }
 
     function decrementCredits(inputId) {
         const input = document.getElementById(inputId);
-        const minusBtn = input.previousElementSibling;
-        const plusBtn = input.nextElementSibling;
         
         let value = parseInt(input.value);
         if (value > 1) {
             value--;
             input.value = value;
             
+            // Update button text with new credit count
+            const projectId = inputId.split('-')[2];
+            document.getElementById(`credit-count-${projectId}`).textContent = value;
+            
             // Enable plus button if it was disabled and we're no longer at max
-            if (plusBtn.disabled && value < parseInt(input.max)) {
+            if (value < parseInt(input.max)) {
+                const plusBtn = input.nextElementSibling;
                 plusBtn.disabled = false;
                 plusBtn.classList.remove('opacity-50', 'cursor-not-allowed');
                 plusBtn.classList.add('hover:bg-gray-200');
@@ -720,6 +808,7 @@
             
             // Disable minus button if we've reached the minimum
             if (value === 1) {
+                const minusBtn = input.previousElementSibling;
                 minusBtn.disabled = true;
                 minusBtn.classList.add('opacity-50', 'cursor-not-allowed');
                 minusBtn.classList.remove('hover:bg-gray-200');
@@ -729,16 +818,19 @@
     
     function incrementCredits(inputId, max) {
         const input = document.getElementById(inputId);
-        const minusBtn = input.previousElementSibling;
-        const plusBtn = input.nextElementSibling;
         
         let value = parseInt(input.value);
         if (value < max) {
             value++;
             input.value = value;
             
+            // Update button text with new credit count
+            const projectId = inputId.split('-')[2];
+            document.getElementById(`credit-count-${projectId}`).textContent = value;
+            
             // Enable minus button if it was disabled and we're no longer at min
-            if (minusBtn.disabled && value > 1) {
+            if (value > 1) {
+                const minusBtn = input.previousElementSibling;
                 minusBtn.disabled = false;
                 minusBtn.classList.remove('opacity-50', 'cursor-not-allowed');
                 minusBtn.classList.add('hover:bg-gray-200');
@@ -746,6 +838,7 @@
             
             // Disable plus button if we've reached the maximum
             if (value === max) {
+                const plusBtn = input.nextElementSibling;
                 plusBtn.disabled = true;
                 plusBtn.classList.add('opacity-50', 'cursor-not-allowed');
                 plusBtn.classList.remove('hover:bg-gray-200');
@@ -797,6 +890,10 @@
                     this.value = value;
                 }
                 
+                // Update button text with new credit count
+                const projectId = this.id.split('-')[2];
+                document.getElementById(`credit-count-${projectId}`).textContent = value;
+                
                 // Update button states
                 if (value <= min) {
                     minusBtn.disabled = true;
@@ -823,6 +920,11 @@
             input.addEventListener('blur', function() {
                 if (this.value === '') {
                     this.value = this.min;
+                    
+                    // Update button text with default value
+                    const projectId = this.id.split('-')[2];
+                    document.getElementById(`credit-count-${projectId}`).textContent = this.min;
+                    
                     minusBtn.disabled = true;
                     minusBtn.classList.add('opacity-50', 'cursor-not-allowed');
                     minusBtn.classList.remove('hover:bg-gray-200');

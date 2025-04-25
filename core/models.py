@@ -3,6 +3,13 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
+# Move PRICING_CHOICES from forms to models
+PRICING_CHOICES = [
+    ('free', 'Completely Free'),
+    ('freemium', 'Freemium (Free tier with paid options)'),
+    ('paid', 'Paid Only'),
+]
+
 class Profile(models.Model):
     """Extended user profile with feedback credits."""
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -41,10 +48,10 @@ class Project(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
     total_votes = models.IntegerField(default=0)
-    
-    # New fields
     feedback_type_wanted = models.JSONField(blank=True, null=True, default=list)
     tech_stack = models.CharField(max_length=200, blank=True)
+    pricing_plan = models.CharField(max_length=20, choices=PRICING_CHOICES, default='free')
+    guest_access_info = models.TextField(blank=True)
     
     def __str__(self):
         return self.title

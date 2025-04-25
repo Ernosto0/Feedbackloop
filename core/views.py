@@ -69,6 +69,31 @@ def submit_project(request):
     return render(request, 'core/submit_project.html', {'form': form})
 
 @login_required
+def update_project(request, pk):
+    """Update an existing project."""
+    project = get_object_or_404(Project, pk=pk)
+    
+    # Check if user is the owner
+    if request.user != project.owner:
+        messages.error(request, "You don't have permission to edit this project.")
+        return redirect('project_detail', pk=project.id)
+    
+    if request.method == 'POST':
+        form = ProjectForm(request.POST, request.FILES, instance=project)
+        if form.is_valid():
+            project = form.save()
+            messages.success(request, 'Project updated successfully!')
+            return redirect('project_detail', pk=project.id)
+    else:
+        form = ProjectForm(instance=project)
+    
+    return render(request, 'core/submit_project.html', {
+        'form': form,
+        'is_update': True,
+        'project': project
+    })
+
+@login_required
 def project_detail(request, pk):
     """View project details."""
     project = get_object_or_404(Project, pk=pk)

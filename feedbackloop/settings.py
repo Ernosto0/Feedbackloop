@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     # Third-party apps
     'crispy_forms',
     'crispy_tailwind',
+    'widget_tweaks',
     
     # Local apps
     'core',

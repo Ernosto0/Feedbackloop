@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Project, Feedback, Profile, Tag
+from .models import Project, Feedback, Profile, Tag, PRICING_CHOICES
 
 class SignUpForm(UserCreationForm):
     """Form for user registration."""
@@ -10,7 +10,8 @@ class SignUpForm(UserCreationForm):
     class Meta:
         model = User
         fields = ['username', 'email', 'password1', 'password2']
-        
+
+
 FEEDBACK_CHOICES = [
     ('ui', 'UI / Design'),
     ('ux', 'UX / Usability'),
@@ -22,14 +23,22 @@ FEEDBACK_CHOICES = [
 
 class ProjectForm(forms.ModelForm):
     """Form for submitting a project."""
-    
+
     # Custom tag field with autocomplete
     tags_input = forms.CharField(
         required=False,
         help_text="Enter tags separated by commas (e.g., portfolio, landing page, app)"
     )
 
-    # New field: What kind of feedback the user wants
+    # Tech stack used
+    tech_stack = forms.CharField(
+        required=False,
+        label="Tech Stack Used",
+        help_text="E.g., React, Tailwind, Django, PostgreSQL",
+        widget=forms.TextInput(attrs={'class': 'w-full', 'placeholder': 'React, Tailwind, Django'})
+    )
+
+    # What kind of feedback the user wants
     feedback_type_wanted = forms.MultipleChoiceField(
         choices=FEEDBACK_CHOICES,
         widget=forms.CheckboxSelectMultiple,
@@ -37,14 +46,23 @@ class ProjectForm(forms.ModelForm):
         label="What kind of feedback would you like to receive?"
     )
 
-    # New field: Tech stack
-    tech_stack = forms.CharField(
+    # Pricing plan
+    pricing_plan = forms.ChoiceField(
+        choices=PRICING_CHOICES,
+        required=True,
+        label="Pricing Model",
+        widget=forms.Select(attrs={'class': 'w-full'})
+    )
+
+    # Guest access info if project is paid-only
+    guest_access_info = forms.CharField(
         required=False,
-        label="Tech Stack Used",
-        help_text="E.g., React, Tailwind, Django, PostgreSQL",
-        widget=forms.TextInput(attrs={
+        label="Guest Access (if paid only)",
+        help_text="Provide a demo login, trial link, or discount code for reviewers if your project is not free.",
+        widget=forms.Textarea(attrs={
+            'rows': 2,
             'class': 'w-full',
-            'placeholder': 'React, Tailwind, Django'
+            'placeholder': 'e.g., username: demo@example.com, password: test123'
         })
     )
 
@@ -55,7 +73,7 @@ class ProjectForm(forms.ModelForm):
             'title': forms.TextInput(attrs={'class': 'w-full', 'placeholder': 'My Awesome Project'}),
             'url': forms.URLInput(attrs={'class': 'w-full', 'placeholder': 'https://myproject.com'}),
             'description': forms.Textarea(attrs={
-                'rows': 4, 
+                'rows': 4,
                 'class': 'w-full',
                 'placeholder': 'Describe your project in detail. What is it about? What technologies did you use?'
             }),
@@ -72,20 +90,32 @@ class ProjectForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        
+
         if self.instance.pk:
-            # Pre-populate tags for editing
             self.fields['tags_input'].initial = ', '.join([tag.name for tag in self.instance.tags.all()])
-            # Pre-fill feedback_type_wanted and tech_stack if stored in instance
             self.fields['feedback_type_wanted'].initial = getattr(self.instance, 'feedback_type_wanted', [])
             self.fields['tech_stack'].initial = getattr(self.instance, 'tech_stack', '')
+            self.fields['pricing_plan'].initial = getattr(self.instance, 'pricing_plan', 'free')
+            self.fields['guest_access_info'].initial = getattr(self.instance, 'guest_access_info', '')
+
+    def clean(self):
+        cleaned_data = super().clean()
+        pricing_plan = cleaned_data.get('pricing_plan')
+        guest_access_info = cleaned_data.get('guest_access_info')
+
+        if pricing_plan == 'paid' and not guest_access_info:
+            self.add_error(
+                'guest_access_info',
+                'Since your project is paid-only, please provide a demo link, guest account, or discount code.'
+            )
 
     def save(self, commit=True):
         instance = super().save(commit=False)
-        
-        # Save additional fields to instance (you need to add these to the model)
+
         instance.feedback_type_wanted = self.cleaned_data.get('feedback_type_wanted', [])
         instance.tech_stack = self.cleaned_data.get('tech_stack', '')
+        instance.pricing_plan = self.cleaned_data.get('pricing_plan', 'free')
+        instance.guest_access_info = self.cleaned_data.get('guest_access_info', '')
 
         if commit:
             instance.save()
@@ -128,10 +158,10 @@ class FeedbackForm(forms.ModelForm):
         widget=forms.Textarea(attrs={
             'class': 'w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500',
             'rows': 4,
-            'placeholder': 'Any other suggestions, ideas, or resources that might help? (Optional)'
+            'placeholder': 'Any other suggestions, ideas, or resources that might help?'
         }),
-        required=False,
-        help_text="Optional additional suggestions or resources"
+        required=True,
+        help_text="Additional suggestions or resources"
     )
     
     class Meta:
