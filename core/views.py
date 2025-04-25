@@ -4,9 +4,11 @@ from django.contrib import messages
 from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse
 from django.contrib.auth import login, authenticate
-from .models import Project, Feedback, Notification
+from .models import Project, Feedback, Notification, FeedbackRequest
 from .forms import ProjectForm, FeedbackForm, SignUpForm
 from .utils import create_feedback_notification, create_liked_feedback_notification, get_user_notifications, get_unread_notification_count, get_time_ago
+from django.db.models import Count, Q, F, OuterRef, Subquery, IntegerField
+from django.db.models.functions import Coalesce
 
 def home(request):
     """Home page view."""
@@ -119,11 +121,56 @@ def project_detail(request, pk):
 @login_required
 def feedback_dashboard(request):
     """Dashboard to choose a project to give feedback on."""
-    # Get 3 random active projects that are not owned by the current user
-    random_projects = Project.objects.filter(is_active=True).exclude(owner=request.user).order_by('?')[:3]
+    # Find projects with unfulfilled feedback requests that this user hasn't given feedback on yet
+    
+    # Get projects with pending feedback requests
+    query_filter = Q(is_active=True) & ~Q(owner=request.user) & Q(
+        feedback_requests__fulfilled_count__lt=F('feedback_requests__requested_count')
+    )
+    
+    projects_with_pending_requests = Project.objects.filter(query_filter).annotate(
+        # Check if user has already given feedback
+        user_has_given_feedback=Count('feedback', filter=Q(feedback__giver=request.user)),
+        # Calculate remaining feedback slots
+        pending_count=Subquery(
+            FeedbackRequest.objects.filter(
+                project=OuterRef('pk')
+            ).order_by('-created_at').values('requested_count')[:1],
+            output_field=IntegerField()
+        ) - Subquery(
+            FeedbackRequest.objects.filter(
+                project=OuterRef('pk')
+            ).order_by('-created_at').values('fulfilled_count')[:1],
+            output_field=IntegerField()
+        )
+    ).filter(
+        # Exclude projects user has already given feedback to
+        user_has_given_feedback=0,
+        # Only include projects with pending feedback slots
+        pending_count__gt=0
+    ).order_by('?')[:3]  # Get up to 3 random projects
+    
+    # If we don't have 3 projects with pending requests, get some random active projects
+    if projects_with_pending_requests.count() < 3:
+        needed_count = 3 - projects_with_pending_requests.count()
+        # Get random active projects, excluding ones user owns or has already given feedback to
+        random_projects = Project.objects.filter(
+            is_active=True
+        ).exclude(
+            owner=request.user
+        ).exclude(
+            id__in=projects_with_pending_requests.values_list('id', flat=True)
+        ).exclude(
+            feedback__giver=request.user
+        ).order_by('?')[:needed_count]
+        
+        # Combine the two querysets
+        projects_to_show = list(projects_with_pending_requests) + list(random_projects)
+    else:
+        projects_to_show = projects_with_pending_requests
     
     context = {
-        'random_projects': random_projects,
+        'random_projects': projects_to_show,
     }
     return render(request, 'core/feedback_dashboard.html', context)
 
@@ -152,15 +199,19 @@ def give_feedback(request, project_id):
             # Create notification for project owner
             create_feedback_notification(feedback)
             
-            # Deduct credit from user
+            # Find the most recent unfulfilled feedback request for this project and increment its count
+            feedback_request = FeedbackRequest.objects.filter(
+                project=project,
+                fulfilled_count__lt=F('requested_count')
+            ).order_by('-created_at').first()
+            
+            if feedback_request:
+                feedback_request.increment_fulfilled()
+            
+            # Award credit to feedback giver
             profile = request.user.profile
             profile.credits += 1
             profile.save()
-            
-            # Add credit to project owner
-            # owner_profile = project.owner.profile
-            # owner_profile.credits += 1
-            # owner_profile.save()
             
             messages.success(request, "Thank you for your feedback! You've gained 1 credit.")
             return redirect('feedback_dashboard')
@@ -262,6 +313,12 @@ def get_feedback(request, project_id, credits):
     owner_profile.credits -= credits
     owner_profile.save()
     
+    # Create a feedback request entry to track the requested feedback
+    feedback_request = FeedbackRequest.objects.create(
+        project=project,
+        requested_count=credits
+    )
+    
     # Handle AJAX request
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         # Get current feedback count for the message
@@ -272,7 +329,8 @@ def get_feedback(request, project_id, credits):
             'success': True,
             'message': feedback_message,
             'credits': owner_profile.credits,
-            'current_feedback_count': current_feedback_count
+            'current_feedback_count': current_feedback_count,
+            'request_id': feedback_request.id  # Include the request ID for tracking
         })
     
     # Handle regular request    

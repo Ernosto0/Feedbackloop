@@ -128,3 +128,34 @@ class Notification(models.Model):
     
     def __str__(self):
         return f"Notification for {self.recipient.username}: {self.message[:30]}"
+
+class FeedbackRequest(models.Model):
+    """Tracks pending feedback requests for projects."""
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='feedback_requests')
+    created_at = models.DateTimeField(auto_now_add=True)
+    requested_count = models.PositiveIntegerField(default=1, help_text="Number of feedback slots requested")
+    fulfilled_count = models.PositiveIntegerField(default=0, help_text="Number of feedback slots fulfilled")
+    
+    class Meta:
+        ordering = ['-created_at']
+    
+    def __str__(self):
+        return f"Feedback request for {self.project.title}: {self.fulfilled_count}/{self.requested_count}"
+    
+    @property
+    def is_fulfilled(self):
+        """Check if all requested feedback has been fulfilled."""
+        return self.fulfilled_count >= self.requested_count
+    
+    @property
+    def remaining_count(self):
+        """Get the number of remaining feedback slots."""
+        return max(0, self.requested_count - self.fulfilled_count)
+    
+    def increment_fulfilled(self):
+        """Increment the fulfilled count when feedback is given."""
+        if not self.is_fulfilled:
+            self.fulfilled_count += 1
+            self.save()
+            return True
+        return False
