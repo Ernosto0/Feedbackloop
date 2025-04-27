@@ -266,12 +266,28 @@ def report_feedback(request, feedback_id):
         messages.warning(request, 'Only the project owner can report feedback.')
         return HttpResponseRedirect(reverse('project_detail', args=[feedback.project.id]))
     
-    # Mark feedback as reported
-    feedback.is_reported = True
-    feedback.save()
+    # Check if feedback has already been reported
+    if feedback.is_reported:
+        messages.info(request, 'This feedback has already been reported.')
+        return HttpResponseRedirect(reverse('project_detail', args=[feedback.project.id]))
     
-    messages.success(request, 'Feedback reported for review.')
-    return HttpResponseRedirect(reverse('project_detail', args=[feedback.project.id]))
+    if request.method == 'POST':
+        # Get report reason from the form
+        report_reason = request.POST.get('report_reason', '')
+        
+        if report_reason.strip():
+            # Mark feedback as reported
+            feedback.is_reported = True
+            feedback.report_reason = report_reason
+            feedback.save()
+            
+            messages.success(request, 'Feedback reported for review. An administrator will review your report shortly.')
+            return HttpResponseRedirect(reverse('project_detail', args=[feedback.project.id]))
+        else:
+            messages.error(request, 'Please provide a reason for reporting this feedback.')
+    
+    # For GET requests or invalid POST requests, show the report form
+    return render(request, 'core/report_feedback.html', {'feedback': feedback})
 
 
 @login_required
@@ -449,5 +465,27 @@ def delete_project(request, pk):
     
     # GET request shows confirmation page
     return render(request, 'core/delete_project.html', {'project': project})
+
+def login_view(request):
+    """Custom login view to check for banned users."""
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        
+        user = authenticate(request, username=username, password=password)
+        
+        if user is not None:
+            # Check if user is banned
+            if hasattr(user, 'profile') and user.profile.is_banned:
+                messages.error(request, "Your account has been banned. Please contact the administrators for assistance.")
+                return render(request, 'registration/login.html')
+            
+            login(request, user)
+            next_url = request.GET.get('next', 'home')
+            return redirect(next_url)
+        else:
+            messages.error(request, "Invalid username or password.")
+    
+    return render(request, 'registration/login.html')
     
     

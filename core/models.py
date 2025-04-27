@@ -16,6 +16,8 @@ class Profile(models.Model):
     credits = models.IntegerField(default=1)  # Start with 1 credit
     bio = models.TextField(max_length=500, blank=True)
     profile_picture = models.ImageField(upload_to='profile_pics/', blank=True, null=True)
+    is_banned = models.BooleanField(default=False)  # Field to track if user is banned
+    warning_count = models.IntegerField(default=0)  # Track warnings given to user
     
     def __str__(self):
         return f"{self.user.username}'s profile"
@@ -88,6 +90,8 @@ class Feedback(models.Model):
     # Feedback status
     is_liked = models.BooleanField(default=False)
     is_reported = models.BooleanField(default=False)
+    report_handled = models.BooleanField(default=False)  # Track if a report has been reviewed
+    report_reason = models.TextField(blank=True, null=True)  # Optional reason for reporting
     
     created_at = models.DateTimeField(auto_now_add=True)
     
@@ -112,6 +116,10 @@ class Notification(models.Model):
     NOTIFICATION_TYPES = (
         ('feedback_received', 'Feedback Received'),
         ('feedback_liked', 'Feedback Liked'),
+        ('report_approved', 'Report Approved'),      # New type for approved reports
+        ('report_dismissed', 'Report Dismissed'),    # New type for dismissed reports
+        ('feedback_reported', 'Feedback Reported'),  # New type for feedback givers
+        ('user_warning', 'User Warning'),            # New type for user warnings
     )
     
     recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
