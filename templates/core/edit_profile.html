@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Profile - FeedbackLoop{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+    <!-- Page Header -->
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-8 transition-all duration-300 hover:shadow-xl">
+        <div class="bg-gradient-to-r from-indigo-600 to-purple-700 px-6 py-5">
+            <h1 class="text-2xl font-bold text-white">Edit Profile</h1>
+            <p class="text-indigo-100 mt-1 opacity-90">Update your personal information and profile settings</p>
+        </div>
+        
+        <div class="p-7">
+            <form method="POST" enctype="multipart/form-data" class="space-y-8">
+                {% csrf_token %}
+                
+                <!-- Profile Picture Section -->
+                <div class="mb-8">
+                    <h2 class="text-lg font-medium text-gray-900 mb-4">Profile Picture</h2>
+                    <div class="flex items-start space-x-6">
+                        <div class="relative group">
+                            <div class="w-32 h-32 rounded-full overflow-hidden bg-gradient-to-r from-indigo-500 to-purple-500 flex items-center justify-center shadow-md">
+                                {% if user.profile.profile_picture %}
+                                    <img id="profile-preview" src="{{ user.profile.profile_picture.url }}" alt="{{ user.username }}" class="w-full h-full object-cover">
+                                {% else %}
+                                    <div id="profile-preview-placeholder" class="flex items-center justify-center h-full w-full">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                        </svg>
+                                    </div>
+                                    <img id="profile-preview" src="" alt="" class="w-full h-full object-cover hidden">
+                                {% endif %}
+                            </div>
+                            
+                            <div class="absolute inset-0 bg-black bg-opacity-40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 cursor-pointer" onclick="document.getElementById('profile-picture-input').click()">
+                                <div class="text-white text-center px-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    </svg>
+                                    <span class="text-sm mt-1 block">Change</span>
+                                </div>
+                            </div>
+                            {{ profile_form.profile_picture }}
+                        </div>
+                        
+                        <div class="flex-1">
+                            <h3 class="text-sm font-medium text-gray-700 mb-2">Upload a new profile picture</h3>
+                            <p class="text-sm text-gray-500 mb-4">Choose a square image for best results. PNG or JPG format recommended.</p>
+                            <button type="button" onclick="document.getElementById('profile-picture-input').click()" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0l-4 4m4-4v12" />
+                                </svg>
+                                Select Image
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Account Information Section -->
+                <div class="bg-white shadow-sm rounded-xl overflow-hidden border border-gray-200">
+                    <div class="px-6 py-4 bg-gray-50 border-b border-gray-200">
+                        <h2 class="text-lg font-medium text-gray-900">Account Information</h2>
+                    </div>
+                    <div class="p-6 space-y-6">
+                        <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                            <div>
+                                <label for="{{ user_form.username.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Username</label>
+                                {{ user_form.username }}
+                                {% if user_form.username.errors %}
+                                    <p class="mt-2 text-sm text-red-600">{{ user_form.username.errors.0 }}</p>
+                                {% endif %}
+                            </div>
+                            <div>
+                                <label for="{{ user_form.email.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                                {{ user_form.email }}
+                                {% if user_form.email.errors %}
+                                    <p class="mt-2 text-sm text-red-600">{{ user_form.email.errors.0 }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Profile Information Section -->
+                <div class="bg-white shadow-sm rounded-xl overflow-hidden border border-gray-200">
+                    <div class="px-6 py-4 bg-gray-50 border-b border-gray-200">
+                        <h2 class="text-lg font-medium text-gray-900">Profile Information</h2>
+                    </div>
+                    <div class="p-6">
+                        <div>
+                            <label for="{{ profile_form.bio.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Bio</label>
+                            {{ profile_form.bio }}
+                            <p class="mt-2 text-sm text-gray-500">Write a short introduction about yourself. This will be displayed on your profile page.</p>
+                            {% if profile_form.bio.errors %}
+                                <p class="mt-2 text-sm text-red-600">{{ profile_form.bio.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="flex justify-end space-x-4">
+                    <a href="{% url 'profile' %}" class="inline-flex items-center px-5 py-2.5 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        Cancel
+                    </a>
+                    <button type="submit" class="inline-flex items-center px-5 py-2.5 border border-transparent rounded-lg shadow-md text-sm font-medium text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-300 transform hover:scale-[1.02]">
+                        Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Profile picture preview
+    document.getElementById('profile-picture-input').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                const preview = document.getElementById('profile-preview');
+                const placeholder = document.getElementById('profile-preview-placeholder');
+                
+                if (placeholder) {
+                    placeholder.classList.add('hidden');
+                }
+                
+                preview.src = e.target.result;
+                preview.classList.remove('hidden');
+            }
+            
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
+{% endblock %} 

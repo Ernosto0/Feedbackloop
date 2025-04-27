@@ -41,7 +41,9 @@ class ProjectForm(forms.ModelForm):
     # What kind of feedback the user wants
     feedback_type_wanted = forms.MultipleChoiceField(
         choices=FEEDBACK_CHOICES,
-        widget=forms.CheckboxSelectMultiple,
+        widget=forms.CheckboxSelectMultiple(attrs={
+            'class': 'feedback-checkbox-list list-none',
+        }),
         required=False,
         label="What kind of feedback would you like to receive?"
     )
@@ -93,7 +95,21 @@ class ProjectForm(forms.ModelForm):
 
         if self.instance.pk:
             self.fields['tags_input'].initial = ', '.join([tag.name for tag in self.instance.tags.all()])
-            self.fields['feedback_type_wanted'].initial = getattr(self.instance, 'feedback_type_wanted', [])
+            
+            # Fix for feedback_type_wanted field
+            feedback_wanted = self.instance.feedback_type_wanted
+            # Check if it's None or empty list and convert properly
+            if feedback_wanted is None:
+                feedback_wanted = []
+            # Check if it's a list (could be a string in some cases)
+            elif isinstance(feedback_wanted, str):
+                try:
+                    import json
+                    feedback_wanted = json.loads(feedback_wanted)
+                except:
+                    feedback_wanted = []
+            
+            self.fields['feedback_type_wanted'].initial = feedback_wanted
             self.fields['tech_stack'].initial = getattr(self.instance, 'tech_stack', '')
             self.fields['pricing_plan'].initial = getattr(self.instance, 'pricing_plan', 'free')
             self.fields['guest_access_info'].initial = getattr(self.instance, 'guest_access_info', '')
@@ -112,7 +128,11 @@ class ProjectForm(forms.ModelForm):
     def save(self, commit=True):
         instance = super().save(commit=False)
 
-        instance.feedback_type_wanted = self.cleaned_data.get('feedback_type_wanted', [])
+        # Ensure feedback_type_wanted is properly handled
+        feedback_type = self.cleaned_data.get('feedback_type_wanted', [])
+        # Store as a list, not as a string (prevents issues with JSONField)
+        instance.feedback_type_wanted = list(feedback_type) if feedback_type else []
+        
         instance.tech_stack = self.cleaned_data.get('tech_stack', '')
         instance.pricing_plan = self.cleaned_data.get('pricing_plan', 'free')
         instance.guest_access_info = self.cleaned_data.get('guest_access_info', '')
@@ -170,9 +190,23 @@ class FeedbackForm(forms.ModelForm):
 
 class ProfileUpdateForm(forms.ModelForm):
     """Form for updating user profile."""
+    profile_picture = forms.ImageField(required=False, widget=forms.FileInput(attrs={'class': 'hidden', 'id': 'profile-picture-input'}))
+    
     class Meta:
         model = Profile
-        fields = ['bio']
+        fields = ['bio', 'profile_picture']
         widgets = {
-            'bio': forms.Textarea(attrs={'rows': 3}),
+            'bio': forms.Textarea(attrs={'rows': 3, 'class': 'w-full rounded-lg border-gray-300 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'}),
+        }
+
+class UserUpdateForm(forms.ModelForm):
+    """Form for updating user information."""
+    email = forms.EmailField(max_length=254, required=True)
+    
+    class Meta:
+        model = User
+        fields = ['username', 'email']
+        widgets = {
+            'username': forms.TextInput(attrs={'class': 'w-full rounded-lg border-gray-300 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'}),
+            'email': forms.EmailInput(attrs={'class': 'w-full rounded-lg border-gray-300 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'}),
         } 

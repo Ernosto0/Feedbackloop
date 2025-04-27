@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse
 from django.contrib.auth import login, authenticate
 from .models import Project, Feedback, Notification, FeedbackRequest
-from .forms import ProjectForm, FeedbackForm, SignUpForm
+from .forms import ProjectForm, FeedbackForm, SignUpForm, ProfileUpdateForm, UserUpdateForm
 from .utils import create_feedback_notification, create_liked_feedback_notification, get_user_notifications, get_unread_notification_count, get_time_ago
 from django.db.models import Count, Q, F, OuterRef, Subquery, IntegerField
 from django.db.models.functions import Coalesce
@@ -403,5 +403,51 @@ def mark_all_notifications_read(request):
     
     # Redirect back to notifications page
     return redirect('user_notifications')
+
+@login_required
+def edit_profile(request):
+    """Edit user profile view."""
+    if request.method == 'POST':
+        user_form = UserUpdateForm(request.POST, instance=request.user)
+        profile_form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
+        
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+            messages.success(request, 'Your profile has been updated successfully!')
+            return redirect('profile')
+    else:
+        user_form = UserUpdateForm(instance=request.user)
+        profile_form = ProfileUpdateForm(instance=request.user.profile)
+    
+    context = {
+        'user_form': user_form,
+        'profile_form': profile_form,
+    }
+    
+    return render(request, 'core/edit_profile.html', context)
+
+@login_required
+def delete_project(request, pk):
+    """Delete a project."""
+    project = get_object_or_404(Project, pk=pk)
+    
+    # Check if user is the owner
+    if request.user != project.owner:
+        messages.error(request, "You don't have permission to delete this project.")
+        return redirect('profile')
+    
+    if request.method == 'POST':
+        # Store project title for success message
+        project_title = project.title
+        
+        # Delete the project
+        project.delete()
+        
+        messages.success(request, f'"{project_title}" has been deleted successfully.')
+        return redirect('profile')
+    
+    # GET request shows confirmation page
+    return render(request, 'core/delete_project.html', {'project': project})
     
     
