@@ -87,6 +87,14 @@ class Feedback(models.Model):
     improvements = models.TextField(verbose_name="What can be improved?")
     suggestions = models.TextField(verbose_name="Additional suggestions", blank=True)
     
+    # Voting system
+    VOTE_CHOICES = [
+        ('up', 'Upvote'),
+        ('down', 'Downvote'),
+        ('none', 'No Vote'),
+    ]
+    vote_type = models.CharField(max_length=10, choices=VOTE_CHOICES, default='none')
+    
     # Feedback status
     is_liked = models.BooleanField(default=False)
     is_reported = models.BooleanField(default=False)
@@ -106,6 +114,48 @@ class Feedback(models.Model):
             profile.save()
             return True
         return False
+    
+    def update_project_votes(self):
+        """Update project total_votes when vote_type changes"""
+        old_vote_impact = 0
+        new_vote_impact = 0
+        
+        # Get previous vote impact before save
+        if hasattr(self, '_previous_vote_type'):
+            if self._previous_vote_type == 'up':
+                old_vote_impact = 1
+            elif self._previous_vote_type == 'down':
+                old_vote_impact = -1
+        
+        # Get new vote impact
+        if self.vote_type == 'up':
+            new_vote_impact = 1
+        elif self.vote_type == 'down':
+            new_vote_impact = -1
+        
+        # Calculate net change
+        net_change = new_vote_impact - old_vote_impact
+        
+        # Update project votes if there's a change
+        if net_change != 0:
+            self.project.total_votes += net_change
+            self.project.save()
+    
+    def save(self, *args, **kwargs):
+        """Override save to track vote changes"""
+        if self.pk:
+            # If this is an existing object, get the previous vote_type
+            old_feedback = Feedback.objects.get(pk=self.pk)
+            self._previous_vote_type = old_feedback.vote_type
+        else:
+            # New feedback has no previous vote
+            self._previous_vote_type = 'none'
+        
+        # Save the feedback
+        super().save(*args, **kwargs)
+        
+        # Update project votes
+        self.update_project_votes()
     
     class Meta:
         # Prevent multiple feedback from the same user on the same project

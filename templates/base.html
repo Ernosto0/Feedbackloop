@@ -27,6 +27,7 @@
                     {% if user.is_authenticated %}
                         <a href="{% url 'feedback_dashboard' %}" class="hover:text-indigo-200">Give Feedback</a>
                         <a href="{% url 'submit_project' %}" class="hover:text-indigo-200">Submit Project</a>
+                        <a href="{% url 'top_projects' %}" class="hover:text-indigo-200">Top Projects</a>
                         
                         <!-- Dedicated Notifications Link -->
                         <div class="relative">
@@ -104,6 +105,7 @@
                         <li><a href="{% url 'home' %}" class="text-indigo-200 hover:text-white transition">Home</a></li>
                         <li><a href="{% url 'feedback_dashboard' %}" class="text-indigo-200 hover:text-white transition">Give Feedback</a></li>
                         <li><a href="{% url 'submit_project' %}" class="text-indigo-200 hover:text-white transition">Submit Project</a></li>
+                        <li><a href="{% url 'top_projects' %}" class="text-indigo-200 hover:text-white transition">Top Projects</a></li>
                     </ul>
                 </div>
                 <div>

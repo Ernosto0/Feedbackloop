@@ -9,10 +9,20 @@ from .forms import ProjectForm, FeedbackForm, SignUpForm, ProfileUpdateForm, Use
 from .utils import create_feedback_notification, create_liked_feedback_notification, get_user_notifications, get_unread_notification_count, get_time_ago
 from django.db.models import Count, Q, F, OuterRef, Subquery, IntegerField
 from django.db.models.functions import Coalesce
+from django.contrib.auth.models import User
 
 def home(request):
     """Home page view."""
-    return render(request, 'core/home.html')
+    # Get stats for homepage
+    total_projects_count = Project.objects.count()
+    total_feedback_count = Feedback.objects.count()
+    active_voters_count = User.objects.filter(given_feedback__isnull=False).distinct().count()
+    
+    return render(request, 'core/home.html', {
+        'total_projects_count': total_projects_count,
+        'total_feedback_count': total_feedback_count,
+        'active_voters_count': active_voters_count
+    })
 
 def signup(request):
     """User registration view."""
@@ -33,18 +43,56 @@ def signup(request):
 @login_required
 def profile(request):
     """User profile view."""
-    user_projects = Project.objects.filter(owner=request.user)
-    received_feedback = Feedback.objects.filter(project__owner=request.user)
-    given_feedback = Feedback.objects.filter(giver=request.user)
-    user_notifications = get_user_notifications(request.user, limit=5)
+    username = request.GET.get('username')
+    
+    if username and username != request.user.username:
+        # View another user's profile
+        profile_user = get_object_or_404(User, username=username)
+        is_own_profile = False
+    else:
+        # View own profile
+        profile_user = request.user
+        is_own_profile = True
+    
+    user_projects = Project.objects.filter(owner=profile_user)
+    received_feedback = Feedback.objects.filter(project__owner=profile_user)
+    given_feedback = Feedback.objects.filter(giver=profile_user)
+    
+    # Only get notifications for own profile
+    user_notifications = get_user_notifications(request.user, limit=5) if is_own_profile else None
     
     context = {
+        'profile_user': profile_user,
         'user_projects': user_projects,
         'received_feedback': received_feedback,
         'given_feedback': given_feedback,
         'user_notifications': user_notifications,
+        'is_own_profile': is_own_profile,
     }
     return render(request, 'core/profile.html', context)
+
+def top_projects(request):
+    """View to display top projects by votes."""
+    # Get all projects count for the stats
+    total_projects_count = Project.objects.count()
+    
+    # Get total feedback count
+    total_feedback_count = Feedback.objects.count()
+    
+    # Get count of users who have given feedback
+    active_voters_count = User.objects.filter(given_feedback__isnull=False).distinct().count()
+    
+    # Get top projects by vote count
+    top_projects = Project.objects.annotate(
+        feedback_count=Count('feedback')
+    ).order_by('-total_votes')[:12]
+    
+    return render(request, 'core/top_projects.html', {
+        'top_projects': top_projects,
+        'total_projects_count': total_projects_count,
+        'total_feedback_count': total_feedback_count,
+        'active_voters_count': active_voters_count
+    })
 
 @login_required
 def submit_project(request):
@@ -194,6 +242,12 @@ def give_feedback(request, project_id):
             feedback = form.save(commit=False)
             feedback.project = project
             feedback.giver = request.user
+            
+            # Get vote type from form
+            vote_type = request.POST.get('vote_type', 'none')
+            if vote_type in ['up', 'down', 'none']:
+                feedback.vote_type = vote_type
+            
             feedback.save()
             
             # Create notification for project owner
