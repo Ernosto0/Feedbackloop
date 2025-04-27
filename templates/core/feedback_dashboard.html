@@ -106,9 +106,20 @@
                                 {% endif %}
                             </div>
                             {% endif %}
-                            
+                            {% if project.feedback_type_wanted %}
+                            <div class="mb-3">
+                                <h4 class="text-sm font-semibold text-gray-700 mb-1">Feedback Wanted:</h4>
+                                <div class="flex flex-wrap gap-1.5">
+                                    {% for feedback_type in project.feedback_type_wanted %}
+                                    <span class="text-indigo-700 text-sm bg-indigo-50 px-3 py-1.5 rounded-md border border-indigo-100 inline-block capitalize">
+                                        {{ feedback_type }}
+                                    </span>
+                                    {% endfor %}
+                                </div>
+                            </div>
                             <p class="text-gray-600 text-sm leading-relaxed line-clamp-2 mb-5 min-h-[40px]">{{ project.description|truncatechars:120 }}</p>
                             
+                            {% endif %}
                             <a href="{% url 'give_feedback' project.id %}" class="block text-center bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white py-2.5 px-4 rounded-lg shadow-md transition-all duration-300 transform group-hover:scale-[1.02] font-medium">
                                 Give Feedback
                             </a>
