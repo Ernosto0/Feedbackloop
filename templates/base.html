@@ -90,16 +90,30 @@
     </main>
     
     <!-- Footer -->
-    <footer class="bg-gray-800 text-white py-6">
+    <footer class="bg-indigo-800 text-white py-8 shadow-inner">
         <div class="container mx-auto px-4">
-            <div class="flex justify-between items-center">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div>
-                    <p>© 2025 FeedbackLoop</p>
+                    <h3 class="text-xl font-bold mb-4">FeedbackLoop</h3>
+                    <p class="text-indigo-200 mb-4">Connect, share, and grow with peer feedback</p>
+                    <p class="text-indigo-300 text-sm">© 2025 FeedbackLoop</p>
                 </div>
                 <div>
-                    <a href="#" class="text-gray-300 hover:text-white mx-2">About</a>
-                    <a href="#" class="text-gray-300 hover:text-white mx-2">Privacy</a>
-                    <a href="#" class="text-gray-300 hover:text-white mx-2">Terms</a>
+                    <h3 class="text-lg font-semibold mb-4">Navigation</h3>
+                    <ul class="space-y-2">
+                        <li><a href="{% url 'home' %}" class="text-indigo-200 hover:text-white transition">Home</a></li>
+                        <li><a href="{% url 'feedback_dashboard' %}" class="text-indigo-200 hover:text-white transition">Give Feedback</a></li>
+                        <li><a href="{% url 'submit_project' %}" class="text-indigo-200 hover:text-white transition">Submit Project</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Resources</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-indigo-200 hover:text-white transition">About</a></li>
+                        <li><a href="#" class="text-indigo-200 hover:text-white transition">Privacy Policy</a></li>
+                        <li><a href="#" class="text-indigo-200 hover:text-white transition">Terms of Service</a></li>
+                        <li><a href="#" class="text-indigo-200 hover:text-white transition">Help Center</a></li>
+                    </ul>
                 </div>
             </div>
         </div>
