@@ -296,7 +296,28 @@
             <div class="p-7 hover:bg-gray-50/50 transition-colors duration-200" id="feedback-{{ feedback.id }}">
                 <div class="flex justify-between mb-4">
                     <div class="flex items-center">
-                        <span class="font-medium">{{ feedback.giver.username }}</span>
+                        <a href="{% url 'profile' %}?username={{ feedback.giver.username }}" class="font-medium hover:text-indigo-600 transition-colors">{{ feedback.giver.username }}</a>
+                        
+                        {% with user_badges=feedback.giver.badges.all %}
+                            {% if user_badges %}
+                                <div class="flex ml-2">
+                                {% for user_badge in user_badges|slice:":2" %}
+                                    <div class="ml-1 bg-amber-100 px-2 py-0.5 rounded-full border border-amber-200 flex items-center" title="{{ user_badge.badge.description }}">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-amber-600 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ user_badge.badge.icon }}" />
+                                        </svg>
+                                        <span class="text-xs text-amber-800">{{ user_badge.badge.name }}</span>
+                                    </div>
+                                {% endfor %}
+                                {% if user_badges.count > 2 %}
+                                    <div class="ml-1 bg-gray-100 px-2 py-0.5 rounded-full border border-gray-200 flex items-center">
+                                        <span class="text-xs text-gray-500">+{{ user_badges.count|add:"-2" }}</span>
+                                    </div>
+                                {% endif %}
+                                </div>
+                            {% endif %}
+                        {% endwith %}
+                        
                         <span class="mx-2 text-gray-500">•</span>
                         <span class="text-gray-500 text-sm">{{ feedback.created_at|date:"F j, Y" }}</span>
                     </div>

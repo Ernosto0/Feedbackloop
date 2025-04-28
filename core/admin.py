@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib import messages
 from django.utils.html import format_html
-from .models import Profile, Project, Feedback, Tag, Notification, FeedbackRequest
+from .models import Profile, Project, Feedback, Tag, Notification, FeedbackRequest, Badge, UserBadge
 from .utils import create_feedback_notification
 
 @admin.register(Profile)
@@ -240,3 +240,16 @@ class FeedbackRequestAdmin(admin.ModelAdmin):
         return obj.is_fulfilled
     is_fulfilled.boolean = True
     is_fulfilled.short_description = "Fulfilled"
+
+@admin.register(Badge)
+class BadgeAdmin(admin.ModelAdmin):
+    list_display = ('name', 'badge_type', 'required_count')
+    list_filter = ('badge_type',)
+    search_fields = ('name', 'description')
+
+@admin.register(UserBadge)
+class UserBadgeAdmin(admin.ModelAdmin):
+    list_display = ('user', 'badge', 'date_earned')
+    list_filter = ('badge__badge_type', 'date_earned')
+    search_fields = ('user__username', 'badge__name')
+    date_hierarchy = 'date_earned'

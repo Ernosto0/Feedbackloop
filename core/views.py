@@ -6,7 +6,15 @@ from django.urls import reverse
 from django.contrib.auth import login, authenticate
 from .models import Project, Feedback, Notification, FeedbackRequest
 from .forms import ProjectForm, FeedbackForm, SignUpForm, ProfileUpdateForm, UserUpdateForm
-from .utils import create_feedback_notification, create_liked_feedback_notification, get_user_notifications, get_unread_notification_count, get_time_ago
+from .utils import (
+    create_feedback_notification, 
+    create_liked_feedback_notification, 
+    get_user_notifications, 
+    get_unread_notification_count, 
+    get_time_ago,
+    check_and_award_badges,
+    get_user_badges
+)
 from django.db.models import Count, Q, F, OuterRef, Subquery, IntegerField
 from django.db.models.functions import Coalesce
 from django.contrib.auth.models import User
@@ -58,6 +66,9 @@ def profile(request):
     received_feedback = Feedback.objects.filter(project__owner=profile_user)
     given_feedback = Feedback.objects.filter(giver=profile_user)
     
+    # Get user badges
+    user_badges = get_user_badges(profile_user)
+    
     # Only get notifications for own profile
     user_notifications = get_user_notifications(request.user, limit=5) if is_own_profile else None
     
@@ -68,6 +79,7 @@ def profile(request):
         'given_feedback': given_feedback,
         'user_notifications': user_notifications,
         'is_own_profile': is_own_profile,
+        'user_badges': user_badges,
     }
     return render(request, 'core/profile.html', context)
 
@@ -110,6 +122,9 @@ def submit_project(request):
             
             # Process tags (save_m2m is needed for ManyToMany fields)
             form.save_m2m()
+            
+            # Check and award badges
+            check_and_award_badges(request.user)
             
             messages.success(request, 'Project submitted successfully! Use credits to get feedback.')
             return redirect('project_detail', pk=project.id)
@@ -267,6 +282,9 @@ def give_feedback(request, project_id):
             profile.credits += 1
             profile.save()
             
+            # Check and award badges
+            check_and_award_badges(request.user)
+            
             messages.success(request, "Thank you for your feedback! You've gained 1 credit.")
             return redirect('feedback_dashboard')
     else:
@@ -306,6 +324,9 @@ def like_feedback(request, feedback_id):
     
     # Award credit to feedback giver (will be implemented in models)
     feedback.award_credit()
+    
+    # Check and award badges for the feedback giver
+    check_and_award_badges(feedback.giver)
     
     messages.success(request, 'Feedback liked and credit awarded to the giver.')
     return HttpResponseRedirect(reverse('project_detail', args=[feedback.project.id]))

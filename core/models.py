@@ -170,6 +170,7 @@ class Notification(models.Model):
         ('report_dismissed', 'Report Dismissed'),    # New type for dismissed reports
         ('feedback_reported', 'Feedback Reported'),  # New type for feedback givers
         ('user_warning', 'User Warning'),            # New type for user warnings
+        ('badge_earned', 'Badge Earned'),            # New type for earned badges
     )
     
     recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
@@ -218,3 +219,31 @@ class FeedbackRequest(models.Model):
             self.save()
             return True
         return False
+
+class Badge(models.Model):
+    """Model for achievement badges that users can earn."""
+    name = models.CharField(max_length=100)
+    description = models.TextField()
+    icon = models.CharField(max_length=100, help_text="CSS class for the badge icon")
+    badge_type = models.CharField(max_length=50, choices=[
+        ('feedback_given', 'Feedback Given'),
+        ('feedback_liked', 'Feedback Liked'),
+        ('projects_submitted', 'Projects Submitted'),
+    ])
+    required_count = models.PositiveIntegerField(help_text="Number required to earn this badge")
+    
+    def __str__(self):
+        return self.name
+
+class UserBadge(models.Model):
+    """Model to track which badges users have earned."""
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='badges')
+    badge = models.ForeignKey(Badge, on_delete=models.CASCADE)
+    date_earned = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        unique_together = ('user', 'badge')
+        ordering = ['-date_earned']
+    
+    def __str__(self):
+        return f"{self.user.username} - {self.badge.name}"

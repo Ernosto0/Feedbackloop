@@ -1,6 +1,6 @@
 from django.utils import timezone
 from datetime import timedelta
-from .models import Notification
+from .models import Notification, Badge, UserBadge, Feedback, Project
 
 def create_feedback_notification(feedback):
     """Create notification when new feedback is received"""
@@ -50,4 +50,51 @@ def get_time_ago(time):
         days = diff.days
         return f"{days} day{'s' if days != 1 else ''} ago"
     else:
-        return time.strftime("%b %d, %Y") 
+        return time.strftime("%b %d, %Y")
+
+def check_and_award_badges(user):
+    """Check if user qualifies for any badges and award them"""
+    # Get counts for each achievement type
+    feedback_given_count = Feedback.objects.filter(giver=user).count()
+    feedback_liked_count = Feedback.objects.filter(giver=user, is_liked=True).count()
+    projects_submitted_count = Project.objects.filter(owner=user).count()
+    
+    # Get badges that the user doesn't have yet
+    awarded_badge_ids = UserBadge.objects.filter(user=user).values_list('badge_id', flat=True)
+    
+    # Check feedback given badges
+    feedback_given_badges = Badge.objects.filter(
+        badge_type='feedback_given',
+        required_count__lte=feedback_given_count
+    ).exclude(id__in=awarded_badge_ids)
+    
+    # Check feedback liked badges
+    feedback_liked_badges = Badge.objects.filter(
+        badge_type='feedback_liked',
+        required_count__lte=feedback_liked_count
+    ).exclude(id__in=awarded_badge_ids)
+    
+    # Check projects submitted badges
+    projects_submitted_badges = Badge.objects.filter(
+        badge_type='projects_submitted',
+        required_count__lte=projects_submitted_count
+    ).exclude(id__in=awarded_badge_ids)
+    
+    # Award all new badges
+    new_badges = []
+    for badge in list(feedback_given_badges) + list(feedback_liked_badges) + list(projects_submitted_badges):
+        user_badge = UserBadge.objects.create(user=user, badge=badge)
+        new_badges.append(badge)
+        
+        # Create notification for the new badge
+        Notification.objects.create(
+            recipient=user,
+            notification_type='badge_earned',
+            message=f"Congratulations! You've earned the '{badge.name}' badge: {badge.description}"
+        )
+    
+    return new_badges
+
+def get_user_badges(user):
+    """Get all badges for a user"""
+    return UserBadge.objects.filter(user=user) 
