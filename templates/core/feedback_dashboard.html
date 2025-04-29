@@ -40,15 +40,15 @@
                     </li>
                     <li class="flex items-start">
                         <span class="flex-shrink-0 flex items-center justify-center h-6 w-6 rounded-full bg-indigo-100 text-indigo-800 font-medium text-sm mr-3">2</span>
-                        <span class="leading-relaxed">Provide thoughtful, constructive feedback</span>
+                        <span class="leading-relaxed">Review preparation and project exploration</span>
                     </li>
                     <li class="flex items-start">
                         <span class="flex-shrink-0 flex items-center justify-center h-6 w-6 rounded-full bg-indigo-100 text-indigo-800 font-medium text-sm mr-3">3</span>
-                        <span class="leading-relaxed">If the project owner likes your feedback, you'll earn a credit</span>
+                        <span class="leading-relaxed">Provide thoughtful, constructive feedback</span>
                     </li>
                     <li class="flex items-start">
                         <span class="flex-shrink-0 flex items-center justify-center h-6 w-6 rounded-full bg-indigo-100 text-indigo-800 font-medium text-sm mr-3">4</span>
-                        <span class="leading-relaxed">Use earned credits to receive feedback on your own projects</span>
+                        <span class="leading-relaxed">If the project owner likes your feedback, you'll earn a credit</span>
                     </li>
                 </ol>
             </div>
@@ -120,8 +120,8 @@
                             <p class="text-gray-600 text-sm leading-relaxed line-clamp-2 mb-5 min-h-[40px]">{{ project.description|truncatechars:120 }}</p>
                             
                             {% endif %}
-                            <a href="{% url 'give_feedback' project.id %}" class="block text-center bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white py-2.5 px-4 rounded-lg shadow-md transition-all duration-300 transform group-hover:scale-[1.02] font-medium">
-                                Give Feedback
+                            <a href="{% url 'review_preparation' project.id %}" class="block text-center bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white py-2.5 px-4 rounded-lg shadow-md transition-all duration-300 transform group-hover:scale-[1.02] font-medium">
+                                Prepare Review
                             </a>
                         </div>
                     </div>

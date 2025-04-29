@@ -479,8 +479,8 @@ def notification_detail(request, notification_id):
     
     # Redirect based on notification type
     if notification.feedback:
-        # Redirect to the project to view the feedback
-        return redirect('project_detail', pk=notification.feedback.project.id)
+        # Redirect to the feedback detail page
+        return redirect('feedback_detail', feedback_id=notification.feedback.id)
     
     # If no specific redirect, go to notifications page
     return redirect('user_notifications')
@@ -494,6 +494,38 @@ def mark_all_notifications_read(request):
     
     # Redirect back to notifications page
     return redirect('user_notifications')
+
+@login_required
+def feedback_detail(request, feedback_id):
+    """View detailed feedback information."""
+    feedback = get_object_or_404(Feedback, id=feedback_id)
+    project = feedback.project
+    
+    # Check permissions - only project owner and feedback giver can view details
+    if request.user != project.owner and request.user != feedback.giver:
+        messages.error(request, "You don't have permission to view this feedback.")
+        return redirect('home')
+    
+    # Calculate time spent 
+    # For now we'll just show the creation time, but in a future update
+    # we could track the actual time spent writing feedback
+    
+    # Mark notification as viewed if it exists
+    if request.user == project.owner:
+        Notification.objects.filter(
+            recipient=request.user,
+            feedback=feedback,
+            is_viewed=False
+        ).update(is_viewed=True)
+    
+    context = {
+        'feedback': feedback,
+        'project': project,
+        'is_owner': request.user == project.owner,
+        'is_giver': request.user == feedback.giver,
+    }
+    
+    return render(request, 'core/feedback_detail.html', context)
 
 @login_required
 def edit_profile(request):
@@ -562,5 +594,13 @@ def login_view(request):
             messages.error(request, "Invalid username or password.")
     
     return render(request, 'registration/login.html')
+
+@login_required
+def review_preparation(request, project_id):
+    """
+    View for review preparation page before giving feedback
+    """
+    project = get_object_or_404(Project, pk=project_id)
+    return render(request, 'core/review_preparation.html', {'project': project})
     
     
