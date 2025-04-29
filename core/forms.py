@@ -38,16 +38,6 @@ class ProjectForm(forms.ModelForm):
         widget=forms.TextInput(attrs={'class': 'w-full', 'placeholder': 'React, Tailwind, Django'})
     )
 
-    # What kind of feedback the user wants
-    feedback_type_wanted = forms.MultipleChoiceField(
-        choices=FEEDBACK_CHOICES,
-        widget=forms.CheckboxSelectMultiple(attrs={
-            'class': 'feedback-checkbox-list list-none',
-        }),
-        required=False,
-        label="What kind of feedback would you like to receive?"
-    )
-
     # Pricing plan
     pricing_plan = forms.ChoiceField(
         choices=PRICING_CHOICES,
@@ -96,23 +86,7 @@ class ProjectForm(forms.ModelForm):
         if self.instance.pk:
             self.fields['tags_input'].initial = ', '.join([tag.name for tag in self.instance.tags.all()])
             
-            # Fix for feedback_type_wanted field
-            feedback_wanted = self.instance.feedback_type_wanted
-            # Check if it's None or empty list and convert properly
-            if feedback_wanted is None:
-                feedback_wanted = []
-            # Check if it's a list (could be a string in some cases)
-            elif isinstance(feedback_wanted, str):
-                try:
-                    import json
-                    feedback_wanted = json.loads(feedback_wanted)
-                except:
-                    feedback_wanted = []
             
-            self.fields['feedback_type_wanted'].initial = feedback_wanted
-            self.fields['tech_stack'].initial = getattr(self.instance, 'tech_stack', '')
-            self.fields['pricing_plan'].initial = getattr(self.instance, 'pricing_plan', 'free')
-            self.fields['guest_access_info'].initial = getattr(self.instance, 'guest_access_info', '')
 
     def clean(self):
         cleaned_data = super().clean()

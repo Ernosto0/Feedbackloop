@@ -1,0 +1,373 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Get Feedback - {{ project.title }}{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">Get Feedback for Your Project</h1>
+        <p class="text-gray-600">Choose the type of feedback you need and how many credits to spend</p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <!-- Project Details Card -->
+        <div class="lg:col-span-4">
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-6">
+                <div class="bg-gradient-to-r from-indigo-600 to-purple-600 p-6">
+                    <h2 class="text-xl font-semibold text-white">{{ project.title }}</h2>
+                    <p class="text-indigo-100 mt-1 opacity-90 text-sm">Your project details</p>
+                </div>
+                <div class="p-6">
+                    <div class="mb-4">
+                        {% if project.photo %}
+                            <img src="{{ project.photo.url }}" alt="{{ project.title }}" class="w-full h-48 object-cover rounded-lg shadow mb-4">
+                        {% else %}
+                            <div class="w-full h-48 bg-gray-200 rounded-lg flex items-center justify-center mb-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Project stats -->
+                    <div class="mb-6 grid grid-cols-2 gap-3 text-center">
+                        <div class="bg-indigo-50 p-3 rounded-lg">
+                            <p class="text-2xl font-bold text-indigo-700">{{ project.get_feedback_count }}</p>
+                            <p class="text-xs text-indigo-600 font-medium mt-1">Total Feedback</p>
+                        </div>
+                        <div class="bg-purple-50 p-3 rounded-lg">
+                            <p class="text-2xl font-bold text-purple-700">{{ user.profile.credits }}</p>
+                            <p class="text-xs text-purple-600 font-medium mt-1">Your Credits</p>
+                        </div>
+                    </div>
+
+                    <!-- Current feedback types -->
+                    {% if project.feedback_type_wanted %}
+                    <div class="mb-5">
+                        <h3 class="text-sm font-medium text-gray-700 mb-2">Current feedback requests:</h3>
+                        <div class="flex flex-wrap gap-2">
+                            {% for feedback_type in project.feedback_type_wanted %}
+                                {% if feedback_type == 'ui' %}
+                                    <span class="bg-blue-100 text-blue-800 text-xs px-3 py-1.5 rounded-full shadow-sm border border-blue-200/50 font-medium flex items-center">
+                                        UI / Design
+                                    </span>
+                                {% elif feedback_type == 'ux' %}
+                                    <span class="bg-green-100 text-green-800 text-xs px-3 py-1.5 rounded-full shadow-sm border border-green-200/50 font-medium flex items-center">
+                                        UX / Usability
+                                    </span>
+                                {% elif feedback_type == 'bug' %}
+                                    <span class="bg-red-100 text-red-800 text-xs px-3 py-1.5 rounded-full shadow-sm border border-red-200/50 font-medium flex items-center">
+                                        Bug Finding
+                                    </span>
+                                {% elif feedback_type == 'copy' %}
+                                    <span class="bg-yellow-100 text-yellow-800 text-xs px-3 py-1.5 rounded-full shadow-sm border border-yellow-200/50 font-medium flex items-center">
+                                        Copywriting
+                                    </span>
+                                {% elif feedback_type == 'ideas' %}
+                                    <span class="bg-purple-100 text-purple-800 text-xs px-3 py-1.5 rounded-full shadow-sm border border-purple-200/50 font-medium flex items-center">
+                                        New Features
+                                    </span>
+                                {% elif feedback_type == 'overall' %}
+                                    <span class="bg-gray-100 text-gray-800 text-xs px-3 py-1.5 rounded-full shadow-sm border border-gray-200/50 font-medium flex items-center">
+                                        Overall
+                                    </span>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Link to project detail -->
+                    <a href="{% url 'project_detail' pk=project.id %}" class="block text-center w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-4 rounded-lg transition-colors duration-200">
+                        View Project Details
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Request Form Card -->
+        <div class="lg:col-span-8">
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                <div class="bg-gradient-to-r from-gray-50 to-gray-100 px-6 py-4 border-b">
+                    <h2 class="text-lg font-medium text-gray-900">Customize Your Feedback Request</h2>
+                    <p class="text-sm text-gray-600 mt-1">Tailor the feedback to your needs</p>
+                </div>
+                
+                <div class="p-6">
+                    <form id="feedback-request-form" method="post" class="space-y-6">
+                        {% csrf_token %}
+                        
+                        <!-- Feedback Type Selection -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-3">
+                                What kind of feedback would you like to receive?
+                            </label>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                                <div class="relative">
+                                    <input type="checkbox" id="feedback_ui" name="feedback_type_wanted" value="ui" class="peer sr-only" {% if 'ui' in project.feedback_type_wanted %}checked{% endif %}>
+                                    <label for="feedback_ui" class="flex flex-col items-center p-4 rounded-lg border-2 cursor-pointer peer-checked:border-blue-500 peer-checked:bg-blue-50 peer-checked:shadow-sm hover:bg-gray-50 transition-all">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-500 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        </svg>
+                                        <span class="font-medium">UI / Design</span>
+                                        <span class="text-xs text-gray-500 mt-1">Visual appearance, layout, colors</span>
+                                    </label>
+                                </div>
+                                
+                                <div class="relative">
+                                    <input type="checkbox" id="feedback_ux" name="feedback_type_wanted" value="ux" class="peer sr-only" {% if 'ux' in project.feedback_type_wanted %}checked{% endif %}>
+                                    <label for="feedback_ux" class="flex flex-col items-center p-4 rounded-lg border-2 cursor-pointer peer-checked:border-green-500 peer-checked:bg-green-50 peer-checked:shadow-sm hover:bg-gray-50 transition-all">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-green-500 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        <span class="font-medium">UX / Usability</span>
+                                        <span class="text-xs text-gray-500 mt-1">User experience, navigation, flow</span>
+                                    </label>
+                                </div>
+                                
+                                <div class="relative">
+                                    <input type="checkbox" id="feedback_bug" name="feedback_type_wanted" value="bug" class="peer sr-only" {% if 'bug' in project.feedback_type_wanted %}checked{% endif %}>
+                                    <label for="feedback_bug" class="flex flex-col items-center p-4 rounded-lg border-2 cursor-pointer peer-checked:border-red-500 peer-checked:bg-red-50 peer-checked:shadow-sm hover:bg-gray-50 transition-all">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-red-500 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                        </svg>
+                                        <span class="font-medium">Bug Finding</span>
+                                        <span class="text-xs text-gray-500 mt-1">Technical issues and errors</span>
+                                    </label>
+                                </div>
+                                
+                                <div class="relative">
+                                    <input type="checkbox" id="feedback_copy" name="feedback_type_wanted" value="copy" class="peer sr-only" {% if 'copy' in project.feedback_type_wanted %}checked{% endif %}>
+                                    <label for="feedback_copy" class="flex flex-col items-center p-4 rounded-lg border-2 cursor-pointer peer-checked:border-yellow-500 peer-checked:bg-yellow-50 peer-checked:shadow-sm hover:bg-gray-50 transition-all">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-yellow-500 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                        </svg>
+                                        <span class="font-medium">Copywriting</span>
+                                        <span class="text-xs text-gray-500 mt-1">Text clarity, grammar, tone</span>
+                                    </label>
+                                </div>
+                                
+                                <div class="relative">
+                                    <input type="checkbox" id="feedback_ideas" name="feedback_type_wanted" value="ideas" class="peer sr-only" {% if 'ideas' in project.feedback_type_wanted %}checked{% endif %}>
+                                    <label for="feedback_ideas" class="flex flex-col items-center p-4 rounded-lg border-2 cursor-pointer peer-checked:border-purple-500 peer-checked:bg-purple-50 peer-checked:shadow-sm hover:bg-gray-50 transition-all">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-purple-500 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                                        </svg>
+                                        <span class="font-medium">New Features</span>
+                                        <span class="text-xs text-gray-500 mt-1">Feature ideas and improvements</span>
+                                    </label>
+                                </div>
+                                
+                                <div class="relative">
+                                    <input type="checkbox" id="feedback_overall" name="feedback_type_wanted" value="overall" class="peer sr-only" {% if 'overall' in project.feedback_type_wanted %}checked{% endif %}>
+                                    <label for="feedback_overall" class="flex flex-col items-center p-4 rounded-lg border-2 cursor-pointer peer-checked:border-gray-500 peer-checked:bg-gray-50 peer-checked:shadow-sm hover:bg-gray-50 transition-all">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-500 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+                                        </svg>
+                                        <span class="font-medium">Overall</span>
+                                        <span class="text-xs text-gray-500 mt-1">General impression and feedback</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Credit Selection -->
+                        <div class="pt-5">
+                            <label for="credits" class="block text-sm font-medium text-gray-700 mb-3">
+                                How many credits would you like to spend?
+                            </label>
+                            <div class="flex items-center space-x-3 max-w-xs">
+                                <button type="button" id="decrease-credits" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold p-2 rounded-lg shadow-sm focus:outline-none transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" />
+                                    </svg>
+                                </button>
+                                <div class="relative flex-1">
+                                    <input type="number" id="credits" name="credits" min="1" max="{{ user.profile.credits }}" value="1" class="block w-full text-center p-3 bg-white border border-gray-300 text-xl font-bold rounded-lg shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200" required>
+                                    <div class="absolute inset-y-0 right-0 flex items-center mr-3 pointer-events-none">
+                                        <span class="text-gray-500">credits</span>
+                                    </div>
+                                </div>
+                                <button type="button" id="increase-credits" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold p-2 rounded-lg shadow-sm focus:outline-none transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                                    </svg>
+                                </button>
+                            </div>
+                            <p class="text-sm text-gray-500 mt-2">Each credit = One feedback from a user</p>
+                        </div>
+                        
+                        <div class="pt-5">
+                            <label class="block text-sm font-medium text-gray-700 mb-3">
+                                Feedback Priority (Optional)
+                            </label>
+                            <div class="space-y-2">
+                                <div class="relative flex items-start">
+                                    <div class="flex items-center h-5">
+                                        <input id="priority_standard" name="priority" type="radio" value="standard" checked class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300">
+                                    </div>
+                                    <div class="ml-3 text-sm">
+                                        <label for="priority_standard" class="font-medium text-gray-700">Standard Priority (Free)</label>
+                                        <p class="text-gray-500">Regular feedback queue - typical response time 1-3 days</p>
+                                    </div>
+                                </div>
+                                <div class="relative flex items-start">
+                                    <div class="flex items-center h-5">
+                                        <input id="priority_high" name="priority" type="radio" value="high" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300">
+                                    </div>
+                                    <div class="ml-3 text-sm">
+                                        <label for="priority_high" class="font-medium text-gray-700">High Priority (+1 credit per feedback)</label>
+                                        <p class="text-gray-500">Move to front of the queue - typical response time 24 hours</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Submit Button -->
+                        <div class="pt-5">
+                            <button type="submit" id="submit-button" class="w-full px-4 py-3 text-white font-medium bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 rounded-lg shadow-md transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                Request Feedback
+                            </button>
+                            <p class="text-sm text-center text-gray-500 mt-3">You currently have <span class="font-medium text-purple-600">{{ user.profile.credits }}</span> credits available</p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Script for credit selection -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const decreaseBtn = document.getElementById('decrease-credits');
+    const increaseBtn = document.getElementById('increase-credits');
+    const creditsInput = document.getElementById('credits');
+    const maxCredits = {{ user.profile.credits }};
+    const priorityStandard = document.getElementById('priority_standard');
+    const priorityHigh = document.getElementById('priority_high');
+    const form = document.getElementById('feedback-request-form');
+    const submitButton = document.getElementById('submit-button');
+    
+    // Function to update button states
+    function updateButtonStates() {
+        const currentValue = parseInt(creditsInput.value);
+        decreaseBtn.disabled = currentValue <= 1;
+        
+        // Calculate the total credits needed based on priority
+        let totalCreditsNeeded = currentValue;
+        if (priorityHigh.checked) {
+            totalCreditsNeeded = currentValue * 2; // Double for high priority
+        }
+        
+        increaseBtn.disabled = totalCreditsNeeded >= maxCredits;
+        
+        // Update submit button based on available credits
+        if (totalCreditsNeeded > maxCredits) {
+            submitButton.disabled = true;
+            submitButton.classList.add('opacity-50', 'cursor-not-allowed');
+            submitButton.textContent = 'Not Enough Credits';
+        } else {
+            submitButton.disabled = false;
+            submitButton.classList.remove('opacity-50', 'cursor-not-allowed');
+            submitButton.textContent = 'Request Feedback';
+        }
+    }
+    
+    // Event listeners for buttons
+    decreaseBtn.addEventListener('click', function() {
+        const currentValue = parseInt(creditsInput.value);
+        if (currentValue > 1) {
+            creditsInput.value = currentValue - 1;
+            updateButtonStates();
+        }
+    });
+    
+    increaseBtn.addEventListener('click', function() {
+        const currentValue = parseInt(creditsInput.value);
+        creditsInput.value = currentValue + 1;
+        updateButtonStates();
+    });
+    
+    // Event listener for direct input changes
+    creditsInput.addEventListener('change', function() {
+        let value = parseInt(this.value);
+        if (isNaN(value) || value < 1) {
+            value = 1;
+        }
+        this.value = value;
+        updateButtonStates();
+    });
+    
+    // Event listeners for priority radio buttons
+    priorityStandard.addEventListener('change', updateButtonStates);
+    priorityHigh.addEventListener('change', updateButtonStates);
+    
+    // Initialize button states
+    updateButtonStates();
+    
+    // Handle form submission
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Collect the selected feedback types
+        const selectedTypes = [];
+        document.querySelectorAll('input[name="feedback_type_wanted"]:checked').forEach(function(checkbox) {
+            selectedTypes.push(checkbox.value);
+        });
+        
+        // Get the number of credits and priority
+        const credits = parseInt(creditsInput.value);
+        const priority = document.querySelector('input[name="priority"]:checked').value;
+        
+        // Calculate total credits needed
+        let totalCredits = credits;
+        if (priority === 'high') {
+            totalCredits = credits * 2;
+        }
+        
+        // Validate
+        if (selectedTypes.length === 0) {
+            alert('Please select at least one feedback type');
+            return;
+        }
+        
+        if (totalCredits > maxCredits) {
+            alert('You don\'t have enough credits for this request');
+            return;
+        }
+        
+        // Create the data for submission
+        const formData = new FormData();
+        formData.append('credits', totalCredits);
+        formData.append('feedback_types', JSON.stringify(selectedTypes));
+        formData.append('priority', priority);
+        formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+        
+        // Submit the request
+        fetch('{% url "request_feedback" project.id %}', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Show success message
+                window.location.href = `{% url 'project_detail' pk=project.id %}?feedback_requested=true`;
+            } else {
+                alert(data.message || 'An error occurred processing your request');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred. Please try again.');
+        });
+    });
+});
+</script>
+{% endblock %} 

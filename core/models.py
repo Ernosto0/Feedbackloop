@@ -51,7 +51,6 @@ class Project(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
     total_votes = models.IntegerField(default=0)
-    feedback_type_wanted = models.JSONField(blank=True, null=True, default=list)
     tech_stack = models.CharField(max_length=200, blank=True)
     pricing_plan = models.CharField(max_length=20, choices=PRICING_CHOICES, default='free')
     guest_access_info = models.TextField(blank=True)
@@ -195,6 +194,7 @@ class FeedbackRequest(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     requested_count = models.PositiveIntegerField(default=1, help_text="Number of feedback slots requested")
     fulfilled_count = models.PositiveIntegerField(default=0, help_text="Number of feedback slots fulfilled")
+    priority = models.BooleanField(default=False, help_text="Whether this is a high priority request")
     
     class Meta:
         ordering = ['-created_at']

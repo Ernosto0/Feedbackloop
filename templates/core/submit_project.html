@@ -172,72 +172,6 @@
             
             <!-- Sidebar -->
             <div class="lg:col-span-4">
-                <!-- Feedback Type Section -->
-                <div class="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl mb-8">
-                    <div class="bg-gradient-to-r from-indigo-500 to-purple-600 px-6 py-4">
-                        <h2 class="text-lg font-medium text-white">Feedback Types</h2>
-                        <p class="text-indigo-100 text-sm mt-1 opacity-90">Select what you want feedback on</p>
-                    </div>
-                    
-                    <div class="p-5">
-                        <div class="space-y-3">
-                            {% for checkbox in form.feedback_type_wanted %}
-                                <div class="bg-gray-50 hover:bg-gray-100 rounded-lg transition-all duration-200 border border-gray-200 hover:border-indigo-200 overflow-hidden">
-                                    <label for="{{ checkbox.id_for_label }}" class="flex items-start p-3 cursor-pointer group">
-                                        <div class="relative flex items-start">
-                                            <div class="flex items-center h-5">
-                                                <!-- Hide original checkbox but keep it accessible -->
-                                                <span class="sr-only">{{ checkbox.tag }}</span>
-                                                
-                                                <!-- Custom checkbox appearance -->
-                                                <span class="mr-2 flex h-5 w-5 items-center justify-center rounded border border-gray-300 bg-white group-hover:border-indigo-300 transition-colors duration-200">
-                                                    <svg class="h-3 w-3 text-indigo-600 opacity-0 transition-opacity duration-200" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-                                                    </svg>
-                                                </span>
-                                            </div>
-                                            <div class="ml-1">
-                                                <div class="flex items-center">
-                                                    {% if checkbox.choice_value == 'ui' %}
-                                                        <span class="inline-block w-2 h-2 rounded-full bg-pink-500 mr-1.5"></span>
-                                                    {% elif checkbox.choice_value == 'ux' %}
-                                                        <span class="inline-block w-2 h-2 rounded-full bg-blue-500 mr-1.5"></span>
-                                                    {% elif checkbox.choice_value == 'bug' %}
-                                                        <span class="inline-block w-2 h-2 rounded-full bg-red-500 mr-1.5"></span>
-                                                    {% elif checkbox.choice_value == 'copy' %}
-                                                        <span class="inline-block w-2 h-2 rounded-full bg-green-500 mr-1.5"></span>
-                                                    {% elif checkbox.choice_value == 'ideas' %}
-                                                        <span class="inline-block w-2 h-2 rounded-full bg-purple-500 mr-1.5"></span>
-                                                    {% elif checkbox.choice_value == 'overall' %}
-                                                        <span class="inline-block w-2 h-2 rounded-full bg-amber-500 mr-1.5"></span>
-                                                    {% endif %}
-                                                    <span class="block text-sm font-medium text-gray-700">{{ checkbox.choice_label }}</span>
-                                                </div>
-                                                {% if checkbox.choice_value == 'ui' %}
-                                                    <span class="text-xs text-gray-500">Visual design and interface</span>
-                                                {% elif checkbox.choice_value == 'ux' %}
-                                                    <span class="text-xs text-gray-500">User flow and ease of use</span>
-                                                {% elif checkbox.choice_value == 'bug' %}
-                                                    <span class="text-xs text-gray-500">Find and report issues</span>
-                                                {% elif checkbox.choice_value == 'copy' %}
-                                                    <span class="text-xs text-gray-500">Text clarity and messaging</span>
-                                                {% elif checkbox.choice_value == 'ideas' %}
-                                                    <span class="text-xs text-gray-500">Suggestions for new features</span>
-                                                {% elif checkbox.choice_value == 'overall' %}
-                                                    <span class="text-xs text-gray-500">General impressions</span>
-                                                {% endif %}
-                                            </div>
-                                        </div>
-                                    </label>
-                                </div>
-                            {% endfor %}
-                        </div>
-                        {% if form.feedback_type_wanted.errors %}
-                            <p class="text-red-500 text-xs mt-3">{{ form.feedback_type_wanted.errors.0 }}</p>
-                        {% endif %}
-                    </div>
-                </div>
-                
                 <!-- Guidelines Section -->
                 {% if not is_update %}
                 <div class="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl">
@@ -340,34 +274,6 @@
         } else {
             guestAccessContainer.classList.add('hidden');
         }
-    });
-    
-    // Modern checkbox styling
-    function updateCheckboxStyle() {
-        document.querySelectorAll('input[name="feedback_type_wanted"]').forEach(function(checkbox) {
-            const svgIcon = checkbox.closest('label').querySelector('svg');
-            const checkboxContainer = checkbox.closest('label').querySelector('span.mr-2');
-            
-            if (checkbox.checked) {
-                svgIcon.classList.remove('opacity-0');
-                svgIcon.classList.add('opacity-100');
-                checkboxContainer.classList.add('bg-indigo-50', 'border-indigo-500');
-            } else {
-                svgIcon.classList.remove('opacity-100');
-                svgIcon.classList.add('opacity-0');
-                checkboxContainer.classList.remove('bg-indigo-50', 'border-indigo-500');
-            }
-        });
-    }
-    
-    // Initialize checkbox styles
-    document.addEventListener('DOMContentLoaded', function() {
-        updateCheckboxStyle();
-        
-        // Add change event listeners to all checkboxes
-        document.querySelectorAll('input[name="feedback_type_wanted"]').forEach(function(checkbox) {
-            checkbox.addEventListener('change', updateCheckboxStyle);
-        });
     });
 </script>
 {% endblock %} 

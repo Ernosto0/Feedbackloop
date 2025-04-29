@@ -429,6 +429,87 @@ def get_feedback(request, project_id, credits):
     return redirect('profile')
 
 @login_required
+def get_feedback_page(request, project_id):
+    """Display the page for customizing and requesting feedback."""
+    project = get_object_or_404(Project, id=project_id)
+    
+    # Check if user is the project owner
+    if request.user != project.owner:
+        messages.error(request, "You can only request feedback for your own projects.")
+        return redirect('profile')
+    
+    # Render the get feedback form
+    return render(request, 'core/get_feedback.html', {
+        'project': project,
+    })
+
+@login_required
+def request_feedback(request, project_id):
+    """Process a feedback request with customized options."""
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'message': 'Only POST requests are allowed.'}, status=405)
+    
+    # Get the project
+    project = get_object_or_404(Project, id=project_id)
+    
+    # Check if user is the project owner
+    if request.user != project.owner:
+        return JsonResponse({'success': False, 'message': 'You can only request feedback for your own projects.'}, status=403)
+    
+    # Get form data
+    try:
+        credits = int(request.POST.get('credits', 0))
+        priority = request.POST.get('priority', 'standard')
+        
+        # Parse feedback types JSON
+        import json
+        feedback_types = json.loads(request.POST.get('feedback_types', '[]'))
+        
+        # Ensure at least one feedback type is selected
+        if not feedback_types:
+            return JsonResponse({'success': False, 'message': 'Please select at least one feedback type.'}, status=400)
+        
+        # Validate credits amount
+        if credits <= 0:
+            return JsonResponse({'success': False, 'message': 'Number of credits must be positive.'}, status=400)
+            
+        # Check if user has enough credits
+        owner_profile = project.owner.profile
+        if owner_profile.credits < credits:
+            return JsonResponse({'success': False, 'message': 'You don\'t have enough credits to request feedback.'}, status=400)
+        
+        # Update project's feedback types
+        project.feedback_type_wanted = feedback_types
+        project.save()
+        
+        # Deduct the specified number of credits
+        owner_profile.credits -= credits
+        owner_profile.save()
+        
+        # Create a feedback request entry with priority flag
+        feedback_request = FeedbackRequest.objects.create(
+            project=project,
+            requested_count=credits,
+            priority=priority == 'high'  # Store priority as boolean
+        )
+        
+        # Get current feedback count for the message
+        current_feedback_count = project.get_feedback_count()
+        priority_text = "high priority " if priority == 'high' else ""
+        feedback_message = f'You will get {credits} {priority_text}feedback for your project soon!'
+        
+        return JsonResponse({
+            'success': True,
+            'message': feedback_message,
+            'credits': owner_profile.credits,
+            'current_feedback_count': current_feedback_count,
+            'request_id': feedback_request.id
+        })
+        
+    except (ValueError, TypeError, json.JSONDecodeError) as e:
+        return JsonResponse({'success': False, 'message': f'Invalid request data: {str(e)}'}, status=400)
+
+@login_required
 def get_notification_count(request):
     """API endpoint to get notification count"""
     count = get_unread_notification_count(request.user)
@@ -480,7 +561,7 @@ def notification_detail(request, notification_id):
     # Redirect based on notification type
     if notification.feedback:
         # Redirect to the feedback detail page
-        return redirect('feedback_detail', feedback_id=notification.feedback.id)
+        return redirect('feedback_detail', project_id=notification.feedback.project.id, feedback_id=notification.feedback.id)
     
     # If no specific redirect, go to notifications page
     return redirect('user_notifications')
@@ -496,7 +577,7 @@ def mark_all_notifications_read(request):
     return redirect('user_notifications')
 
 @login_required
-def feedback_detail(request, feedback_id):
+def feedback_detail(request, feedback_id, project_id):
     """View detailed feedback information."""
     feedback = get_object_or_404(Feedback, id=feedback_id)
     project = feedback.project
