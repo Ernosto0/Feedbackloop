@@ -148,3 +148,16 @@ CRISPY_TEMPLATE_PACK = 'tailwind'
 # Authentication
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
+
+# Email settings
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # For development
+# Site URL for links in emails
+SITE_URL = 'http://localhost:8000'  # Change in production
+
+# Email notifications toggle
+SEND_EMAIL_NOTIFICATIONS = False  # Set to False to disable email notifications
+
+# MailerSend API settings (override in .env)
+MAILERSEND_API_KEY = os.getenv('MAILERSEND_API_KEY')
+MAILERSEND_FROM_EMAIL = os.getenv('MAILERSEND_FROM_EMAIL', 'noreply@trial-69oxl5e2dzzl785k.mlsender.net')
+MAILERSEND_REPLY_EMAIL = os.getenv('MAILERSEND_REPLY_EMAIL', 'support@trial-69oxl5e2dzzl785k.mlsender.net')

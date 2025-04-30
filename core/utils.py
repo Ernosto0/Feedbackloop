@@ -1,29 +1,57 @@
 from django.utils import timezone
 from datetime import timedelta
+from django.conf import settings
 from .models import Notification, Badge, UserBadge, Feedback, Project
+
+# Import email functions if email notifications are enabled
+if settings.SEND_EMAIL_NOTIFICATIONS:
+    from .emailer import send_feedback_received_email, send_feedback_liked_email
 
 def create_feedback_notification(feedback):
     """Create notification when new feedback is received"""
     project = feedback.project
     recipient = project.owner
     
-    Notification.objects.create(
+    # Create in-app notification
+    notification = Notification.objects.create(
         recipient=recipient,
         notification_type='feedback_received',
         feedback=feedback,
         message=f"You received new feedback on your project '{project.title}' from {feedback.giver.username}."
     )
+    
+    # Send email notification if enabled
+    if settings.SEND_EMAIL_NOTIFICATIONS and recipient.email:
+        print("Sending feedback received email to in notification:", recipient.email)
+        try:
+            send_feedback_received_email(recipient, feedback)
+        except Exception as e:
+            # Log the error but don't break the flow
+            print(f"Error sending feedback received email: {e}")
+    
+    return notification
 
 def create_liked_feedback_notification(feedback):
     """Create notification when feedback is liked"""
     recipient = feedback.giver
     
-    Notification.objects.create(
+    # Create in-app notification
+    notification = Notification.objects.create(
         recipient=recipient,
         notification_type='feedback_liked',
         feedback=feedback,
         message=f"Your feedback on project '{feedback.project.title}' was liked by the project owner. You gained 1 credit."
     )
+    
+    # Send email notification if enabled
+    if settings.SEND_EMAIL_NOTIFICATIONS and recipient.email:
+        try:
+            send_feedback_liked_email(recipient, feedback)
+        except Exception as e:
+            # Log the error but don't break the flow
+            print(f"Error sending feedback liked email: {e}")
+    
+    return notification
 
 def get_unread_notification_count(user):
     """Get count of unread notifications for a user"""
