@@ -24,6 +24,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('core.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
+    path('accounts/', include('allauth.urls')),
     path('notifications/', core_views.user_notifications, name='user_notifications'),
     path('notification/<int:notification_id>/', core_views.notification_detail, name='notification_detail'),
     path('notifications/count/', core_views.get_notification_count, name='notification_count'),

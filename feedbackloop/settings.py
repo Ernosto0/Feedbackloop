@@ -38,11 +38,18 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',  # Required for django-allauth
     
     # Third-party apps
     'crispy_forms',
     'crispy_tailwind',
     'widget_tweaks',
+    
+    # Allauth apps
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
     
     # Local apps
     'core',
@@ -57,6 +64,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'core.middleware.BannedUserMiddleware',
+    'allauth.account.middleware.AccountMiddleware',  # Allauth middleware
 ]
 
 ROOT_URLCONF = 'feedbackloop.urls'
@@ -161,3 +169,40 @@ SEND_EMAIL_NOTIFICATIONS = False  # Set to False to disable email notifications
 MAILERSEND_API_KEY = os.getenv('MAILERSEND_API_KEY')
 MAILERSEND_FROM_EMAIL = os.getenv('MAILERSEND_FROM_EMAIL', 'noreply@trial-69oxl5e2dzzl785k.mlsender.net')
 MAILERSEND_REPLY_EMAIL = os.getenv('MAILERSEND_REPLY_EMAIL', 'support@trial-69oxl5e2dzzl785k.mlsender.net')
+
+# Django Allauth Settings
+AUTHENTICATION_BACKENDS = [
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+    # `allauth` specific authentication methods, such as login by e-mail
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+SITE_ID = 2
+
+# Allauth settings (updated to fix deprecation warnings)
+ACCOUNT_LOGIN_METHODS = {'email', 'username'}
+ACCOUNT_SIGNUP_FIELDS = ['email*', 'username*', 'password1*', 'password2*']
+ACCOUNT_EMAIL_VERIFICATION = 'none'  # Change to 'mandatory' for production
+ACCOUNT_UNIQUE_EMAIL = True
+
+# Provider specific settings
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    }
+}
+
+# Skip the "You are about to sign in..." intermediate page
+SOCIALACCOUNT_LOGIN_ON_GET = True
+
+# Automatically connect social accounts to existing accounts with the same email
+SOCIALACCOUNT_AUTO_SIGNUP = True
+SOCIALACCOUNT_EMAIL_REQUIRED = True
+SOCIALACCOUNT_EMAIL_VERIFICATION = 'none'
