@@ -53,6 +53,53 @@ def create_liked_feedback_notification(feedback):
     
     return notification
 
+def create_reaction_notification(reaction):
+    """Create notification for feedback reaction with specific reaction type"""
+    feedback = reaction.feedback
+    recipient = feedback.giver
+    reaction_type = reaction.reaction_type
+    project_title = feedback.project.title
+    
+    # Set notification type and message based on reaction type
+    if reaction_type == 'helpful':
+        notification_type = 'feedback_helpful'
+        message = f"The owner marked your feedback on '{project_title}' as helpful. ❤️"
+    elif reaction_type == 'thanks':
+        notification_type = 'feedback_thanks'
+        message = f"The owner thanked you for your feedback on '{project_title}'. 🙏"
+    elif reaction_type == 'considering':
+        notification_type = 'feedback_considering'
+        message = f"The owner is considering your feedback on '{project_title}'. 💡"
+    else:
+        notification_type = 'feedback_liked'
+        message = f"Your feedback on '{project_title}' was liked by the project owner."
+    
+    # Add note info if there's a follow-up note
+    if reaction.follow_up_note:
+        message += f" Note: \"{reaction.follow_up_note}\""
+    
+    # Add credit info
+    message += " You gained 1 credit."
+    
+    # Create in-app notification
+    notification = Notification.objects.create(
+        recipient=recipient,
+        notification_type=notification_type,
+        feedback=feedback,
+        reaction=reaction,
+        message=message
+    )
+    
+    # Send email notification if enabled (still use the liked email for now)
+    if settings.SEND_EMAIL_NOTIFICATIONS and recipient.email:
+        try:
+            send_feedback_liked_email(recipient, feedback)
+        except Exception as e:
+            # Log the error but don't break the flow
+            print(f"Error sending feedback reaction email: {e}")
+    
+    return notification
+
 def get_unread_notification_count(user):
     """Get count of unread notifications for a user"""
     return Notification.objects.filter(recipient=user, is_viewed=False).count()

@@ -17,7 +17,7 @@
                         <span class="text-sm text-gray-500">Filter by:</span>
                         <a href="?type=all" class="text-sm px-3 py-1 rounded-full {% if request.GET.type == 'all' or not request.GET.type %}bg-indigo-100 text-indigo-800{% else %}bg-gray-100 text-gray-800{% endif %}">All</a>
                         <a href="?type=feedback_received" class="text-sm px-3 py-1 rounded-full {% if request.GET.type == 'feedback_received' %}bg-indigo-100 text-indigo-800{% else %}bg-gray-100 text-gray-800{% endif %}">Feedback Received</a>
-                        <a href="?type=feedback_liked" class="text-sm px-3 py-1 rounded-full {% if request.GET.type == 'feedback_liked' %}bg-indigo-100 text-indigo-800{% else %}bg-gray-100 text-gray-800{% endif %}">Feedback Liked</a>
+                        <a href="?type=feedback_liked" class="text-sm px-3 py-1 rounded-full {% if request.GET.type == 'feedback_liked' %}bg-indigo-100 text-indigo-800{% else %}bg-gray-100 text-gray-800{% endif %}">Feedback Reactions</a>
                     </div>
                     
                     <div class="flex items-center">
@@ -48,6 +48,12 @@
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
                                         </svg>
+                                        {% elif notification.notification_type == 'feedback_helpful' %}
+                                        <span class="text-2xl">❤️</span>
+                                        {% elif notification.notification_type == 'feedback_thanks' %}
+                                        <span class="text-2xl">🙏</span>
+                                        {% elif notification.notification_type == 'feedback_considering' %}
+                                        <span class="text-2xl">💡</span>
                                         {% else %}
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />

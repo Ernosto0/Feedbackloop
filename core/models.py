@@ -171,6 +171,9 @@ class Notification(models.Model):
     NOTIFICATION_TYPES = (
         ('feedback_received', 'Feedback Received'),
         ('feedback_liked', 'Feedback Liked'),
+        ('feedback_helpful', 'Feedback Marked as Helpful'),
+        ('feedback_thanks', 'Feedback Thanked'),
+        ('feedback_considering', 'Feedback Being Considered'),
         ('report_approved', 'Report Approved'),      # New type for approved reports
         ('report_dismissed', 'Report Dismissed'),    # New type for dismissed reports
         ('feedback_reported', 'Feedback Reported'),  # New type for feedback givers
@@ -181,6 +184,7 @@ class Notification(models.Model):
     recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
     notification_type = models.CharField(max_length=20, choices=NOTIFICATION_TYPES)
     feedback = models.ForeignKey(Feedback, on_delete=models.CASCADE, null=True, blank=True)
+    reaction = models.ForeignKey('FeedbackReaction', on_delete=models.CASCADE, null=True, blank=True, related_name='notifications')
     message = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     is_viewed = models.BooleanField(default=False)
@@ -201,6 +205,8 @@ class FeedbackRequest(models.Model):
     requested_count = models.PositiveIntegerField(default=1, help_text="Number of feedback slots requested")
     fulfilled_count = models.PositiveIntegerField(default=0, help_text="Number of feedback slots fulfilled")
     priority = models.BooleanField(default=False, help_text="Whether this is a high priority request")
+    feedback_prompt = models.TextField(blank=True, null=True, help_text="A message from the project owner to guide feedback givers")
+    feedback_type_wanted = models.JSONField(default=list, blank=True, null=True, help_text="Types of feedback wanted for this request")
     
     class Meta:
         ordering = ['-created_at']
@@ -252,4 +258,23 @@ class UserBadge(models.Model):
         ordering = ['-date_earned']
     
     def __str__(self):
-        return f"{self.user.username} - {self.badge.name}"
+        return f"{self.user.username} earned {self.badge.name}"
+
+class FeedbackReaction(models.Model):
+    """Model to track reactions to feedback."""
+    REACTION_CHOICES = [
+        ('helpful', '❤️ Helpful'),
+        ('thanks', '🙏 Thanks!'),
+        ('considering', '💡 Considering this'),
+    ]
+    
+    feedback = models.ForeignKey(Feedback, on_delete=models.CASCADE, related_name='reactions')
+    reaction_type = models.CharField(max_length=20, choices=REACTION_CHOICES)
+    follow_up_note = models.TextField(blank=True, null=True, help_text="Optional note from the project owner")
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        unique_together = ('feedback',)  # Only one reaction per feedback
+    
+    def __str__(self):
+        return f"Reaction to feedback #{self.feedback.id}: {self.get_reaction_type_display()}"

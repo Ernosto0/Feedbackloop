@@ -14,6 +14,7 @@ urlpatterns = [
     path('feedback/', views.feedback_dashboard, name='feedback_dashboard'),
     path('feedback/<int:project_id>/give/', views.give_feedback, name='give_feedback'),
     path('feedback/<int:feedback_id>/like/', views.like_feedback, name='like_feedback'),
+    path('feedback/<int:feedback_id>/react/', views.react_to_feedback, name='react_to_feedback'),
     path('feedback/<int:feedback_id>/report/', views.report_feedback, name='report_feedback'),
     path('project/<int:project_id>/get-feedback/<int:credits>/', views.get_feedback, name='get_feedback'),
     path('project/<int:project_id>/request-feedback/', views.get_feedback_page, name='get_feedback_page'),

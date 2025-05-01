@@ -4,11 +4,12 @@ from django.contrib import messages
 from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse
 from django.contrib.auth import login, authenticate
-from .models import Project, Feedback, Notification, FeedbackRequest
+from .models import Project, Feedback, Notification, FeedbackRequest, FeedbackReaction
 from .forms import ProjectForm, FeedbackForm, SignUpForm, ProfileUpdateForm, UserUpdateForm
 from .utils import (
     create_feedback_notification, 
     create_liked_feedback_notification, 
+    create_reaction_notification,
     get_user_notifications, 
     get_unread_notification_count, 
     get_time_ago,
@@ -335,6 +336,63 @@ def like_feedback(request, feedback_id):
     return HttpResponseRedirect(reverse('project_detail', args=[feedback.project.id]))
 
 @login_required
+def react_to_feedback(request, feedback_id):
+    """React to feedback with emoji reaction and optional follow-up note."""
+    feedback = get_object_or_404(Feedback, pk=feedback_id)
+    
+    # Only project owner can react to feedback
+    if request.user != feedback.project.owner:
+        messages.warning(request, 'Only the project owner can react to feedback.')
+        return HttpResponseRedirect(reverse('feedback_detail', args=[feedback.project.id, feedback.id]))
+    
+    if request.method == 'POST':
+        reaction_type = request.POST.get('reaction_type')
+        follow_up_note = request.POST.get('follow_up_note', '').strip()
+        
+        # Validate reaction type
+        valid_reaction_types = [choice[0] for choice in FeedbackReaction.REACTION_CHOICES]
+        
+        if reaction_type not in valid_reaction_types:
+            messages.error(request, 'Invalid reaction type.')
+            return HttpResponseRedirect(reverse('feedback_detail', args=[feedback.project.id, feedback.id]))
+        
+        # Create or update reaction
+        reaction, created = FeedbackReaction.objects.update_or_create(
+            feedback=feedback,
+            defaults={
+                'reaction_type': reaction_type,
+                'follow_up_note': follow_up_note if follow_up_note else None
+            }
+        )
+        
+        # If this is a new reaction, mark the feedback as liked to maintain backward compatibility
+        if created and not feedback.is_liked:
+            feedback.is_liked = True
+            feedback.save()
+            
+            # Create notification for feedback giver
+            create_reaction_notification(reaction)
+            
+            # Award credit to feedback giver
+            feedback.award_credit()
+            
+            # Check and award badges for the feedback giver
+            check_and_award_badges(feedback.giver)
+            
+            # Add credit to project owner (maintain backward compatibility)
+            owner_profile = feedback.project.owner.profile
+            owner_profile.credits += 1
+            owner_profile.save()
+        # If the reaction is updated, send a new notification
+        else:
+            create_reaction_notification(reaction)
+        
+        reaction_display = dict(FeedbackReaction.REACTION_CHOICES)[reaction_type]
+        messages.success(request, f'You reacted with {reaction_display} to this feedback.')
+        
+    return HttpResponseRedirect(reverse('feedback_detail', args=[feedback.project.id, feedback.id]))
+
+@login_required
 def report_feedback(request, feedback_id):
     """Report inappropriate or low-quality feedback."""
     feedback = get_object_or_404(Feedback, pk=feedback_id)
@@ -468,6 +526,9 @@ def request_feedback(request, project_id):
         import json
         feedback_types = json.loads(request.POST.get('feedback_types', '[]'))
         
+        # Get feedback prompt if provided
+        feedback_prompt = request.POST.get('feedback_prompt', '').strip() or None
+        
         # Ensure at least one feedback type is selected
         if not feedback_types:
             return JsonResponse({'success': False, 'message': 'Please select at least one feedback type.'}, status=400)
@@ -489,11 +550,13 @@ def request_feedback(request, project_id):
         owner_profile.credits -= credits
         owner_profile.save()
         
-        # Create a feedback request entry with priority flag
+        # Create a feedback request entry with priority flag and feedback types
         feedback_request = FeedbackRequest.objects.create(
             project=project,
             requested_count=credits,
-            priority=priority == 'high'  # Store priority as boolean
+            priority=priority == 'high',  # Store priority as boolean
+            feedback_prompt=feedback_prompt,
+            feedback_type_wanted=feedback_types  # Store feedback types in the request
         )
         
         # Get current feedback count for the message
@@ -565,6 +628,9 @@ def notification_detail(request, notification_id):
     if notification.feedback:
         # Redirect to the feedback detail page
         return redirect('feedback_detail', project_id=notification.feedback.project.id, feedback_id=notification.feedback.id)
+    elif notification.notification_type == 'badge_earned':
+        # Redirect to the profile page
+        return redirect('profile')
     
     # If no specific redirect, go to notifications page
     return redirect('user_notifications')
@@ -602,11 +668,27 @@ def feedback_detail(request, feedback_id, project_id):
             is_viewed=False
         ).update(is_viewed=True)
     
+    # Get the feedback request associated with this feedback (based on creation time)
+    feedback_request = FeedbackRequest.objects.filter(
+        project=project,
+        created_at__lte=feedback.created_at
+    ).order_by('-created_at').first()
+    
+    # Get feedback reaction if exists
+    reaction = None
+    try:
+        if hasattr(feedback, 'reactions'):
+            reaction = feedback.reactions.first()
+    except:
+        reaction = None
+    
     context = {
         'feedback': feedback,
         'project': project,
         'is_owner': request.user == project.owner,
         'is_giver': request.user == feedback.giver,
+        'feedback_request': feedback_request,
+        'feedback_reaction': reaction,
     }
     
     return render(request, 'core/feedback_detail.html', context)
@@ -685,6 +767,16 @@ def review_preparation(request, project_id):
     View for review preparation page before giving feedback
     """
     project = get_object_or_404(Project, pk=project_id)
-    return render(request, 'core/review_preparation.html', {'project': project})
+    
+    # Get the latest feedback request for this project
+    feedback_request = FeedbackRequest.objects.filter(
+        project=project,
+        fulfilled_count__lt=F('requested_count')
+    ).order_by('-created_at').first()
+    
+    return render(request, 'core/review_preparation.html', {
+        'project': project,
+        'feedback_request': feedback_request
+    })
     
     
