@@ -164,6 +164,9 @@ def project_detail(request, pk):
     project = get_object_or_404(Project, pk=pk)
     feedback_list = Feedback.objects.filter(project=project)
     
+    # Increment view count for all viewers
+    project.increment_view_count()
+    
     # Handle toggle_active if POST request
     if request.method == 'POST' and 'toggle_active' in request.POST:
         # Ensure only the owner can toggle active status

@@ -51,6 +51,7 @@ class Project(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
     total_votes = models.IntegerField(default=0)
+    view_count = models.IntegerField(default=0)
     tech_stack = models.CharField(max_length=200, blank=True)
     pricing_plan = models.CharField(max_length=20, choices=PRICING_CHOICES, default='free')
     guest_access_info = models.TextField(blank=True)
@@ -74,6 +75,11 @@ class Project(models.Model):
     def increment_votes(self):
         """Increment the total votes counter."""
         self.total_votes += 1
+        self.save()
+        
+    def increment_view_count(self):
+        """Increment the view count."""
+        self.view_count += 1
         self.save()
 
 class Feedback(models.Model):
