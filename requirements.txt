@@ -1,0 +1,27 @@
+# Django and core requirements
+Django==5.2
+pillow==11.2.1
+django-crispy-forms==2.4
+crispy-tailwind==1.0.3
+django-widget-tweaks==1.5.0
+django-allauth==65.7.0
+
+# Email and environment management
+mailersend==0.6.0
+python-dotenv==1.1.0
+
+# Supporting packages
+asgiref==3.8.1
+certifi==2025.4.26
+cffi==1.17.1
+charset-normalizer==3.4.1
+cryptography==44.0.2
+docutils==0.21.2
+idna==3.10
+pycparser==2.22
+PyJWT==2.10.1
+requests==2.32.3
+sqlparse==0.5.3
+typing_extensions==4.13.2
+tzdata==2025.2
+urllib3==2.4.0 
