@@ -63,9 +63,12 @@ def profile(request):
         profile_user = request.user
         is_own_profile = True
     
-    user_projects = Project.objects.filter(owner=profile_user)
-    received_feedback = Feedback.objects.filter(project__owner=profile_user)
-    given_feedback = Feedback.objects.filter(giver=profile_user)
+    user_projects = Project.objects.filter(owner=profile_user).order_by('-created_at')
+    received_feedback = Feedback.objects.filter(project__owner=profile_user).order_by('-created_at')
+    given_feedback = Feedback.objects.filter(giver=profile_user).order_by('-created_at')
+    
+    # Get feedback requests for user's projects
+    feedback_requests = FeedbackRequest.objects.filter(project__owner=profile_user).order_by('-created_at')
     
     # Get user badges
     user_badges = get_user_badges(profile_user)
@@ -78,6 +81,7 @@ def profile(request):
         'user_projects': user_projects,
         'received_feedback': received_feedback,
         'given_feedback': given_feedback,
+        'feedback_requests': feedback_requests,
         'user_notifications': user_notifications,
         'is_own_profile': is_own_profile,
         'user_badges': user_badges,
@@ -290,7 +294,8 @@ def give_feedback(request, project_id):
             check_and_award_badges(request.user)
             
             messages.success(request, "Thank you for your feedback! You've gained 1 credit.")
-            return redirect('feedback_dashboard')
+            # Redirect to profile with the given feedback tab active
+            return redirect(reverse('profile') + '?active_tab=given_feedback')
     else:
         form = FeedbackForm()
     
@@ -333,7 +338,7 @@ def like_feedback(request, feedback_id):
     check_and_award_badges(feedback.giver)
     
     messages.success(request, 'Feedback liked and credit awarded to the giver.')
-    return HttpResponseRedirect(reverse('project_detail', args=[feedback.project.id]))
+    return redirect(reverse('profile') + '?active_tab=received_feedback')
 
 @login_required
 def react_to_feedback(request, feedback_id):
@@ -390,7 +395,7 @@ def react_to_feedback(request, feedback_id):
         reaction_display = dict(FeedbackReaction.REACTION_CHOICES)[reaction_type]
         messages.success(request, f'You reacted with {reaction_display} to this feedback.')
         
-    return HttpResponseRedirect(reverse('feedback_detail', args=[feedback.project.id, feedback.id]))
+    return redirect(reverse('profile') + '?active_tab=received_feedback')
 
 @login_required
 def report_feedback(request, feedback_id):
@@ -487,7 +492,7 @@ def get_feedback(request, project_id, credits):
     
     # Handle regular request    
     messages.success(request, f"You will get {credits} feedback(s) for your project soon!")
-    return redirect('profile')
+    return redirect(reverse('profile') + '?active_tab=feedback_requests')
 
 @login_required
 def get_feedback_page(request, project_id):
