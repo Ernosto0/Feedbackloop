@@ -617,6 +617,11 @@ def user_notifications(request):
         ]
         return JsonResponse({'notifications': data})
     
+    # Mark all notifications as read
+    if Notification.objects.filter(recipient=request.user, is_viewed=False).exists():
+        print("Marking all notifications as read")
+        mark_all_notifications_read(request)
+    
     # Render notifications page for non-AJAX requests
     return render(request, 'core/user_notifications.html', {'notifications': notifications})
 
@@ -643,9 +648,9 @@ def notification_detail(request, notification_id):
 @login_required
 def mark_all_notifications_read(request):
     """Mark all user notifications as read."""
-    if request.method == 'POST':
-        Notification.objects.filter(recipient=request.user, is_viewed=False).update(is_viewed=True)
-        messages.success(request, "All notifications marked as read.")
+    
+    Notification.objects.filter(recipient=request.user, is_viewed=False).update(is_viewed=True)
+    messages.success(request, "All notifications marked as read.")
     
     # Redirect back to notifications page
     return redirect('user_notifications')

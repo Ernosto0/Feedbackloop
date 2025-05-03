@@ -1,143 +1,189 @@
 {% extends 'base.html' %}
 
-{% block title %}FeedbackLoop - Give feedback to get feedback{% endblock %}
+{% block title %}FeedbackLoop - Elevate Your Projects with Peer Feedback{% endblock %}
 
 {% block content %}
 <div class="max-w-4xl mx-auto">
     <!-- Hero Section -->
-    <div class="text-center py-12">
-        <h1 class="text-4xl md:text-5xl font-bold text-indigo-700 mb-4">Give feedback to get feedback.</h1>
-        <p class="text-xl text-gray-600 mb-8">Exchange quality feedback on projects with other creators.</p>
-        
-        {% if not user.is_authenticated %}
-        <div class="flex flex-col sm:flex-row justify-center gap-4">
-            <a href="{% url 'signup' %}" class="inline-block bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300">
-                Sign Up
-            </a>
-            <a href="{% url 'login' %}" class="inline-block bg-white hover:bg-gray-100 text-indigo-600 font-bold py-3 px-6 rounded-lg border border-indigo-600 transition duration-300">
-                Login
-            </a>
+    <div class="text-center py-10 relative">
+        <div class="absolute inset-0 bg-gradient-to-r from-indigo-50 to-purple-50 opacity-70 rounded-3xl z-0"></div>
+        <div class="relative z-10 px-4 py-6">
+            <h1 class="text-4xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-700 mb-4">Elevate Your Work Through Feedback</h1>
+            <p class="text-xl text-gray-700 mb-8 max-w-2xl mx-auto">Join our community of creators who give thoughtful feedback to get valuable insights on their own projects.</p>
+            
+            {% if not user.is_authenticated %}
+            <div class="flex flex-col sm:flex-row justify-center gap-4 mb-6">
+                <a href="{% url 'signup' %}" class="inline-block bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold py-4 px-8 rounded-lg transition duration-300 transform hover:scale-105 shadow-lg">
+                    Start Your Journey
+                </a>
+                <a href="{% url 'login' %}" class="inline-block bg-white hover:bg-gray-100 text-indigo-600 font-bold py-4 px-8 rounded-lg border border-indigo-600 transition duration-300 shadow-md hover:shadow-lg">
+                    Login
+                </a>
+            </div>
+            <div class="mt-4">
+                <a href="{% url 'top_projects' %}" class="inline-block text-indigo-600 hover:text-indigo-800 font-medium transition duration-300 flex items-center justify-center gap-2">
+                    Explore Top Projects
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    </svg>
+                </a>
+            </div>
+            {% else %}
+            <div class="flex flex-col sm:flex-row justify-center gap-4 mb-6">
+                <a href="{% url 'feedback_dashboard' %}" class="inline-block bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold py-4 px-8 rounded-lg transition duration-300 transform hover:scale-105 shadow-lg">
+                    Give Feedback
+                </a>
+                <a href="{% url 'submit_project' %}" class="inline-block bg-white hover:bg-gray-100 text-indigo-600 font-bold py-4 px-8 rounded-lg border border-indigo-600 transition duration-300 shadow-md hover:shadow-lg">
+                    Submit Project
+                </a>
+            </div>
+            <div class="mt-4">
+                <a href="{% url 'top_projects' %}" class="inline-block text-indigo-600 hover:text-indigo-800 font-medium transition duration-300 flex items-center justify-center gap-2">
+                    Explore Top Projects
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    </svg>
+                </a>
+            </div>
+            {% endif %}
         </div>
-        <div class="mt-4">
-            <a href="{% url 'top_projects' %}" class="inline-block text-indigo-600 hover:text-indigo-800 font-medium transition duration-300">
-                Explore Top Projects →
-            </a>
-        </div>
-        {% else %}
-        <div class="flex flex-col sm:flex-row justify-center gap-4">
-            <a href="{% url 'feedback_dashboard' %}" class="inline-block bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300">
-                Give Feedback
-            </a>
-            <a href="{% url 'submit_project' %}" class="inline-block bg-white hover:bg-gray-100 text-indigo-600 font-bold py-3 px-6 rounded-lg border border-indigo-600 transition duration-300">
-                Submit Project
-            </a>
-        </div>
-        <div class="mt-4">
-            <a href="{% url 'top_projects' %}" class="inline-block text-indigo-600 hover:text-indigo-800 font-medium transition duration-300">
-                Explore Top Projects →
-            </a>
-        </div>
-        {% endif %}
     </div>
     
     <!-- Stats Section -->
-    <div class="py-7 bg-gradient-to-r from-indigo-900 via-purple-900 to-indigo-800 rounded-xl shadow-lg mb-10">
-        <div class="max-w-4xl mx-auto px-3">
+    <div class="py-10 bg-gradient-to-r from-indigo-900 via-purple-800 to-indigo-800 rounded-xl shadow-xl mb-12 transform hover:scale-[1.01] transition-transform duration-300">
+        <div class="max-w-4xl mx-auto px-4">
+            <h3 class="text-center text-white text-xl font-semibold mb-6">Our Growing Community</h3>
             <div class="flex flex-wrap justify-center gap-8 md:gap-16">
-                <div class="text-center">
-                    <div class="text-4xl font-bold text-white mb-1">{{ total_projects_count }}</div>
-                    <div class="text-indigo-200 text-sm uppercase tracking-wider">Total Projects</div>
+                <div class="text-center bg-white/10 backdrop-blur-sm p-5 rounded-lg">
+                    <div class="text-5xl font-bold text-white mb-2">{{ total_projects_count }}</div>
+                    <div class="text-indigo-100 font-medium">Projects Submitted</div>
                 </div>
-                <div class="text-center">
-                    <div class="text-4xl font-bold text-white mb-1">{{ active_voters_count }}</div>
-                    <div class="text-indigo-200 text-sm uppercase tracking-wider">Active Voters</div>
+                <div class="text-center bg-white/10 backdrop-blur-sm p-5 rounded-lg">
+                    <div class="text-5xl font-bold text-white mb-2">{{ active_voters_count }}</div>
+                    <div class="text-indigo-100 font-medium">Active Members</div>
                 </div>
-                <div class="text-center">
-                    <div class="text-4xl font-bold text-white mb-1">{{ total_feedback_count }}</div>
-                    <div class="text-indigo-200 text-sm uppercase tracking-wider">Feedback Given</div>
+                <div class="text-center bg-white/10 backdrop-blur-sm p-5 rounded-lg">
+                    <div class="text-5xl font-bold text-white mb-2">{{ total_feedback_count }}</div>
+                    <div class="text-indigo-100 font-medium">Insights Shared</div>
                 </div>
             </div>
         </div>
     </div>
     
     <!-- How It Works Section -->
-    <div class="py-12">
-        <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">How It Works</h2>
+    <div class="py-14">
+        <h2 class="text-3xl font-bold text-center mb-4 text-gray-800">How It Works</h2>
+        <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto">Our simple three-step process creates a virtuous cycle of feedback and improvement</p>
         
         <div class="grid md:grid-cols-3 gap-8">
-            <div class="bg-white p-6 rounded-lg shadow-md">
-                <div class="text-indigo-600 text-4xl font-bold mb-4">1.</div>
-                <h3 class="text-xl font-semibold mb-2">Submit Your Project</h3>
-                <p class="text-gray-600">Share your website, app, or design with our community of creators.</p>
+            <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 border-t-4 border-indigo-500">
+                <div class="flex justify-center mb-6">
+                    <div class="bg-indigo-100 p-4 rounded-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                        </svg>
+                    </div>
+                </div>
+                <h3 class="text-xl font-semibold mb-3 text-center">Submit Your Project</h3>
+                <p class="text-gray-600 text-center">Share your website, app, or design with our community of creators and request specific feedback areas.</p>
             </div>
             
-            <div class="bg-white p-6 rounded-lg shadow-md">
-                <div class="text-indigo-600 text-4xl font-bold mb-4">2.</div>
-                <h3 class="text-xl font-semibold mb-2">Give Quality Feedback</h3>
-                <p class="text-gray-600">Provide thoughtful feedback to other creators' projects to earn credits.</p>
+            <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 border-t-4 border-purple-500 transform md:translate-y-4">
+                <div class="flex justify-center mb-6">
+                    <div class="bg-purple-100 p-4 rounded-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                        </svg>
+                    </div>
+                </div>
+                <h3 class="text-xl font-semibold mb-3 text-center">Give Quality Feedback</h3>
+                <p class="text-gray-600 text-center">Provide thoughtful, structured feedback to other creators' projects to earn credits in our system.</p>
             </div>
             
-            <div class="bg-white p-6 rounded-lg shadow-md">
-                <div class="text-indigo-600 text-4xl font-bold mb-4">3.</div>
-                <h3 class="text-xl font-semibold mb-2">Get Valuable Feedback</h3>
-                <p class="text-gray-600">Use your earned credits to receive structured feedback on your own project.</p>
+            <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 border-t-4 border-indigo-500">
+                <div class="flex justify-center mb-6">
+                    <div class="bg-indigo-100 p-4 rounded-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                        </svg>
+                    </div>
+                </div>
+                <h3 class="text-xl font-semibold mb-3 text-center">Get Valuable Feedback</h3>
+                <p class="text-gray-600 text-center">Use your earned credits to receive detailed, actionable feedback that helps elevate your own project.</p>
             </div>
         </div>
     </div>
     
     <!-- Features Section -->
-    <div class="py-12">
-        <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">Why FeedbackLoop?</h2>
+    <div class="py-14 bg-gray-50 rounded-xl">
+        <h2 class="text-3xl font-bold text-center mb-4 text-gray-800">Why FeedbackLoop?</h2>
+        <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto">Our platform offers unique advantages that make the feedback process more valuable for everyone</p>
         
-        <div class="grid md:grid-cols-2 gap-8">
-            <div class="flex items-start">
-                <div class="bg-indigo-100 p-3 rounded-full mr-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div class="grid md:grid-cols-2 gap-x-12 gap-y-10 px-4">
+            <div class="flex items-start bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300">
+                <div class="bg-indigo-100 p-3 rounded-full mr-5 shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                     </svg>
                 </div>
                 <div>
                     <h3 class="text-xl font-semibold mb-2">Structured Feedback</h3>
-                    <p class="text-gray-600">Our guided feedback format ensures you get comprehensive, actionable insights.</p>
+                    <p class="text-gray-600">Our guided three-part feedback format ensures you receive comprehensive, actionable insights every time.</p>
                 </div>
             </div>
             
-            <div class="flex items-start">
-                <div class="bg-indigo-100 p-3 rounded-full mr-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div class="flex items-start bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300">
+                <div class="bg-purple-100 p-3 rounded-full mr-5 shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                 </div>
                 <div>
-                    <h3 class="text-xl font-semibold mb-2">Credit System</h3>
-                    <p class="text-gray-600">Fair exchange - earn credits by giving quality feedback that others find helpful.</p>
+                    <h3 class="text-xl font-semibold mb-2">Fair Credit System</h3>
+                    <p class="text-gray-600">Earn credits by giving quality feedback that others find helpful, then use them to get insights on your work.</p>
                 </div>
             </div>
             
-            <div class="flex items-start">
-                <div class="bg-indigo-100 p-3 rounded-full mr-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div class="flex items-start bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300">
+                <div class="bg-indigo-100 p-3 rounded-full mr-5 shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                     </svg>
                 </div>
                 <div>
                     <h3 class="text-xl font-semibold mb-2">Quality Control</h3>
-                    <p class="text-gray-600">Like helpful feedback or report low-quality submissions to maintain high standards.</p>
+                    <p class="text-gray-600">Like helpful feedback or report low-quality submissions to maintain high standards throughout the community.</p>
                 </div>
             </div>
             
-            <div class="flex items-start">
-                <div class="bg-indigo-100 p-3 rounded-full mr-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div class="flex items-start bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300">
+                <div class="bg-purple-100 p-3 rounded-full mr-5 shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                     </svg>
                 </div>
                 <div>
-                    <h3 class="text-xl font-semibold mb-2">Community Focus</h3>
-                    <p class="text-gray-600">Connect with fellow creators in a supportive environment focused on growth.</p>
+                    <h3 class="text-xl font-semibold mb-2">Supportive Community</h3>
+                    <p class="text-gray-600">Connect with fellow creators in a constructive environment where everyone is focused on helping each other improve.</p>
                 </div>
             </div>
         </div>
+    </div>
+    
+    <!-- CTA Section -->
+    <div class="py-16 text-center">
+        <h2 class="text-3xl font-bold mb-6">Ready to Level Up Your Projects?</h2>
+        <p class="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">Join our community today and start exchanging valuable feedback that will help you grow.</p>
+        
+        {% if not user.is_authenticated %}
+        <a href="{% url 'signup' %}" class="inline-block bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold py-4 px-10 rounded-lg transition duration-300 transform hover:scale-105 shadow-lg text-lg">
+            Get Started Now
+        </a>
+        {% else %}
+        <a href="{% url 'submit_project' %}" class="inline-block bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold py-4 px-10 rounded-lg transition duration-300 transform hover:scale-105 shadow-lg text-lg">
+            Submit Your Project
+        </a>
+        {% endif %}
     </div>
 </div>
 {% endblock %} 
