@@ -788,5 +788,17 @@ def review_preparation(request, project_id):
         'project': project,
         'feedback_request': feedback_request
     })
+
+def about(request):
+    """About page view."""
+    return render(request, 'core/about.html')
+
+def privacy_policy(request):
+    """Privacy policy page view."""
+    return render(request, 'core/privacy_policy.html')
+
+def terms_of_service(request):
+    """Terms of service page view."""
+    return render(request, 'core/terms_of_service.html')
     
     

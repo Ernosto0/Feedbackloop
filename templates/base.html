@@ -40,6 +40,7 @@
                         <a href="{% url 'feedback_dashboard' %}" class="hover:text-indigo-200">Give Feedback</a>
                         <a href="{% url 'submit_project' %}" class="hover:text-indigo-200">Submit Project</a>
                         <a href="{% url 'top_projects' %}" class="hover:text-indigo-200">Top Projects</a>
+                        <a href="{% url 'about' %}" class="hover:text-indigo-200">About</a>
                         
                         <!-- Dedicated Notifications Link -->
                         <div class="relative">
@@ -79,6 +80,7 @@
                         </form>
                     {% else %}
                         <a href="{% url 'login' %}" class="hover:text-indigo-200">Login</a>
+                        <a href="{% url 'about' %}" class="hover:text-indigo-200">About</a>
                         <a href="{% url 'signup' %}" class="bg-indigo-700 px-4 py-2 rounded hover:bg-indigo-800">Sign Up</a>
                     {% endif %}
                 </div>
@@ -91,6 +93,7 @@
                         <a href="{% url 'feedback_dashboard' %}" class="hover:text-indigo-200 py-2">Give Feedback</a>
                         <a href="{% url 'submit_project' %}" class="hover:text-indigo-200 py-2">Submit Project</a>
                         <a href="{% url 'top_projects' %}" class="hover:text-indigo-200 py-2">Top Projects</a>
+                        <a href="{% url 'about' %}" class="hover:text-indigo-200 py-2">About</a>
                         
                         <a href="{% url 'user_notifications' %}" class="hover:text-indigo-200 flex items-center py-2">
                             <span>Notifications</span>
@@ -115,6 +118,7 @@
                         </form>
                     {% else %}
                         <a href="{% url 'login' %}" class="hover:text-indigo-200 py-2">Login</a>
+                        <a href="{% url 'about' %}" class="hover:text-indigo-200 py-2">About</a>
                         <a href="{% url 'signup' %}" class="bg-indigo-700 px-4 py-2 rounded hover:bg-indigo-800 text-center">Sign Up</a>
                     {% endif %}
                 </div>
@@ -159,10 +163,9 @@
                 <div>
                     <h3 class="text-lg font-semibold mb-4">Resources</h3>
                     <ul class="space-y-2">
-                        <li><a href="#" class="text-indigo-200 hover:text-white transition">About</a></li>
-                        <li><a href="#" class="text-indigo-200 hover:text-white transition">Privacy Policy</a></li>
-                        <li><a href="#" class="text-indigo-200 hover:text-white transition">Terms of Service</a></li>
-                        <li><a href="#" class="text-indigo-200 hover:text-white transition">Help Center</a></li>
+                        <li><a href="{% url 'about' %}" class="text-indigo-200 hover:text-white transition">About</a></li>
+                        <li><a href="{% url 'privacy_policy' %}" class="text-indigo-200 hover:text-white transition">Privacy Policy</a></li>
+                        <li><a href="{% url 'terms_of_service' %}" class="text-indigo-200 hover:text-white transition">Terms of Service</a></li>
                     </ul>
                 </div>
             </div>

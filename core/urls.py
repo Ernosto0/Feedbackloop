@@ -26,4 +26,7 @@ urlpatterns = [
     path('top-projects/', views.top_projects, name='top_projects'),
     path('feedback/<int:project_id>/detail/<int:feedback_id>/', views.feedback_detail, name='feedback_detail'),
     path('feedback/<int:project_id>/prepare/', views.review_preparation, name='review_preparation'),
+    path('about/', views.about, name='about'),
+    path('privacy-policy/', views.privacy_policy, name='privacy_policy'),
+    path('terms-of-service/', views.terms_of_service, name='terms_of_service'),
 ] 
