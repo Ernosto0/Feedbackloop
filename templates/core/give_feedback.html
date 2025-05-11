@@ -4,17 +4,17 @@
 {% block title %}Give Feedback - {{ project.title }} - FeedbackLoop{% endblock %}
 
 {% block content %}
-<div class="max-w-6xl mx-auto">
+<div class="max-w-6xl mx-auto px-4 sm:px-6">
     <!-- Compact Project Summary (Sticky at top) -->
-    <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-8 transition-all duration-300 sticky top-4 z-10">
-        <div class="bg-gradient-to-r from-indigo-600 to-purple-700 px-6 py-5">
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-5 sm:mb-8 transition-all duration-300 sticky top-0 sm:top-2 z-20">
+        <div class="bg-gradient-to-r from-indigo-600 to-purple-700 px-4 sm:px-6 py-4 sm:py-5">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
                 <div>
-                    <h1 class="text-2xl font-bold text-white">{{ project.title }}</h1>
-                    <p class="text-indigo-100 mt-1 opacity-90">by {{ project.owner.username }}</p>
+                    <h1 class="text-xl sm:text-2xl font-bold text-white">{{ project.title }}</h1>
+                    <p class="text-indigo-100 mt-1 opacity-90 text-sm sm:text-base">by {{ project.owner.username }}</p>
                 </div>
-                <a href="{{ project.url }}" target="_blank" rel="noopener noreferrer" class="mt-3 md:mt-0 inline-flex items-center px-4 py-2 bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white rounded-lg transition-colors duration-200 border border-white/20 group">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 group-hover:translate-x-0.5 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <a href="{{ project.url }}" target="_blank" rel="noopener noreferrer" class="mt-3 md:mt-0 inline-flex items-center px-3 sm:px-4 py-1.5 sm:py-2 bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white rounded-lg transition-colors duration-200 border border-white/20 group text-sm sm:text-base">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1.5 sm:mr-2 group-hover:translate-x-0.5 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                     </svg>
                     Open Project
@@ -24,54 +24,54 @@
         
         <!-- Feedback Types Requested -->
         {% if project.feedback_type_wanted %}
-        <div class="px-6 py-3 bg-indigo-50/80 border-b border-indigo-100">
-            <div class="flex flex-col gap-2">
+        <div class="px-4 sm:px-6 py-2 sm:py-3 bg-indigo-50/80 border-b border-indigo-100">
+            <div class="flex flex-col gap-1 sm:gap-2">
                 <div class="flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5 mr-1.5 sm:mr-2 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    <span class="text-sm font-medium text-indigo-700">The project owner is specifically looking for feedback on:</span>
+                    <span class="text-xs sm:text-sm font-medium text-indigo-700">The project owner is specifically looking for feedback on:</span>
                 </div>
-                <div class="flex flex-wrap gap-2 items-center ml-7">
+                <div class="flex flex-wrap gap-1 sm:gap-2 items-center ml-5 sm:ml-7 overflow-x-auto pb-2 flex-nowrap">
                     {% for feedback_type in project.feedback_type_wanted %}
                         {% if feedback_type == 'ui' %}
-                            <span class="bg-blue-100 text-blue-800 text-xs px-3 py-1.5 rounded-full shadow-sm border border-blue-200/50 font-medium flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <span class="bg-blue-100 text-blue-800 text-xxs sm:text-xs px-2 sm:px-3 py-1 sm:py-1.5 rounded-full shadow-sm border border-blue-200/50 font-medium flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 sm:h-3.5 sm:w-3.5 mr-0.5 sm:mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                 </svg>
                                 UI / Design
                             </span>
                         {% elif feedback_type == 'ux' %}
-                            <span class="bg-green-100 text-green-800 text-xs px-3 py-1.5 rounded-full shadow-sm border border-green-200/50 font-medium flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <span class="bg-green-100 text-green-800 text-xxs sm:text-xs px-2 sm:px-3 py-1 sm:py-1.5 rounded-full shadow-sm border border-green-200/50 font-medium flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 sm:h-3.5 sm:w-3.5 mr-0.5 sm:mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
                                 UX / Usability
                             </span>
                         {% elif feedback_type == 'bug' %}
-                            <span class="bg-red-100 text-red-800 text-xs px-3 py-1.5 rounded-full shadow-sm border border-red-200/50 font-medium flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <span class="bg-red-100 text-red-800 text-xxs sm:text-xs px-2 sm:px-3 py-1 sm:py-1.5 rounded-full shadow-sm border border-red-200/50 font-medium flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 sm:h-3.5 sm:w-3.5 mr-0.5 sm:mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                                 </svg>
                                 Bug Finding
                             </span>
                         {% elif feedback_type == 'copy' %}
-                            <span class="bg-yellow-100 text-yellow-800 text-xs px-3 py-1.5 rounded-full shadow-sm border border-yellow-200/50 font-medium flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <span class="bg-yellow-100 text-yellow-800 text-xxs sm:text-xs px-2 sm:px-3 py-1 sm:py-1.5 rounded-full shadow-sm border border-yellow-200/50 font-medium flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 sm:h-3.5 sm:w-3.5 mr-0.5 sm:mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                 </svg>
                                 Copywriting / Clarity
                             </span>
                         {% elif feedback_type == 'ideas' %}
-                            <span class="bg-purple-100 text-purple-800 text-xs px-3 py-1.5 rounded-full shadow-sm border border-purple-200/50 font-medium flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <span class="bg-purple-100 text-purple-800 text-xxs sm:text-xs px-2 sm:px-3 py-1 sm:py-1.5 rounded-full shadow-sm border border-purple-200/50 font-medium flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 sm:h-3.5 sm:w-3.5 mr-0.5 sm:mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                                 </svg>
                                 New Feature Ideas
                             </span>
                         {% elif feedback_type == 'overall' %}
-                            <span class="bg-gray-100 text-gray-800 text-xs px-3 py-1.5 rounded-full shadow-sm border border-gray-200/50 font-medium flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <span class="bg-gray-100 text-gray-800 text-xxs sm:text-xs px-2 sm:px-3 py-1 sm:py-1.5 rounded-full shadow-sm border border-gray-200/50 font-medium flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 sm:h-3.5 sm:w-3.5 mr-0.5 sm:mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
                                 </svg>
                                 Overall Impression
@@ -79,56 +79,56 @@
                         {% endif %}
                     {% endfor %}
                 </div>
-                <p class="text-xs text-indigo-600 ml-7 italic">Please focus your feedback on these areas</p>
+                <p class="text-xxs sm:text-xs text-indigo-600 ml-5 sm:ml-7 italic">Please focus your feedback on these areas</p>
             </div>
         </div>
         {% endif %}
     </div>
     
     <!-- Main Content: Side by Side Layout -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 md:gap-8">
         <!-- Left Side: Project Details -->
-        <div class="lg:col-span-4 space-y-6">
+        <div class="lg:col-span-4 space-y-4 sm:space-y-6">
             <!-- Project Details -->
             <div class="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl">
-                <div class="bg-gradient-to-r from-gray-50 to-gray-100 px-6 py-4 border-b">
-                    <h2 class="text-lg font-medium text-gray-900">Project Details</h2>
+                <div class="bg-gradient-to-r from-gray-50 to-gray-100 px-4 sm:px-6 py-3 sm:py-4 border-b">
+                    <h2 class="text-base sm:text-lg font-medium text-gray-900">Project Details</h2>
                 </div>
                 
-                <div class="p-6">
+                <div class="p-4 sm:p-6">
                     <!-- Project Image -->
                     {% if project.photo %}
-                    <div class="rounded-lg overflow-hidden border border-gray-200 shadow-sm mb-6">
+                    <div class="rounded-lg overflow-hidden border border-gray-200 shadow-sm mb-4 sm:mb-6">
                         <img src="{{ project.photo.url }}" alt="{{ project.title }}" class="w-full h-auto object-cover">
                     </div>
                     {% else %}
-                    <div class="bg-gradient-to-b from-gray-50 to-gray-100 rounded-lg p-6 text-center border border-gray-200 shadow-sm mb-6">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-12 w-12 text-gray-400/70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <div class="bg-gradient-to-b from-gray-50 to-gray-100 rounded-lg p-4 sm:p-6 text-center border border-gray-200 shadow-sm mb-4 sm:mb-6">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-10 w-10 sm:h-12 sm:w-12 text-gray-400/70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
-                        <p class="mt-2 text-gray-500 font-medium">No image available</p>
+                        <p class="mt-2 text-gray-500 font-medium text-sm sm:text-base">No image available</p>
                     </div>
                     {% endif %}
                     
-                    <div class="space-y-4">
+                    <div class="space-y-3 sm:space-y-4">
                         <div>
-                            <h3 class="text-sm font-semibold text-gray-600 mb-2">Description:</h3>
-                            <p class="text-gray-700 leading-relaxed">{{ project.description }}</p>
+                            <h3 class="text-xs sm:text-sm font-semibold text-gray-600 mb-1 sm:mb-2">Description:</h3>
+                            <p class="text-sm sm:text-base text-gray-700 leading-relaxed">{{ project.description }}</p>
                         </div>
                         
                         {% if project.tech_stack %}
                         <div>
-                            <h3 class="text-sm font-semibold text-gray-600 mb-2">Tech Stack:</h3>
-                            <p class="text-gray-700 leading-relaxed">{{ project.tech_stack }}</p>
+                            <h3 class="text-xs sm:text-sm font-semibold text-gray-600 mb-1 sm:mb-2">Tech Stack:</h3>
+                            <p class="text-sm sm:text-base text-gray-700 leading-relaxed">{{ project.tech_stack }}</p>
                         </div>
                         {% endif %}
                         
                         {% if project.tags.all %}
                         <div>
-                            <h3 class="text-sm font-semibold text-gray-600 mb-2">Tags:</h3>
-                            <div class="flex flex-wrap gap-2">
+                            <h3 class="text-xs sm:text-sm font-semibold text-gray-600 mb-1 sm:mb-2">Tags:</h3>
+                            <div class="flex flex-wrap gap-1.5 sm:gap-2">
                                 {% for tag in project.tags.all %}
-                                <span class="bg-indigo-100 text-indigo-800 text-xs px-3 py-1.5 rounded-full shadow-sm border border-indigo-200/50 font-medium">
+                                <span class="bg-indigo-100 text-indigo-800 text-xxs sm:text-xs px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full shadow-sm border border-indigo-200/50 font-medium">
                                     {{ tag.name }}
                                 </span>
                                 {% endfor %}
@@ -137,8 +137,8 @@
                         {% endif %}
                         
                         <div>
-                            <h3 class="text-sm font-semibold text-gray-600 mb-2">Submitted on:</h3>
-                            <p class="text-gray-700">{{ project.created_at|date:"F j, Y" }}</p>
+                            <h3 class="text-xs sm:text-sm font-semibold text-gray-600 mb-1 sm:mb-2">Submitted on:</h3>
+                            <p class="text-sm sm:text-base text-gray-700">{{ project.created_at|date:"F j, Y" }}</p>
                         </div>
                     </div>
                 </div>
@@ -146,18 +146,18 @@
 
             <!-- Feedback Tips -->
             <div class="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl">
-                <div class="bg-gradient-to-r from-gray-50 to-gray-100 px-6 py-4 border-b">
-                    <h2 class="text-lg font-medium text-gray-900">Tips for Quality Feedback</h2>
+                <div class="bg-gradient-to-r from-gray-50 to-gray-100 px-4 sm:px-6 py-3 sm:py-4 border-b">
+                    <h2 class="text-base sm:text-lg font-medium text-gray-900">Tips for Quality Feedback</h2>
                 </div>
-                <div class="p-6 space-y-5">
+                <div class="p-4 sm:p-6 space-y-4 sm:space-y-5">
                     <div>
-                        <h3 class="font-medium text-gray-900 mb-3 flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <h3 class="font-medium text-gray-900 mb-2 sm:mb-3 flex items-center text-sm sm:text-base">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5 mr-1.5 sm:mr-2 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                             </svg>
                             Do's:
                         </h3>
-                        <ul class="space-y-2 ml-7 list-disc text-sm text-gray-700">
+                        <ul class="space-y-1.5 sm:space-y-2 ml-5 sm:ml-7 list-disc text-xs sm:text-sm text-gray-700">
                             <li class="leading-relaxed">Be specific with examples</li>
                             <li class="leading-relaxed">Balance positive and constructive feedback</li>
                             <li class="leading-relaxed">Suggest potential solutions</li>
@@ -166,13 +166,13 @@
                     </div>
                     
                     <div>
-                        <h3 class="font-medium text-gray-900 mb-3 flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <h3 class="font-medium text-gray-900 mb-2 sm:mb-3 flex items-center text-sm sm:text-base">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5 mr-1.5 sm:mr-2 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                             </svg>
                             Don'ts:
                         </h3>
-                        <ul class="space-y-2 ml-7 list-disc text-sm text-gray-700">
+                        <ul class="space-y-1.5 sm:space-y-2 ml-5 sm:ml-7 list-disc text-xs sm:text-sm text-gray-700">
                             <li class="leading-relaxed">Give vague or generic comments</li>
                             <li class="leading-relaxed">Focus only on negatives</li>
                             <li class="leading-relaxed">Make personal criticism instead of focusing on the project</li>
@@ -186,29 +186,29 @@
         <!-- Right Side: Feedback Form -->
         <div class="lg:col-span-8">
             <div class="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl">
-                <div class="bg-gradient-to-r from-gray-50 to-gray-100 px-6 py-4 border-b">
-                    <h2 class="text-lg font-medium text-gray-900">Your Feedback</h2>
-                    <p class="text-sm text-gray-600 mt-1">Please be specific and constructive in your feedback</p>
+                <div class="bg-gradient-to-r from-gray-50 to-gray-100 px-4 sm:px-6 py-3 sm:py-4 border-b">
+                    <h2 class="text-base sm:text-lg font-medium text-gray-900">Your Feedback</h2>
+                    <p class="text-xs sm:text-sm text-gray-600 mt-1">Please be specific and constructive in your feedback</p>
                 </div>
                 
-                <div class="p-7">
-                    <form method="post" class="space-y-7">
+                <div class="p-4 sm:p-7">
+                    <form method="post" class="space-y-5 sm:space-y-7">
                         {% csrf_token %}
                         
                         <!-- What's Good -->
                         <div>
-                            <label for="{{ form.positives.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+                            <label for="{{ form.positives.id_for_label }}" class="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2 flex items-center">
                                 {{ form.positives.label }}
                                 {% if project.feedback_type_wanted %}
-                                <span class="ml-2 flex space-x-1">
+                                <span class="ml-1.5 sm:ml-2 flex space-x-1">
                                     {% if 'ui' in project.feedback_type_wanted %}
-                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">UI</span>
+                                    <span class="inline-flex items-center px-1.5 sm:px-2 py-0.5 rounded text-xxs sm:text-xs font-medium bg-blue-100 text-blue-800">UI</span>
                                     {% endif %}
                                     {% if 'ux' in project.feedback_type_wanted %}
-                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">UX</span>
+                                    <span class="inline-flex items-center px-1.5 sm:px-2 py-0.5 rounded text-xxs sm:text-xs font-medium bg-green-100 text-green-800">UX</span>
                                     {% endif %}
                                     {% if 'overall' in project.feedback_type_wanted %}
-                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">Overall</span>
+                                    <span class="inline-flex items-center px-1.5 sm:px-2 py-0.5 rounded text-xxs sm:text-xs font-medium bg-gray-100 text-gray-800">Overall</span>
                                     {% endif %}
                                 </span>
                                 {% endif %}
@@ -217,7 +217,7 @@
                                 name="{{ form.positives.html_name }}" 
                                 id="{{ form.positives.id_for_label }}" 
                                 rows="4" 
-                                class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200"
+                                class="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-sm sm:text-base"
                                 placeholder="{% if 'ui' in project.feedback_type_wanted %}• The color scheme and layout are visually appealing
 {% endif %}{% if 'ux' in project.feedback_type_wanted %}• The navigation is intuitive and easy to use
 {% endif %}{% if 'bug' in project.feedback_type_wanted %}• The core functionality works smoothly
@@ -226,12 +226,12 @@
                             {% if form.positives.errors %}
                                 <p class="text-red-500 text-xs mt-1.5">{{ form.positives.errors.0 }}</p>
                             {% endif %}
-                            <p class="text-gray-500 text-xs mt-1.5">Highlight the strengths and positive aspects of the project.</p>
+                            <p class="text-gray-500 text-xxs sm:text-xs mt-1 sm:mt-1.5">Highlight the strengths and positive aspects of the project.</p>
                             
                             {% if project.feedback_type_wanted %}
-                            <div class="mt-3 bg-indigo-50 rounded-lg p-3 border border-indigo-100">
-                                <p class="text-sm text-indigo-700 font-medium mb-2">Requested feedback focus:</p>
-                                <ul class="space-y-1.5 ml-5 list-disc text-xs text-indigo-700">
+                            <div class="mt-3 bg-indigo-50 rounded-lg p-2.5 sm:p-3 border border-indigo-100">
+                                <p class="text-xs sm:text-sm text-indigo-700 font-medium mb-1.5 sm:mb-2">Requested feedback focus:</p>
+                                <ul class="space-y-1 sm:space-y-1.5 ml-4 sm:ml-5 list-disc text-xxs sm:text-xs text-indigo-700">
                                     {% for feedback_type in project.feedback_type_wanted %}
                                         {% if feedback_type == 'ui' %}
                                             <li>UI/Design: Comment on visual appeal, layout, colors, spacing, consistency</li>
@@ -254,21 +254,21 @@
                         
                         <!-- What Can Be Improved -->
                         <div>
-                            <label for="{{ form.improvements.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+                            <label for="{{ form.improvements.id_for_label }}" class="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2 flex items-center">
                                 {{ form.improvements.label }}
                                 {% if project.feedback_type_wanted %}
-                                <span class="ml-2 flex space-x-1">
+                                <span class="ml-1.5 sm:ml-2 flex space-x-1">
                                     {% if 'bug' in project.feedback_type_wanted %}
-                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800">Bugs</span>
+                                    <span class="inline-flex items-center px-1.5 sm:px-2 py-0.5 rounded text-xxs sm:text-xs font-medium bg-red-100 text-red-800">Bugs</span>
                                     {% endif %}
                                     {% if 'copy' in project.feedback_type_wanted %}
-                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-yellow-100 text-yellow-800">Copy</span>
+                                    <span class="inline-flex items-center px-1.5 sm:px-2 py-0.5 rounded text-xxs sm:text-xs font-medium bg-yellow-100 text-yellow-800">Copy</span>
                                     {% endif %}
                                     {% if 'ui' in project.feedback_type_wanted %}
-                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">UI</span>
+                                    <span class="inline-flex items-center px-1.5 sm:px-2 py-0.5 rounded text-xxs sm:text-xs font-medium bg-blue-100 text-blue-800">UI</span>
                                     {% endif %}
                                     {% if 'ux' in project.feedback_type_wanted %}
-                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">UX</span>
+                                    <span class="inline-flex items-center px-1.5 sm:px-2 py-0.5 rounded text-xxs sm:text-xs font-medium bg-green-100 text-green-800">UX</span>
                                     {% endif %}
                                 </span>
                                 {% endif %}
@@ -277,7 +277,7 @@
                                 name="{{ form.improvements.html_name }}" 
                                 id="{{ form.improvements.id_for_label }}" 
                                 rows="4" 
-                                class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200"
+                                class="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-sm sm:text-base"
                                 placeholder="{% if 'ui' in project.feedback_type_wanted %}• The contrast between text and background could be improved
 {% endif %}{% if 'ux' in project.feedback_type_wanted %}• The user flow for [specific action] could be simplified
 {% endif %}{% if 'bug' in project.feedback_type_wanted %}• I noticed an issue when trying to [specific action]
@@ -286,16 +286,16 @@
                             {% if form.improvements.errors %}
                                 <p class="text-red-500 text-xs mt-1.5">{{ form.improvements.errors.0 }}</p>
                             {% endif %}
-                            <p class="text-gray-500 text-xs mt-1.5">Suggest specific areas that could be enhanced or fixed.</p>
+                            <p class="text-gray-500 text-xxs sm:text-xs mt-1 sm:mt-1.5">Suggest specific areas that could be enhanced or fixed.</p>
                         </div>
                         
                         <!-- Additional Suggestions -->
                         <div>
-                            <label for="{{ form.suggestions.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+                            <label for="{{ form.suggestions.id_for_label }}" class="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2 flex items-center">
                                 {{ form.suggestions.label }}
                                 {% if project.feedback_type_wanted and 'ideas' in project.feedback_type_wanted %}
-                                <span class="ml-2 flex space-x-1">
-                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-800">Ideas</span>
+                                <span class="ml-1.5 sm:ml-2 flex space-x-1">
+                                    <span class="inline-flex items-center px-1.5 sm:px-2 py-0.5 rounded text-xxs sm:text-xs font-medium bg-purple-100 text-purple-800">Ideas</span>
                                 </span>
                                 {% endif %}
                             </label>
@@ -303,69 +303,69 @@
                                 name="{{ form.suggestions.html_name }}" 
                                 id="{{ form.suggestions.id_for_label }}" 
                                 rows="4" 
-                                class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200"
+                                class="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-sm sm:text-base"
                                 placeholder="{% if 'ideas' in project.feedback_type_wanted %}• A helpful feature might be to add...
 {% endif %}• Consider checking out [resource/tool/article] for inspiration
 • You might want to explore [alternative approach]">{{ form.suggestions.value|default:'' }}</textarea>
                             {% if form.suggestions.errors %}
                                 <p class="text-red-500 text-xs mt-1.5">{{ form.suggestions.errors.0 }}</p>
                             {% endif %}
-                            <p class="text-gray-500 text-xs mt-1.5">Optional - Include any additional ideas, resources, or references that might help.</p>
+                            <p class="text-gray-500 text-xxs sm:text-xs mt-1 sm:mt-1.5">Optional - Include any additional ideas, resources, or references that might help.</p>
                         </div>
                         
                         <!-- Vote for Project -->
-                        <div class="pt-5 border-t border-gray-200">
-                            <h3 class="text-sm font-medium text-gray-700 mb-4">Rate this project:</h3>
+                        <div class="pt-4 sm:pt-5 border-t border-gray-200">
+                            <h3 class="text-xs sm:text-sm font-medium text-gray-700 mb-3 sm:mb-4">Rate this project:</h3>
                             
-                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                                <label for="vote_up" class="relative flex items-center border rounded-lg p-3 cursor-pointer hover:bg-green-50 transition-colors duration-200 group border-gray-200 hover:border-green-200">
+                            <div class="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-3">
+                                <label for="vote_up" class="relative flex items-center border rounded-lg p-3 sm:p-3 cursor-pointer hover:bg-green-50 transition-colors duration-200 group border-gray-200 hover:border-green-200">
                                     <input type="radio" id="vote_up" name="vote_type" value="up" class="peer absolute opacity-0 w-0 h-0">
                                     <div class="flex items-center w-full justify-between">
                                         <div class="flex items-center">
-                                            <div class="flex-shrink-0 h-9 w-9 rounded-full bg-green-100 flex items-center justify-center mr-3 group-hover:bg-green-200 transition-colors duration-200 peer-checked:bg-green-300 peer-checked:ring-2 peer-checked:ring-green-500 peer-checked:ring-offset-1">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <div class="flex-shrink-0 h-8 w-8 sm:h-9 sm:w-9 rounded-full bg-green-100 flex items-center justify-center mr-3 sm:mr-3 group-hover:bg-green-200 transition-colors duration-200 peer-checked:bg-green-300 peer-checked:ring-2 peer-checked:ring-green-500 peer-checked:ring-offset-1">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
                                                 </svg>
                                             </div>
                                             <div>
-                                                <p class="text-sm font-medium text-gray-900">Upvote</p>
-                                                <p class="text-xs text-gray-500">High quality project</p>
+                                                <p class="text-xs sm:text-sm font-medium text-gray-900">Upvote</p>
+                                                <p class="text-xxs sm:text-xs text-gray-500">High quality project</p>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="absolute inset-0 border-2 border-transparent rounded-lg peer-checked:border-green-500 pointer-events-none"></div>
                                 </label>
 
-                                <label for="vote_none" class="relative flex items-center border rounded-lg p-3 cursor-pointer hover:bg-gray-50 transition-colors duration-200 group border-gray-200 hover:border-gray-300">
+                                <label for="vote_none" class="relative flex items-center border rounded-lg p-3 sm:p-3 cursor-pointer hover:bg-gray-50 transition-colors duration-200 group border-gray-200 hover:border-gray-300">
                                     <input type="radio" id="vote_none" name="vote_type" value="none" checked class="peer absolute opacity-0 w-0 h-0">
                                     <div class="flex items-center w-full justify-between">
                                         <div class="flex items-center">
-                                            <div class="flex-shrink-0 h-9 w-9 rounded-full bg-gray-100 flex items-center justify-center mr-3 group-hover:bg-gray-200 transition-colors duration-200 peer-checked:bg-gray-300 peer-checked:ring-2 peer-checked:ring-gray-500 peer-checked:ring-offset-1">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <div class="flex-shrink-0 h-8 w-8 sm:h-9 sm:w-9 rounded-full bg-gray-100 flex items-center justify-center mr-3 sm:mr-3 group-hover:bg-gray-200 transition-colors duration-200 peer-checked:bg-gray-300 peer-checked:ring-2 peer-checked:ring-gray-500 peer-checked:ring-offset-1">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 12H6" />
                                                 </svg>
                                             </div>
                                             <div>
-                                                <p class="text-sm font-medium text-gray-900">Neutral</p>
-                                                <p class="text-xs text-gray-500">No vote</p>
+                                                <p class="text-xs sm:text-sm font-medium text-gray-900">Neutral</p>
+                                                <p class="text-xxs sm:text-xs text-gray-500">No vote</p>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="absolute inset-0 border-2 border-transparent rounded-lg peer-checked:border-gray-500 pointer-events-none"></div>
                                 </label>
                                 
-                                <label for="vote_down" class="relative flex items-center border rounded-lg p-3 cursor-pointer hover:bg-red-50 transition-colors duration-200 group border-gray-200 hover:border-red-200">
+                                <label for="vote_down" class="relative flex items-center border rounded-lg p-3 sm:p-3 cursor-pointer hover:bg-red-50 transition-colors duration-200 group border-gray-200 hover:border-red-200">
                                     <input type="radio" id="vote_down" name="vote_type" value="down" class="peer absolute opacity-0 w-0 h-0">
                                     <div class="flex items-center w-full justify-between">
                                         <div class="flex items-center">
-                                            <div class="flex-shrink-0 h-9 w-9 rounded-full bg-red-100 flex items-center justify-center mr-3 group-hover:bg-red-200 transition-colors duration-200 peer-checked:bg-red-300 peer-checked:ring-2 peer-checked:ring-red-500 peer-checked:ring-offset-1">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <div class="flex-shrink-0 h-8 w-8 sm:h-9 sm:w-9 rounded-full bg-red-100 flex items-center justify-center mr-3 sm:mr-3 group-hover:bg-red-200 transition-colors duration-200 peer-checked:bg-red-300 peer-checked:ring-2 peer-checked:ring-red-500 peer-checked:ring-offset-1">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                                                 </svg>
                                             </div>
                                             <div>
-                                                <p class="text-sm font-medium text-gray-900">Downvote</p>
-                                                <p class="text-xs text-gray-500">Needs improvement</p>
+                                                <p class="text-xs sm:text-sm font-medium text-gray-900">Downvote</p>
+                                                <p class="text-xxs sm:text-xs text-gray-500">Needs improvement</p>
                                             </div>
                                         </div>
                                     </div>
@@ -373,18 +373,18 @@
                                 </label>
                             </div>
                             
-                            <p class="text-gray-500 text-xs mt-3">Your vote affects which projects appear on the Top Projects page.</p>
+                            <p class="text-gray-500 text-xxs sm:text-xs mt-2 sm:mt-3">Your vote affects which projects appear on the Top Projects page.</p>
                         </div>
                         
                         <!-- Submit Button -->
-                        <div class="flex justify-between pt-2">
-                            <a href="{% url 'feedback_dashboard' %}" class="inline-flex items-center px-5 py-2.5 border border-gray-300 shadow-sm text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-200">
+                        <div class="flex flex-col sm:flex-row sm:justify-between gap-4 sm:gap-4 pt-5 sm:pt-5">
+                            <a href="{% url 'feedback_dashboard' %}" class="inline-flex items-center justify-center px-4 sm:px-5 py-2.5 sm:py-2.5 border border-gray-300 shadow-sm text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-200 order-2 sm:order-1">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                                 </svg>
                                 Back to Selection
                             </a>
-                            <button type="submit" class="inline-flex justify-center py-2.5 px-7 border border-transparent shadow-md text-sm font-medium rounded-lg text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-300 transform hover:scale-[1.02]">
+                            <button type="submit" class="inline-flex justify-center py-2.5 px-5 sm:px-7 border border-transparent shadow-md text-sm font-medium rounded-lg text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-300 transform hover:scale-[1.02] order-1 sm:order-2">
                                 Submit Feedback
                             </button>
                         </div>
@@ -451,6 +451,22 @@
                     type.classList.remove('bg-indigo-100/70', 'font-medium');
                 });
             });
+        });
+        
+        // Make all badge containers scrollable horizontally on mobile
+        const badgeContainers = document.querySelectorAll('.flex.flex-wrap.gap-1, .flex.flex-wrap.gap-1\\.5');
+        badgeContainers.forEach(container => {
+            if (!container.classList.contains('overflow-x-auto')) {
+                container.classList.add('overflow-x-auto', 'pb-2', 'flex-nowrap');
+            }
+        });
+        
+        // Improve textarea experience on mobile
+        textareas.forEach(textarea => {
+            // Adjust textarea size on mobile to be more comfortable to use
+            if (window.innerWidth < 640) { // sm breakpoint in Tailwind
+                textarea.setAttribute('rows', '5'); // Slightly taller on mobile for better typing experience
+            }
         });
     });
 </script>

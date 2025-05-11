@@ -12,6 +12,10 @@
         .inline {
             display: inline;
         }
+        
+        .mobile-menu-hidden {
+            display: none;
+        }
     </style>
    
     {% block extra_css %}{% endblock %}
@@ -23,7 +27,15 @@
             <div class="flex justify-between items-center">
                 <a href="{% url 'home' %}" class="text-xl font-bold">FeedbackLoop</a>
                 
-                <div class="flex space-x-4 items-center">
+                <!-- Mobile menu button -->
+                <button id="mobile-menu-button" class="md:hidden text-white focus:outline-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                    </svg>
+                </button>
+                
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex space-x-4 items-center">
                     {% if user.is_authenticated %}
                         <a href="{% url 'feedback_dashboard' %}" class="hover:text-indigo-200">Give Feedback</a>
                         <a href="{% url 'submit_project' %}" class="hover:text-indigo-200">Submit Project</a>
@@ -68,6 +80,42 @@
                     {% else %}
                         <a href="{% url 'login' %}" class="hover:text-indigo-200">Login</a>
                         <a href="{% url 'signup' %}" class="bg-indigo-700 px-4 py-2 rounded hover:bg-indigo-800">Sign Up</a>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Mobile Navigation Menu (Hidden by default) -->
+            <div id="mobile-menu" class="mobile-menu-hidden mt-4 pt-4 border-t border-indigo-500 md:hidden">
+                <div class="flex flex-col space-y-3">
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'feedback_dashboard' %}" class="hover:text-indigo-200 py-2">Give Feedback</a>
+                        <a href="{% url 'submit_project' %}" class="hover:text-indigo-200 py-2">Submit Project</a>
+                        <a href="{% url 'top_projects' %}" class="hover:text-indigo-200 py-2">Top Projects</a>
+                        
+                        <a href="{% url 'user_notifications' %}" class="hover:text-indigo-200 flex items-center py-2">
+                            <span>Notifications</span>
+                            {% if notification_count > 0 %}
+                            <span id="mobile-notification-badge" class="inline-flex items-center justify-center w-5 h-5 ml-2 text-xs font-bold text-white bg-red-600 rounded-full">
+                                {{ notification_count }}
+                            </span>
+                            {% else %}
+                            <span id="mobile-notification-badge" class="hidden inline-flex items-center justify-center w-5 h-5 ml-2 text-xs font-bold text-white bg-red-600 rounded-full">
+                                0
+                            </span>
+                            {% endif %}
+                        </a>
+                        
+                        <a href="{% url 'profile' %}" class="hover:text-indigo-200 flex items-center py-2">
+                            <span>Profile ({{ user.profile.credits }} credits)</span>
+                        </a>
+                        
+                        <form method="post" action="{% url 'logout' %}" class="py-2">
+                            {% csrf_token %}
+                            <button type="submit" class="bg-indigo-700 px-4 py-2 rounded hover:bg-indigo-800 w-full text-left">Logout</button>
+                        </form>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="hover:text-indigo-200 py-2">Login</a>
+                        <a href="{% url 'signup' %}" class="bg-indigo-700 px-4 py-2 rounded hover:bg-indigo-800 text-center">Sign Up</a>
                     {% endif %}
                 </div>
             </div>
@@ -136,23 +184,29 @@
             .then(data => {
                 const profileBadge = document.getElementById('notification-badge');
                 const iconBadge = document.getElementById('notification-icon-badge');
+                const mobileBadge = document.getElementById('mobile-notification-badge');
                 
                 if (data.count > 0) {
                     // Update text content
                     profileBadge.textContent = data.count;
                     iconBadge.textContent = data.count;
+                    mobileBadge.textContent = data.count;
                     
                     // Show badges
                     profileBadge.classList.remove('hidden');
                     profileBadge.classList.add('inline-flex');
                     iconBadge.classList.remove('hidden');
                     iconBadge.classList.add('inline-flex');
+                    mobileBadge.classList.remove('hidden');
+                    mobileBadge.classList.add('inline-flex');
                 } else {
                     // Hide badges
                     profileBadge.classList.add('hidden');
                     profileBadge.classList.remove('inline-flex');
                     iconBadge.classList.add('hidden');
                     iconBadge.classList.remove('inline-flex');
+                    mobileBadge.classList.add('hidden');
+                    mobileBadge.classList.remove('inline-flex');
                 }
             })
             .catch(error => {
@@ -165,6 +219,20 @@
         
         // Check every 60 seconds
         setInterval(checkNotifications, 60000);
+        
+        // Mobile menu toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            menuButton.addEventListener('click', function() {
+                if (mobileMenu.classList.contains('mobile-menu-hidden')) {
+                    mobileMenu.classList.remove('mobile-menu-hidden');
+                } else {
+                    mobileMenu.classList.add('mobile-menu-hidden');
+                }
+            });
+        });
     </script>
     {% endif %}
 </body>
