@@ -31,7 +31,9 @@ SITE_ID = 1
 LOGIN_REDIRECT_URL = '/'
 ACCOUNT_LOGOUT_REDIRECT_URL = '/'
 
+import logging
 
+logging.basicConfig(level=logging.DEBUG)
 # Application definition
 
 INSTALLED_APPS = [
