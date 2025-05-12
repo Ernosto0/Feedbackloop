@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-g1rk4m5+8k68r9em5#egch=lvifn4779mj_!vyti=6u1icp@!i
 DEBUG = True
 
 ALLOWED_HOSTS = ['feedbackloop-k2nl.onrender.com', 'localhost', '127.0.0.1']
-SITE_ID = 1
+SITE_ID = 2
 LOGIN_REDIRECT_URL = '/'
 ACCOUNT_LOGOUT_REDIRECT_URL = '/'
 
@@ -182,8 +182,6 @@ AUTHENTICATION_BACKENDS = [
     # `allauth` specific authentication methods, such as login by e-mail
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
-
-SITE_ID = 2
 
 # Allauth settings (updated to fix deprecation warnings)
 ACCOUNT_LOGIN_METHODS = {'email', 'username'}
