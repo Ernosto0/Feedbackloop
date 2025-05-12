@@ -27,6 +27,9 @@ SECRET_KEY = 'django-insecure-g1rk4m5+8k68r9em5#egch=lvifn4779mj_!vyti=6u1icp@!i
 DEBUG = True
 
 ALLOWED_HOSTS = ['feedbackloop-k2nl.onrender.com', 'localhost', '127.0.0.1']
+SITE_ID = 1
+LOGIN_REDIRECT_URL = '/'
+ACCOUNT_LOGOUT_REDIRECT_URL = '/'
 
 
 # Application definition
