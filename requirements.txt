@@ -1,5 +1,5 @@
 # Django and core requirements
-Django==5.2
+django==5.0.2
 pillow==11.2.1
 django-crispy-forms==2.4
 crispy-tailwind==1.0.3

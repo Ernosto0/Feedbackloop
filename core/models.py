@@ -82,6 +82,20 @@ class Project(models.Model):
         self.view_count += 1
         self.save()
 
+class ProjectImage(models.Model):
+    """Additional images for a project."""
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='images')
+    image = models.ImageField(upload_to='project_photos/')
+    caption = models.CharField(max_length=200, blank=True)
+    order = models.IntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        ordering = ['order', 'created_at']
+    
+    def __str__(self):
+        return f"Image for {self.project.title}"
+
 class Feedback(models.Model):
     """Feedback for a project."""
     project = models.ForeignKey(Project, on_delete=models.CASCADE)

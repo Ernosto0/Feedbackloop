@@ -1,7 +1,8 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Project, Feedback, Profile, Tag, PRICING_CHOICES
+from django.forms import inlineformset_factory
+from .models import Project, Feedback, Profile, Tag, PRICING_CHOICES, ProjectImage
 
 class SignUpForm(UserCreationForm):
     """Form for user registration."""
@@ -184,3 +185,12 @@ class UserUpdateForm(forms.ModelForm):
             'username': forms.TextInput(attrs={'class': 'w-full rounded-lg border-gray-300 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'}),
             'email': forms.EmailInput(attrs={'class': 'w-full rounded-lg border-gray-300 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'}),
         } 
+
+# Create an inline formset for project images
+ProjectImageFormSet = inlineformset_factory(
+    Project,
+    ProjectImage,
+    fields=('image', 'caption', 'order'),
+    extra=1,
+    can_delete=True
+) 

@@ -1,7 +1,8 @@
 from django.contrib import admin
 from django.contrib import messages
 from django.utils.html import format_html
-from .models import Profile, Project, Feedback, Tag, Notification, FeedbackRequest, Badge, UserBadge
+from django.urls import reverse
+from .models import Profile, Project, Feedback, Tag, Notification, FeedbackRequest, Badge, UserBadge, FeedbackReaction, ProjectImage
 from .utils import create_feedback_notification
 
 @admin.register(Profile)
@@ -85,6 +86,17 @@ class TagAdmin(admin.ModelAdmin):
     list_display = ('name',)
     search_fields = ('name',)
 
+class FeedbackInline(admin.TabularInline):
+    model = Feedback
+    extra = 0
+    fields = ('giver', 'created_at', 'is_liked', 'is_reported')
+    readonly_fields = ('giver', 'created_at')
+
+class ProjectImageInline(admin.TabularInline):
+    model = ProjectImage
+    extra = 1
+    fields = ('image', 'caption', 'order')
+
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
     list_display = ('title', 'owner', 'created_at', 'is_active')
@@ -92,6 +104,7 @@ class ProjectAdmin(admin.ModelAdmin):
     search_fields = ('title', 'description', 'owner__username')
     date_hierarchy = 'created_at'
     filter_horizontal = ('tags',)
+    inlines = [ProjectImageInline, FeedbackInline]
 
 @admin.register(Feedback)
 class FeedbackAdmin(admin.ModelAdmin):
@@ -253,3 +266,10 @@ class UserBadgeAdmin(admin.ModelAdmin):
     list_filter = ('badge__badge_type', 'date_earned')
     search_fields = ('user__username', 'badge__name')
     date_hierarchy = 'date_earned'
+
+@admin.register(ProjectImage)
+class ProjectImageAdmin(admin.ModelAdmin):
+    list_display = ('project', 'image', 'order', 'created_at')
+    list_filter = ('project', 'created_at')
+    search_fields = ('project__title', 'caption')
+    date_hierarchy = 'created_at'

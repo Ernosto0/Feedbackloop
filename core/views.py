@@ -4,8 +4,8 @@ from django.contrib import messages
 from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse
 from django.contrib.auth import login, authenticate
-from .models import Project, Feedback, Notification, FeedbackRequest, FeedbackReaction
-from .forms import ProjectForm, FeedbackForm, SignUpForm, ProfileUpdateForm, UserUpdateForm
+from .models import Project, Feedback, Notification, FeedbackRequest, FeedbackReaction, Profile, Tag, Badge, UserBadge, ProjectImage
+from .forms import ProjectForm, FeedbackForm, SignUpForm, ProfileUpdateForm, UserUpdateForm, ProjectImageFormSet
 from .utils import (
     create_feedback_notification, 
     create_liked_feedback_notification, 
@@ -128,6 +128,15 @@ def submit_project(request):
             # Process tags (save_m2m is needed for ManyToMany fields)
             form.save_m2m()
             
+            # Handle additional images
+            additional_images = request.FILES.getlist('additional_images')
+            for i, img in enumerate(additional_images):
+                ProjectImage.objects.create(
+                    project=project,
+                    image=img,
+                    order=i
+                )
+            
             # Check and award badges
             check_and_award_badges(request.user)
             
@@ -152,6 +161,16 @@ def update_project(request, pk):
         form = ProjectForm(request.POST, request.FILES, instance=project)
         if form.is_valid():
             project = form.save()
+            
+            # Handle additional images
+            additional_images = request.FILES.getlist('additional_images')
+            for i, img in enumerate(additional_images):
+                ProjectImage.objects.create(
+                    project=project,
+                    image=img,
+                    order=project.images.count() + i  # Append to existing images
+                )
+            
             messages.success(request, 'Project updated successfully!')
             return redirect('project_detail', pk=project.id)
     else:
@@ -160,7 +179,8 @@ def update_project(request, pk):
     return render(request, 'core/submit_project.html', {
         'form': form,
         'is_update': True,
-        'project': project
+        'project': project,
+        'project_images': project.images.all()
     })
 
 @login_required

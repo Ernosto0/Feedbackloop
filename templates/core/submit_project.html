@@ -139,12 +139,12 @@
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5 mr-1.5 sm:mr-2 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                 </svg>
-                                Project Image
+                                Project Images
                             </h2>
                             
-                            <!-- Project Image -->
-                            <div>
-                                <label for="{{ form.photo.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1.5 sm:mb-2">{{ form.photo.label }}</label>
+                            <!-- Primary Project Image -->
+                            <div class="mb-5 sm:mb-6">
+                                <label for="{{ form.photo.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1.5 sm:mb-2">Main Project Image</label>
                                 <div class="mt-1 flex justify-center px-4 sm:px-6 pt-3 sm:pt-5 pb-4 sm:pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-indigo-300 hover:bg-indigo-50/20 transition-colors duration-300">
                                     <div class="space-y-1 sm:space-y-2 text-center">
                                         <svg class="mx-auto h-10 w-10 sm:h-12 sm:w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
@@ -160,9 +160,53 @@
                                         <p class="text-xxs sm:text-xs text-gray-500">PNG, JPG, GIF up to 5MB</p>
                                     </div>
                                 </div>
+                                {% if form.instance.photo %}
+                                <div class="mt-2 flex items-center">
+                                    <img src="{{ form.instance.photo.url }}" alt="Current main image" class="h-16 w-16 sm:h-20 sm:w-20 object-cover rounded-md border border-gray-200 shadow-sm">
+                                    <p class="ml-3 text-xs sm:text-sm text-gray-600">Current main image</p>
+                                </div>
+                                {% endif %}
                                 <p class="text-gray-500 text-xs mt-1">{{ form.photo.help_text }}</p>
                                 {% if form.photo.errors %}
                                     <p class="text-red-500 text-xs mt-1.5">{{ form.photo.errors.0 }}</p>
+                                {% endif %}
+                            </div>
+
+                            <!-- Additional Images -->
+                            <div>
+                                <label for="additional-images-input" class="block text-sm font-medium text-gray-700 mb-1.5 sm:mb-2">Additional Images</label>
+                                <div class="mt-1 flex justify-center px-4 sm:px-6 pt-3 sm:pt-5 pb-4 sm:pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-indigo-300 hover:bg-indigo-50/20 transition-colors duration-300">
+                                    <div class="space-y-1 sm:space-y-2 text-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-10 w-10 sm:h-12 sm:w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        </svg>
+                                        <div class="flex text-xs sm:text-sm text-gray-600 justify-center">
+                                            <label for="additional-images-input" class="relative cursor-pointer bg-indigo-50 hover:bg-indigo-100 px-3 py-2 rounded-md font-medium text-indigo-600 hover:text-indigo-800 focus-within:outline-none transition-colors duration-200">
+                                                <span>Select multiple images</span>
+                                                <input type="file" name="additional_images" id="additional-images-input" multiple accept="image/*" style="position: absolute; left: -9999px;">
+                                            </label>
+                                            <p class="pl-1 self-center">or drag and drop</p>
+                                        </div>
+                                        <p class="text-xxs sm:text-xs text-gray-500">Upload up to 5 additional images (PNG, JPG, GIF)</p>
+                                    </div>
+                                </div>
+                                <p class="text-gray-500 text-xs mt-1">Upload multiple images to showcase different aspects of your project</p>
+                                <div id="image-preview-container" class="mt-2 grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3"></div>
+                                
+                                {% if is_update and project_images %}
+                                <div class="mt-3 sm:mt-4">
+                                    <h3 class="text-sm font-medium text-gray-700 mb-2">Current Additional Images</h3>
+                                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-3">
+                                        {% for image in project_images %}
+                                        <div class="relative group">
+                                            <img src="{{ image.image.url }}" alt="Project image" class="h-24 w-full object-cover rounded-md border border-gray-200 shadow-sm">
+                                            {% if image.caption %}
+                                            <div class="mt-1 text-xs text-gray-500 truncate">{{ image.caption }}</div>
+                                            {% endif %}
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
                                 {% endif %}
                             </div>
                         </div>
@@ -248,28 +292,79 @@
                 preview.className = 'mt-3 rounded-lg w-full max-h-40 sm:max-h-48 object-contain shadow-sm';
                 
                 // Remove any existing preview
-                const existingPreview = document.querySelector('.image-preview');
+                const existingPreview = document.querySelector('#{{ form.photo.id_for_label }}').parentNode.parentNode.parentNode.querySelector('img:not([src^="http"])');
                 if (existingPreview) {
                     existingPreview.remove();
                 }
                 
-                // Create preview container
-                const previewContainer = document.createElement('div');
-                previewContainer.className = 'image-preview mt-3 sm:mt-4 bg-white p-2 sm:p-3 border border-gray-200 rounded-lg';
-                previewContainer.appendChild(preview);
-                
-                // Add preview after the upload section
-                const uploadContainer = e.target.closest('div').parentNode.parentNode.parentNode;
-                uploadContainer.parentNode.appendChild(previewContainer);
-            }
+                // Add the new preview
+                document.querySelector('#{{ form.photo.id_for_label }}').parentNode.parentNode.parentNode.appendChild(preview);
+            };
             reader.readAsDataURL(file);
         }
     });
     
-    // Toggle guest access info field visibility based on pricing plan selection
+    // Handle multiple image uploads and preview
+    document.getElementById('additional-images-input').addEventListener('change', function(e) {
+        console.log('Additional images selected:', e.target.files.length);
+        const files = e.target.files;
+        const previewContainer = document.getElementById('image-preview-container');
+        
+        // Clear existing previews
+        previewContainer.innerHTML = '';
+        
+        // Create previews for each file
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const previewWrapper = document.createElement('div');
+                    previewWrapper.className = 'relative';
+                    
+                    const preview = document.createElement('img');
+                    preview.src = e.target.result;
+                    preview.className = 'h-24 w-full object-cover rounded-md border border-gray-200 shadow-sm';
+                    
+                    previewWrapper.appendChild(preview);
+                    previewContainer.appendChild(previewWrapper);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+    });
+    
+    // Add drag and drop support for additional images
+    const dropZone = document.querySelector('label[for="additional-images-input"]').closest('div.border-dashed');
+    
+    dropZone.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        this.classList.add('border-indigo-500', 'bg-indigo-50');
+    });
+    
+    dropZone.addEventListener('dragleave', function(e) {
+        e.preventDefault();
+        this.classList.remove('border-indigo-500', 'bg-indigo-50');
+    });
+    
+    dropZone.addEventListener('drop', function(e) {
+        e.preventDefault();
+        this.classList.remove('border-indigo-500', 'bg-indigo-50');
+        
+        const fileInput = document.getElementById('additional-images-input');
+        fileInput.files = e.dataTransfer.files;
+        
+        // Trigger change event to update previews
+        const event = new Event('change', { bubbles: true });
+        fileInput.dispatchEvent(event);
+    });
+    
+    // Show guest access field when pricing is "paid"
     document.getElementById('{{ form.pricing_plan.id_for_label }}').addEventListener('change', function(e) {
+        const pricingPlan = e.target.value;
         const guestAccessContainer = document.getElementById('guest-access-container');
-        if (e.target.value === 'paid') {
+        
+        if (pricingPlan === 'paid') {
             guestAccessContainer.classList.remove('hidden');
         } else {
             guestAccessContainer.classList.add('hidden');

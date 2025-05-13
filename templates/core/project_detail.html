@@ -43,16 +43,39 @@
             </div>
         </div>
         
-        <!-- Project Image (Moved to top) -->
+        <!-- Project Images Gallery -->
         <div class="w-full">
+            <!-- Main Image -->
             {% if project.photo %}
-            <img src="{{ project.photo.url }}" alt="{{ project.title }}" class="w-full h-auto max-h-96 object-contain mx-auto border-b border-gray-200">
+            <div class="border-b border-gray-200">
+                <img src="{{ project.photo.url }}" alt="{{ project.title }}" class="w-full h-auto max-h-96 object-contain mx-auto" id="main-project-image">
+            </div>
             {% else %}
             <div class="bg-gradient-to-b from-gray-50 to-gray-100 p-6 sm:p-10 text-center border-b border-gray-200 flex flex-col items-center justify-center" style="min-height: 160px; sm:min-height: 200px;">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 sm:h-20 sm:w-20 text-gray-400/70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
                 <p class="mt-3 text-gray-500 font-medium text-sm sm:text-base">No image available</p>
+            </div>
+            {% endif %}
+            
+            <!-- Thumbnail Gallery -->
+            {% if project.images.exists %}
+            <div class="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200 bg-gray-50">
+                <h3 class="text-sm sm:text-base font-medium text-gray-700 mb-2">Project Gallery</h3>
+                <div class="flex overflow-x-auto gap-2 sm:gap-3 pb-2 image-thumbnails">
+                    {% if project.photo %}
+                    <div class="image-thumbnail cursor-pointer border-2 border-indigo-500 rounded-md flex-shrink-0" data-src="{{ project.photo.url }}">
+                        <img src="{{ project.photo.url }}" alt="Main image" class="h-16 w-16 sm:h-20 sm:w-20 object-cover rounded-sm">
+                    </div>
+                    {% endif %}
+                    
+                    {% for image in project.images.all %}
+                    <div class="image-thumbnail cursor-pointer border-2 border-transparent hover:border-indigo-300 rounded-md transition-colors duration-200 flex-shrink-0" data-src="{{ image.image.url }}">
+                        <img src="{{ image.image.url }}" alt="Project image {{ forloop.counter }}" class="h-16 w-16 sm:h-20 sm:w-20 object-cover rounded-sm">
+                    </div>
+                    {% endfor %}
+                </div>
             </div>
             {% endif %}
         </div>
@@ -194,72 +217,15 @@
                             </form>
                         </div>
                         
-                        {% if user.profile.credits > 0 %}
-                        <div class="mt-4 sm:mt-5">
-                            <h4 class="text-sm sm:text-md font-medium text-gray-700 mb-2 sm:mb-3">Use your credits to get feedback</h4>
-                            <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
-                                <label for="credit-input-{{ project.id }}" class="text-xs sm:text-sm font-medium text-gray-600">Credits to use:</label>
-                                <div class="flex items-center border border-gray-300 rounded-lg overflow-hidden shadow-sm bg-white">
-                                    <button 
-                                        type="button" 
-                                        onclick="decrementCredits('credit-input-{{ project.id }}')" 
-                                        class="px-2 sm:px-3 py-1.5 sm:py-2 bg-gray-50 hover:bg-gray-100 border-r border-gray-300 focus:outline-none transition-colors duration-200 text-gray-600"
-                                        aria-label="Decrease credits">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 sm:h-4 sm:w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" />
-                                        </svg>
-                                    </button>
-                                    <input 
-                                        type="number" 
-                                        id="credit-input-{{ project.id }}" 
-                                        min="1" 
-                                        max="{{ user.profile.credits }}" 
-                                        value="1" 
-                                        class="w-12 sm:w-16 py-1.5 sm:py-2 px-2 sm:px-3 text-center text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
-                                        aria-label="Number of credits">
-                                    <button 
-                                        type="button" 
-                                        onclick="incrementCredits('credit-input-{{ project.id }}', {{ user.profile.credits }})" 
-                                        class="px-2 sm:px-3 py-1.5 sm:py-2 bg-gray-50 hover:bg-gray-100 border-l border-gray-300 focus:outline-none transition-colors duration-200 text-gray-600"
-                                        aria-label="Increase credits">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 sm:h-4 sm:w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                                        </svg>
-                                    </button>
-                                </div>
-                                <span class="text-xs text-gray-500 italic">(You have {{ user.profile.credits }} credits available)</span>
-                            </div>
-                            <button 
-                                onclick="getFeedback({{ project.id }}, this, document.getElementById('credit-input-{{ project.id }}').value)" 
-                                class="w-full flex items-center justify-center gap-1.5 sm:gap-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white py-2.5 sm:py-3 px-3 sm:px-4 rounded-lg shadow-md transition-all duration-300 transform hover:scale-[1.02] font-medium text-sm sm:text-base"
-                                id="feedback-btn-{{ project.id }}">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                                </svg>
-                                Get Feedback
-                            </button>
+                        
                         </div>
-                        {% else %}
-                        <div class="mt-4 sm:mt-5">
-                            <div class="bg-amber-50 border border-amber-200 rounded-lg p-3 sm:p-4 mb-3 sm:mb-4 shadow-sm">
-                                <div class="flex items-start">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5 text-amber-500 mr-1.5 sm:mr-2 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                              <a href="{% url 'get_feedback_page' project_id=project.id %}" 
+                                   class="w-full flex items-center justify-center gap-1 sm:gap-2 bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600 text-white py-1.5 sm:py-2 px-3 sm:px-4 rounded-lg shadow-md transition-all duration-300 transform hover:scale-[1.02] text-xs sm:text-sm font-medium">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 sm:h-4 sm:w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
                                     </svg>
-                                    <p class="text-amber-700 text-xs sm:text-sm">You need at least 1 credit to get feedback. Earn credits by giving feedback to others.</p>
-                                </div>
-                            </div>
-                            <button 
-                                disabled
-                                class="w-full flex items-center justify-center gap-1.5 sm:gap-2 bg-gray-400 text-white py-2.5 sm:py-3 px-3 sm:px-4 rounded-lg shadow-md opacity-70 cursor-not-allowed text-sm sm:text-base"
-                                id="feedback-btn-{{ project.id }}">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                                </svg>
-                                Insufficient Credits
-                            </button>
-                        </div>
-                        {% endif %}
+                                    Get Feedback
+                                </a>                        </div>
                     </div>
                     {% endif %}
                 </div>
@@ -678,6 +644,25 @@
                         plusBtn.classList.add('hover:bg-gray-100');
                     }
                 }
+            });
+        }
+        
+        // Initialize image gallery functionality
+        const thumbnails = document.querySelectorAll('.image-thumbnail');
+        const mainImage = document.getElementById('main-project-image');
+        
+        if (thumbnails.length > 0 && mainImage) {
+            thumbnails.forEach(thumbnail => {
+                thumbnail.addEventListener('click', function() {
+                    // Update main image
+                    mainImage.src = this.getAttribute('data-src');
+                    
+                    // Update selected state
+                    thumbnails.forEach(t => t.classList.remove('border-indigo-500'));
+                    thumbnails.forEach(t => t.classList.add('border-transparent'));
+                    this.classList.remove('border-transparent');
+                    this.classList.add('border-indigo-500');
+                });
             });
         }
     });
