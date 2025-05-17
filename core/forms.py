@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.forms import inlineformset_factory
-from .models import Project, Feedback, Profile, Tag, PRICING_CHOICES, ProjectImage
+from .models import Project, Feedback, Profile, Tag, PRICING_CHOICES, ProjectImage, WaitlistEntry
 
 class SignUpForm(UserCreationForm):
     """Form for user registration."""
@@ -194,3 +194,26 @@ ProjectImageFormSet = inlineformset_factory(
     extra=1,
     can_delete=True
 ) 
+
+class WaitlistForm(forms.ModelForm):
+    """Form for waitlist signup."""
+    email = forms.EmailField(
+        max_length=254, 
+        required=True,
+        widget=forms.EmailInput(attrs={
+            'class': 'w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50',
+            'placeholder': 'Enter your email address'
+        })
+    )
+    name = forms.CharField(
+        max_length=100,
+        required=False,
+        widget=forms.TextInput(attrs={
+            'class': 'w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50',
+            'placeholder': 'Enter your name (optional)'
+        })
+    )
+    
+    class Meta:
+        model = WaitlistEntry
+        fields = ['email', 'name'] 

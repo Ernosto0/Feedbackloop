@@ -156,4 +156,37 @@ def send_feedback_liked_email(recipient_user, feedback):
         recipient_email=recipient_user.email,
         subject=subject,
         html_content=html_content
+    )
+
+def send_launch_notification_email(waitlist_entry):
+    """
+    Send launch notification email to waitlist subscribers.
+    
+    Args:
+        waitlist_entry: WaitlistEntry object
+    """
+    recipient_name = waitlist_entry.name if waitlist_entry.name else "there"
+    subject = "FeedbackLoop has launched! 🚀"
+    
+    html_content = f"""
+    <h2>Hello {recipient_name},</h2>
+    <p>We're excited to announce that <strong>FeedbackLoop</strong> has officially launched!</p>
+    <p>Thank you for joining our waitlist. As an early supporter, you now have access to our platform where you can:</p>
+    <ul>
+        <li>Submit your projects for quality feedback</li>
+        <li>Give feedback to others and earn credits</li>
+        <li>Connect with fellow creators</li>
+        <li>Improve your work through structured, actionable insights</li>
+    </ul>
+    <p><a href="{settings.SITE_URL}/signup/" style="background-color: #4f46e5; color: #ffffff; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block; margin: 20px 0;">Create Your Account Now</a></p>
+    <p>As a thank you for your early interest, we're giving each waitlist member <strong>3 bonus credits</strong> to get started!</p>
+    <p>We can't wait to see your projects on FeedbackLoop!</p>
+    <p>Warm regards,<br>The FeedbackLoop Team</p>
+    """
+    
+    return send_email(
+        recipient_name=recipient_name,
+        recipient_email=waitlist_entry.email,
+        subject=subject,
+        html_content=html_content
     ) 

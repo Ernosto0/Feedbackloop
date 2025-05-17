@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About FeedbackLoop</title>
+    
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        .inline {
+            display: inline;
+        }
+        
+        .mobile-menu-hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+    <!-- Simple Navigation -->
+    <nav class="bg-indigo-600 text-white shadow-md">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <a href="{% url 'waitlist' %}" class="text-xl font-bold">FeedbackLoop</a>
+                
+                <!-- Mobile menu button -->
+                <button id="mobile-menu-button" class="md:hidden text-white focus:outline-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                    </svg>
+                </button>
+                
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex space-x-4 items-center">
+                    <a href="{% url 'about' %}" class="hover:text-indigo-200">About</a>
+                    <a href="{% url 'waitlist' %}" class="bg-indigo-700 px-4 py-2 rounded hover:bg-indigo-800">Join Waitlist</a>
+                </div>
+            </div>
+            
+            <!-- Mobile Navigation Menu (Hidden by default) -->
+            <div id="mobile-menu" class="mobile-menu-hidden mt-4 pt-4 border-t border-indigo-500 md:hidden">
+                <div class="flex flex-col space-y-3">
+                    <a href="{% url 'about' %}" class="hover:text-indigo-200 py-2">About</a>
+                    <a href="{% url 'waitlist' %}" class="bg-indigo-700 px-4 py-2 rounded text-center">Join Waitlist</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Messages/Alerts -->
+    {% if messages %}
+        <div class="container mx-auto px-4 py-2">
+            {% for message in messages %}
+                <div class="p-4 my-2 {% if message.tags == 'error' %}bg-red-100 text-red-700{% elif message.tags == 'success' %}bg-green-100 text-green-700{% elif message.tags == 'warning' %}bg-yellow-100 text-yellow-700{% else %}bg-blue-100 text-blue-700{% endif %} rounded">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-10 flex-grow">
+        <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-md overflow-hidden">
+            <div class="p-8">
+                <h1 class="text-3xl font-bold text-indigo-800 mb-6">About FeedbackLoop</h1>
+                
+                <div class="prose lg:prose-xl max-w-none">
+                    <p class="mb-6">
+                        FeedbackLoop is a platform designed to help creators improve their projects through structured, 
+                        actionable feedback. We believe in the power of peer feedback to elevate the quality of creative work.
+                    </p>
+                    
+                    <h2 class="text-2xl font-semibold text-indigo-700 mb-4">Our Mission</h2>
+                    <p class="mb-6">
+                        Our mission is to create a community where creators can exchange meaningful feedback in a fair and 
+                        balanced way. We've designed FeedbackLoop with a credit-based system to ensure everyone both gives 
+                        and receives quality feedback.
+                    </p>
+                    
+                    <h2 class="text-2xl font-semibold text-indigo-700 mb-4">How It Works</h2>
+                    <p class="mb-6">
+                        FeedbackLoop operates on a simple principle: give feedback to get feedback. Users earn credits by 
+                        providing thoughtful feedback on others' projects, which they can then spend to receive feedback on 
+                        their own work.
+                    </p>
+                    
+                    <h2 class="text-2xl font-semibold text-indigo-700 mb-4">Our Vision</h2>
+                    <p class="mb-6">
+                        We envision a world where creators at all levels have access to quality feedback that helps them improve 
+                        their craft. Whether you're a student, freelancer, or professional, FeedbackLoop is designed to help you 
+                        grow through structured peer review.
+                    </p>
+                    
+                    <div class="bg-indigo-50 p-6 rounded-lg border border-indigo-100 my-8">
+                        <h3 class="text-xl font-semibold text-indigo-800 mb-3">Launching Soon!</h3>
+                        <p class="mb-4">FeedbackLoop is currently in the final stages of development and will be launching in approximately 2 weeks.</p>
+                        <a href="{% url 'waitlist' %}" class="inline-block bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-lg transition duration-200">
+                            Join Our Waitlist
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Simple Footer -->
+    <footer class="bg-indigo-800 text-white py-8 shadow-inner">
+        <div class="container mx-auto px-4">
+            <div class="text-center">
+                <h3 class="text-xl font-bold mb-4">FeedbackLoop</h3>
+                <p class="text-indigo-200 mb-4">Connect, share, and grow with peer feedback</p>
+                <p class="text-indigo-300 text-sm">© 2025 FeedbackLoop</p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Mobile Menu JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            mobileMenuButton.addEventListener('click', function() {
+                mobileMenu.classList.toggle('mobile-menu-hidden');
+            });
+        });
+    </script>
+</body>
+</html> 

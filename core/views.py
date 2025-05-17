@@ -4,8 +4,8 @@ from django.contrib import messages
 from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse
 from django.contrib.auth import login, authenticate
-from .models import Project, Feedback, Notification, FeedbackRequest, FeedbackReaction, Profile, Tag, Badge, UserBadge, ProjectImage
-from .forms import ProjectForm, FeedbackForm, SignUpForm, ProfileUpdateForm, UserUpdateForm, ProjectImageFormSet
+from .models import Project, Feedback, Notification, FeedbackRequest, FeedbackReaction, Profile, Tag, Badge, UserBadge, ProjectImage, WaitlistEntry
+from .forms import ProjectForm, FeedbackForm, SignUpForm, ProfileUpdateForm, UserUpdateForm, ProjectImageFormSet, WaitlistForm
 from .utils import (
     create_feedback_notification, 
     create_liked_feedback_notification, 
@@ -19,19 +19,43 @@ from .utils import (
 from django.db.models import Count, Q, F, OuterRef, Subquery, IntegerField
 from django.db.models.functions import Coalesce
 from django.contrib.auth.models import User
+from django.conf import settings
 
 def home(request):
     """Home page view."""
-    # Get stats for homepage
-    total_projects_count = Project.objects.count()
-    total_feedback_count = Feedback.objects.count()
-    active_voters_count = User.objects.filter(given_feedback__isnull=False).distinct().count()
+    # If in development mode, show the regular home page
+    if settings.DEVELOPMENT:
+        # Get stats for homepage
+        total_projects_count = Project.objects.count()
+        total_feedback_count = Feedback.objects.count()
+        active_voters_count = User.objects.filter(given_feedback__isnull=False).distinct().count()
+        
+        return render(request, 'core/home.html', {
+            'total_projects_count': total_projects_count,
+            'total_feedback_count': total_feedback_count,
+            'active_voters_count': active_voters_count
+        })
+    else:
+        # In production, show the waitlist landing page
+        return waitlist_landing_page(request)
+
+def waitlist_landing_page(request):
+    """Landing page with waitlist signup form."""
+    if request.method == 'POST':
+        form = WaitlistForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data.get('email')
+            # Check if this email is already on the waitlist
+            if WaitlistEntry.objects.filter(email=email).exists():
+                messages.info(request, "You're already on our waitlist! We'll notify you when we launch.")
+            else:
+                form.save()
+                messages.success(request, "Thanks for joining our waitlist! We'll notify you when we launch.")
+            return redirect('waitlist')
+    else:
+        form = WaitlistForm()
     
-    return render(request, 'core/home.html', {
-        'total_projects_count': total_projects_count,
-        'total_feedback_count': total_feedback_count,
-        'active_voters_count': active_voters_count
-    })
+    return render(request, 'core/waitlist_landing.html', {'form': form})
 
 def signup(request):
     """User registration view."""
@@ -811,6 +835,12 @@ def review_preparation(request, project_id):
 
 def about(request):
     """About page view."""
+    # Check if we're in prelaunch mode
+    if not settings.DEVELOPMENT:
+        # Use a simplified about page in prelaunch mode
+        return render(request, 'core/about_prelaunch.html')
+    
+    # Standard about page in development mode
     return render(request, 'core/about.html')
 
 def privacy_policy(request):

@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib import messages
 from django.utils.html import format_html
 from django.urls import reverse
-from .models import Profile, Project, Feedback, Tag, Notification, FeedbackRequest, Badge, UserBadge, FeedbackReaction, ProjectImage
+from .models import Profile, Project, Feedback, Tag, Notification, FeedbackRequest, Badge, UserBadge, FeedbackReaction, ProjectImage, WaitlistEntry
 from .utils import create_feedback_notification
 
 @admin.register(Profile)
@@ -272,4 +272,13 @@ class ProjectImageAdmin(admin.ModelAdmin):
     list_display = ('project', 'image', 'order', 'created_at')
     list_filter = ('project', 'created_at')
     search_fields = ('project__title', 'caption')
+    date_hierarchy = 'created_at'
+
+admin.site.register(FeedbackReaction)
+
+@admin.register(WaitlistEntry)
+class WaitlistEntryAdmin(admin.ModelAdmin):
+    list_display = ('email', 'name', 'created_at')
+    search_fields = ('email', 'name')
+    list_filter = ('created_at',)
     date_hierarchy = 'created_at'

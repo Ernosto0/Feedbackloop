@@ -22,6 +22,7 @@
         </div>
     </form>
     
+    {% if ENABLE_GOOGLE_AUTH %}
     <div class="my-6 flex items-center before:flex-1 before:border-t before:border-gray-300 before:mt-0.5 after:flex-1 after:border-t after:border-gray-300 after:mt-0.5">
         <p class="text-center font-semibold mx-4 mb-0">OR</p>
     </div>
@@ -33,6 +34,7 @@
             <span>Sign in with Google</span>
         </a>
     </div>
+    {% endif %}
     
     <div class="mt-8 border-t pt-6">
         <p class="text-center text-gray-600">

@@ -1,11 +1,11 @@
 from django.utils import timezone
 from datetime import timedelta
 from django.conf import settings
-from .models import Notification, Badge, UserBadge, Feedback, Project
+from .models import Notification, Badge, UserBadge, Feedback, Project, WaitlistEntry
 
 # Import email functions if email notifications are enabled
 if settings.SEND_EMAIL_NOTIFICATIONS:
-    from .emailer import send_feedback_received_email, send_feedback_liked_email
+    from .emailer import send_feedback_received_email, send_feedback_liked_email, send_launch_notification_email
 
 def create_feedback_notification(feedback):
     """Create notification when new feedback is received"""
@@ -172,4 +172,35 @@ def check_and_award_badges(user):
 
 def get_user_badges(user):
     """Get all badges for a user"""
-    return UserBadge.objects.filter(user=user) 
+    return UserBadge.objects.filter(user=user)
+
+def notify_waitlist():
+    """Send launch notification to all waitlist subscribers."""
+    # If email notifications are not enabled, return early
+    if not settings.SEND_EMAIL_NOTIFICATIONS:
+        print("Email notifications are disabled. Skipping waitlist notification.")
+        return 0
+    
+    # Import the email function here to ensure it's available when SEND_EMAIL_NOTIFICATIONS 
+    # is dynamically set to True with override_settings
+    try:
+        from .emailer import send_launch_notification_email
+    except ImportError as e:
+        print(f"Error importing send_launch_notification_email: {e}")
+        return 0
+    
+    # Get all waitlist entries
+    waitlist_entries = WaitlistEntry.objects.all()
+    successful = 0
+    failed = 0
+    
+    for entry in waitlist_entries:
+        try:
+            send_launch_notification_email(entry)
+            successful += 1
+        except Exception as e:
+            failed += 1
+            print(f"Error sending launch notification to {entry.email}: {e}")
+    
+    print(f"Launch notification sent to {successful} subscribers. Failed: {failed}")
+    return successful 

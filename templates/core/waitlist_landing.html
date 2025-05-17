@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FeedbackLoop - Join Our Waitlist</title>
+    
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Add animations -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    
+    <style>
+        .inline {
+            display: inline;
+        }
+        
+        .mobile-menu-hidden {
+            display: none;
+        }
+        
+        /* Custom animations */
+        .fade-in-up {
+            animation: fadeInUp 0.8s ease-out;
+        }
+        
+        .pulse-effect {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Gradient background */
+        .hero-gradient {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+        }
+        
+        /* Card hover effects */
+        .feature-card {
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.2);
+        }
+        
+        /* Waitlist form styles */
+        .waitlist-form {
+            backdrop-filter: blur(12px);
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-indigo-50 via-white to-purple-50 min-h-screen flex flex-col">
+    <!-- Navigation -->
+    <nav class="bg-white/80 backdrop-blur-md text-indigo-700 shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <a href="{% url 'waitlist' %}" class="flex items-center space-x-2">
+                    <img src="{{ MEDIA_URL }}logo.png" alt="FeedbackLoop Logo" class="h-10 w-auto">
+                    <span class="text-xl font-bold">FeedbackLoop</span>
+                </a>
+                
+                <!-- Mobile menu button -->
+                <button id="mobile-menu-button" class="md:hidden text-indigo-700 focus:outline-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                    </svg>
+                </button>
+                
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex space-x-4 items-center">
+                    <a href="{% url 'about' %}" class="hover:text-indigo-500 transition-colors">About</a>
+                    <span class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 py-2 rounded-full font-bold animate-pulse">Coming Soon</span>
+                </div>
+            </div>
+            
+            <!-- Mobile Navigation Menu (Hidden by default) -->
+            <div id="mobile-menu" class="mobile-menu-hidden mt-4 pt-4 border-t border-indigo-100 md:hidden">
+                <div class="flex flex-col space-y-3">
+                    <a href="{% url 'about' %}" class="hover:text-indigo-500 py-2">About</a>
+                    <span class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 py-2 rounded-full text-center">Coming Soon</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Messages/Alerts -->
+    {% if messages %}
+        <div class="container mx-auto px-4 py-2">
+            {% for message in messages %}
+                <div class="p-4 my-2 {% if message.tags == 'error' %}bg-red-100 text-red-700{% elif message.tags == 'success' %}bg-green-100 text-green-700{% elif message.tags == 'warning' %}bg-yellow-100 text-yellow-700{% else %}bg-blue-100 text-blue-700{% endif %} rounded-lg shadow-sm animate__animated animate__fadeIn">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-6 flex-grow">
+        <div class="hero-gradient text-white py-20 md:py-28 rounded-3xl shadow-xl mb-16 overflow-hidden relative">
+            <!-- Background patterns -->
+            <div class="absolute inset-0 opacity-10">
+                <div class="absolute top-0 left-0 w-full h-full" style="background-image: url('data:image/svg+xml,%3Csvg width=\"100\" height=\"100\" viewBox=\"0 0 100 100\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cpath d=\"M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z\" fill=\"%23ffffff\" fill-opacity=\"1\" fill-rule=\"evenodd\"/%3E%3C/svg%3E');"></div>
+            </div>
+            
+            <div class="container mx-auto px-4 relative z-10">
+                <div class="max-w-5xl mx-auto text-center">
+                    <!-- Hero Section with Logo -->
+                    <div class="mb-12 animate__animated animate__fadeIn">
+                        <img src="{{ MEDIA_URL }}logo.png" alt="FeedbackLoop Logo" class="h-24 w-auto mx-auto mb-6">
+                        <h1 class="text-5xl md:text-7xl font-extrabold mb-6 animate__animated animate__fadeInUp">FeedbackLoop</h1>
+                        <p class="text-2xl md:text-4xl text-indigo-100 mb-6 animate__animated animate__fadeInUp animate__delay-1s">Give feedback to get feedback</p>
+                        <p class="text-lg md:text-xl text-indigo-200 mb-10 max-w-3xl mx-auto animate__animated animate__fadeInUp animate__delay-2s">
+                            The platform that connects creators for quality, structured feedback. 
+                            <span class="font-bold bg-white/20 px-3 py-1 rounded-full text-white">Launching in 2 weeks!</span>
+                        </p>
+                        
+                        <!-- CTA Button -->
+                        <a href="#waitlist" class="inline-block bg-white text-indigo-700 font-bold text-lg px-8 py-4 rounded-full shadow-lg hover:shadow-xl transform transition hover:-translate-y-1 animate__animated animate__fadeInUp animate__delay-3s">
+                            Join the Waitlist
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="max-w-6xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+                <!-- Left side: Features with animation -->
+                <div class="space-y-8 fade-in-up">
+                    <h2 class="text-3xl font-bold text-indigo-800 mb-8 border-b-2 border-indigo-200 pb-2 inline-block">How FeedbackLoop Works</h2>
+                    
+                    <div class="flex items-start space-x-4 feature-card p-4 rounded-xl">
+                        <div class="bg-gradient-to-br from-indigo-500 to-purple-500 p-3 rounded-xl text-white">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11.5V14m0-2.5v-6a1.5 1.5 0 113 0m-3 6a1.5 1.5 0 00-3 0v2a7.5 7.5 0 0015 0v-5a1.5 1.5 0 00-3 0m-6-3V11m0-5.5v-1a1.5 1.5 0 013 0v1m0 0V11m0-5.5a1.5 1.5 0 013 0v3m0 0V11" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-indigo-800">Submit Your Project</h3>
+                            <p class="text-gray-600">Share your website, app, or portfolio for others to review and provide structured, actionable feedback.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start space-x-4 feature-card p-4 rounded-xl">
+                        <div class="bg-gradient-to-br from-indigo-500 to-purple-500 p-3 rounded-xl text-white">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-indigo-800">Give Feedback</h3>
+                            <p class="text-gray-600">Review other projects and provide valuable insights to earn credits. Help others improve while sharpening your own critical thinking.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start space-x-4 feature-card p-4 rounded-xl">
+                        <div class="bg-gradient-to-br from-indigo-500 to-purple-500 p-3 rounded-xl text-white">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-indigo-800">Use Credits</h3>
+                            <p class="text-gray-600">Spend your earned credits to receive high-quality feedback on your own projects. Our fair exchange system ensures everyone contributes and benefits.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start space-x-4 feature-card p-4 rounded-xl">
+                        <div class="bg-gradient-to-br from-indigo-500 to-purple-500 p-3 rounded-xl text-white">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-indigo-800">Quality Feedback</h3>
+                            <p class="text-gray-600">Our structured feedback system ensures you get insightful, actionable feedback to help you improve your work and grow as a creator.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Right side: Waitlist Signup with enhanced styling -->
+                <div id="waitlist" class="waitlist-form rounded-2xl shadow-2xl p-8 border border-indigo-100 pulse-effect">
+                    <div class="text-center mb-6">
+                        <h2 class="text-3xl font-bold text-indigo-800 mb-2">Join Our Waitlist</h2>
+                        <p class="text-indigo-600">Be among the first to experience FeedbackLoop!</p>
+                    </div>
+                    
+                    <form method="post" class="space-y-6">
+                        {% csrf_token %}
+                        
+                        <div class="bg-white rounded-xl p-4 shadow-inner">
+                            <label for="{{ form.email.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Email address</label>
+                            {{ form.email }}
+                            {% if form.email.errors %}
+                                <p class="text-red-500 text-sm mt-1">{{ form.email.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="bg-white rounded-xl p-4 shadow-inner">
+                            <label for="{{ form.name.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Name (optional)</label>
+                            {{ form.name }}
+                        </div>
+                        
+                        <button type="submit" class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold py-4 px-6 rounded-xl shadow-lg transition duration-200 transform hover:-translate-y-1">
+                            Notify Me When You Launch
+                        </button>
+                    </form>
+                    
+                    <div class="mt-6 text-center text-sm text-gray-500">
+                        <p>Get early access and special perks!</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Why Join Section with more engaging design -->
+            <div class="mt-24 text-center">
+                <h2 class="text-3xl font-bold text-indigo-800 mb-10 inline-block border-b-2 border-indigo-200 pb-2">Why Join FeedbackLoop?</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8">
+                    <div class="bg-white p-8 rounded-2xl shadow-xl border border-indigo-50 feature-card">
+                        <div class="bg-gradient-to-br from-indigo-500 to-purple-500 p-4 rounded-full text-white inline-block mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-2xl font-bold text-indigo-800 mb-3">Get Better, Faster</h3>
+                        <p class="text-gray-600">Receive actionable feedback to rapidly improve your projects and skills. Iterate with confidence based on real user insights.</p>
+                    </div>
+                    
+                    <div class="bg-white p-8 rounded-2xl shadow-xl border border-indigo-50 feature-card">
+                        <div class="bg-gradient-to-br from-indigo-500 to-purple-500 p-4 rounded-full text-white inline-block mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-2xl font-bold text-indigo-800 mb-3">Build Connections</h3>
+                        <p class="text-gray-600">Connect with other creators and build your professional network. Find collaborators, mentors, and peers in your creative journey.</p>
+                    </div>
+                    
+                    <div class="bg-white p-8 rounded-2xl shadow-xl border border-indigo-50 feature-card">
+                        <div class="bg-gradient-to-br from-indigo-500 to-purple-500 p-4 rounded-full text-white inline-block mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                            </svg>
+                        </div>
+                        <h3 class="text-2xl font-bold text-indigo-800 mb-3">Fair Exchange</h3>
+                        <p class="text-gray-600">Our credit system ensures everyone contributes and benefits equally. Give feedback to receive feedback in a sustainable ecosystem.</p>
+                    </div>
+                </div>
+                
+                <!-- FAQ Section -->
+                <div class="mt-16 p-8 bg-indigo-50 rounded-3xl">
+                    <h3 class="text-2xl font-bold text-indigo-800 mb-8">Frequently Asked Questions</h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-white p-6 rounded-xl shadow-md transition-all duration-300 hover:shadow-lg">
+                            <h4 class="text-xl font-bold text-indigo-700 mb-3">How does FeedbackLoop work?</h4>
+                            <p class="text-gray-600">Our platform works on a credit system. You earn credits by giving feedback to other creators, which you can then spend to receive feedback on your own projects.</p>
+                        </div>
+                        
+                        <div class="bg-white p-6 rounded-xl shadow-md transition-all duration-300 hover:shadow-lg">
+                            <h4 class="text-xl font-bold text-indigo-700 mb-3">What type of projects can I submit?</h4>
+                            <p class="text-gray-600">You can submit websites, mobile apps, UI designs, portfolios, and other digital projects that would benefit from structured feedback.</p>
+                        </div>
+                        
+                        <div class="bg-white p-6 rounded-xl shadow-md transition-all duration-300 hover:shadow-lg">
+                            <h4 class="text-xl font-bold text-indigo-700 mb-3">How is the feedback structured?</h4>
+                            <p class="text-gray-600">Feedback is provided in a structured format covering what works well, what could be improved, and specific suggestions for enhancement.</p>
+                        </div>
+                        
+                        <div class="bg-white p-6 rounded-xl shadow-md transition-all duration-300 hover:shadow-lg">
+                            <h4 class="text-xl font-bold text-indigo-700 mb-3">When will FeedbackLoop launch?</h4>
+                            <p class="text-gray-600">We're launching in 2 weeks! Join our waitlist to be notified as soon as we go live and get early access to the platform.</p>
+                        </div>
+                        
+                        <div class="bg-white p-6 rounded-xl shadow-md transition-all duration-300 hover:shadow-lg">
+                            <h4 class="text-xl font-bold text-indigo-700 mb-3">Is there a limit to how many projects I can submit?</h4>
+                            <p class="text-gray-600">You can submit as many projects as you have credits for. The more feedback you give, the more credits you earn to use on your own projects.</p>
+                        </div>
+                        
+                        <div class="bg-white p-6 rounded-xl shadow-md transition-all duration-300 hover:shadow-lg">
+                            <h4 class="text-xl font-bold text-indigo-700 mb-3">How do I know the feedback will be high quality?</h4>
+                            <p class="text-gray-600">Our platform includes a rating system for feedback quality. Users who consistently provide high-quality feedback are rewarded with bonus credits.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Final CTA -->
+                <div class="mt-16 text-center">
+                    <a href="#waitlist" class="inline-block bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold text-xl px-10 py-5 rounded-full shadow-lg hover:shadow-xl transform transition hover:-translate-y-1 animate-pulse">
+                        Join the Waitlist Now
+                    </a>
+                    
+                    <!-- Countdown Timer -->
+                    <div class="mt-8 mb-4">
+                        <p class="text-gray-600 mb-2">Launching on June 15, 2025:</p>
+                        <div class="flex justify-center space-x-4">
+                            <div class="bg-white p-3 rounded-lg shadow-md w-20">
+                                <div id="days" class="text-2xl font-bold text-indigo-700">14</div>
+                                <div class="text-xs text-gray-500">Days</div>
+                            </div>
+                            <div class="bg-white p-3 rounded-lg shadow-md w-20">
+                                <div id="hours" class="text-2xl font-bold text-indigo-700">00</div>
+                                <div class="text-xs text-gray-500">Hours</div>
+                            </div>
+                            <div class="bg-white p-3 rounded-lg shadow-md w-20">
+                                <div id="minutes" class="text-2xl font-bold text-indigo-700">00</div>
+                                <div class="text-xs text-gray-500">Minutes</div>
+                            </div>
+                            <div class="bg-white p-3 rounded-lg shadow-md w-20">
+                                <div id="seconds" class="text-2xl font-bold text-indigo-700">00</div>
+                                <div class="text-xs text-gray-500">Seconds</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+         
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Enhanced Footer -->
+    <footer class="bg-indigo-900 text-white py-12 shadow-inner mt-20">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <div class="flex items-center mb-4">
+                        <img src="{{ MEDIA_URL }}logo.png" alt="FeedbackLoop Logo" class="h-10 w-auto mr-2">
+                        <h3 class="text-2xl font-bold">FeedbackLoop</h3>
+                    </div>
+                    <p class="text-indigo-200 mb-4">Connect, share, and grow with peer feedback</p>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="{% url 'about' %}" class="text-indigo-200 hover:text-white transition-colors">About</a></li>
+                        <li><a href="#" class="text-indigo-200 hover:text-white transition-colors">FAQ</a></li>
+                        <li><a href="#" class="text-indigo-200 hover:text-white transition-colors">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Connect With Us</h4>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-indigo-200 hover:text-white transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/>
+                            </svg>
+                        </a>
+                        <a href="#" class="text-indigo-200 hover:text-white transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm3 8h-1.35c-.538 0-.65.221-.65.778v1.222h2l-.209 2h-1.791v7h-3v-7h-2v-2h2v-2.308c0-1.769.931-2.692 3.029-2.692h1.971v3z"/>
+                            </svg>
+                        </a>
+                        <a href="#" class="text-indigo-200 hover:text-white transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-2 16h-2v-6h2v6zm-1-6.891c-.607 0-1.1-.496-1.1-1.109 0-.612.492-1.109 1.1-1.109s1.1.497 1.1 1.109c0 .613-.493 1.109-1.1 1.109zm8 6.891h-1.998v-2.861c0-1.881-2.002-1.722-2.002 0v2.861h-2v-6h2v1.093c.872-1.616 4-1.736 4 1.548v3.359z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-indigo-800 mt-8 pt-6 text-center">
+                <p class="text-indigo-300 text-sm">© 2025 FeedbackLoop | All rights reserved</p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Mobile Menu JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            mobileMenuButton.addEventListener('click', function() {
+                mobileMenu.classList.toggle('mobile-menu-hidden');
+            });
+            
+            // Add smooth scrolling to all links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+            
+            // Reveal animations on scroll
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('fade-in-up');
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            document.querySelectorAll('.feature-card').forEach(card => {
+                observer.observe(card);
+            });
+            
+            // Countdown Timer
+            function updateCountdown() {
+                // Set a specific launch date (e.g., June 15, 2025)
+                const launchDate = new Date("June 15, 2025 00:00:00").getTime();
+                
+                // Calculate remaining time
+                const currentTime = new Date().getTime();
+                const distance = launchDate - currentTime;
+                
+                // Time calculations
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                
+                // Update the countdown display
+                document.getElementById('days').innerText = days;
+                document.getElementById('hours').innerText = hours.toString().padStart(2, '0');
+                document.getElementById('minutes').innerText = minutes.toString().padStart(2, '0');
+                document.getElementById('seconds').innerText = seconds.toString().padStart(2, '0');
+            }
+            
+            // Update the countdown every second
+            updateCountdown();
+            setInterval(updateCountdown, 1000);
+        });
+    </script>
+</body>
+</html> 

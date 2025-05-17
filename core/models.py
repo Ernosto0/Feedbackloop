@@ -292,3 +292,17 @@ class FeedbackReaction(models.Model):
     
     def __str__(self):
         return f"Reaction to feedback #{self.feedback.id}: {self.get_reaction_type_display()}"
+
+class WaitlistEntry(models.Model):
+    """Model for capturing email addresses for the waitlist."""
+    email = models.EmailField(unique=True)
+    name = models.CharField(max_length=100, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return self.email
+    
+    class Meta:
+        verbose_name = "Waitlist Entry"
+        verbose_name_plural = "Waitlist Entries"
+        ordering = ['-created_at']

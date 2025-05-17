@@ -29,6 +29,13 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+# Development environment flag
+DEVELOPMENT = os.getenv('DEVELOPMENT', 'True').lower() == 'true'
+print(DEVELOPMENT)
+
+# Disable Google Auth in development environment
+ENABLE_GOOGLE_AUTH = not DEVELOPMENT
+
 ALLOWED_HOSTS = ['feedbackloop-k2nl.onrender.com', 'localhost', '127.0.0.1']
 SITE_ID = 2
 LOGIN_REDIRECT_URL = '/'
@@ -57,11 +64,14 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-    'allauth.socialaccount.providers.google',
-    
-    # Local apps
-    'core',
 ]
+
+# Conditionally add Google Auth provider
+if ENABLE_GOOGLE_AUTH:
+    INSTALLED_APPS.append('allauth.socialaccount.providers.google')
+    
+# Local apps
+INSTALLED_APPS.append('core')
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -72,6 +82,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'core.middleware.BannedUserMiddleware',
+    'core.middleware.PrelaunchMiddleware',  # Prelaunch mode middleware
     'allauth.account.middleware.AccountMiddleware',  # Allauth middleware
 ]
 
@@ -89,6 +100,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.media',
                 'core.context_processors.notification_context',
+                'core.context_processors.settings_context',
             ],
         },
     },
@@ -193,8 +205,10 @@ ACCOUNT_EMAIL_VERIFICATION = 'none'  # Change to 'mandatory' for production
 ACCOUNT_UNIQUE_EMAIL = True
 
 # Provider specific settings
-SOCIALACCOUNT_PROVIDERS = {
-    'google': {
+SOCIALACCOUNT_PROVIDERS = {}
+
+if ENABLE_GOOGLE_AUTH:
+    SOCIALACCOUNT_PROVIDERS['google'] = {
         'SCOPE': [
             'profile',
             'email',
@@ -203,7 +217,6 @@ SOCIALACCOUNT_PROVIDERS = {
             'access_type': 'online',
         }
     }
-}
 
 # Skip the "You are about to sign in..." intermediate page
 SOCIALACCOUNT_LOGIN_ON_GET = True
