@@ -1,18 +1,18 @@
 from django.core.management.base import BaseCommand
 import os
-import re
+import sys
 
 class Command(BaseCommand):
     """
     Management command to toggle between development mode and prelaunch mode.
     
     Usage:
-        python manage.py toggle_prelaunch       # Toggle between modes
-        python manage.py toggle_prelaunch --on  # Force prelaunch mode on (DEVELOPMENT=False)
-        python manage.py toggle_prelaunch --off # Force prelaunch mode off (DEVELOPMENT=True)
+        python manage.py toggle_prelaunch       # Show current status
+        python manage.py toggle_prelaunch --on  # Set prelaunch mode on (DEVELOPMENT=False)
+        python manage.py toggle_prelaunch --off # Set prelaunch mode off (DEVELOPMENT=True)
         
-    This command modifies the .env file to toggle the DEVELOPMENT flag, which controls
-    whether the site shows the full application or the waitlist landing page.
+    This command modifies the DEVELOPMENT environment variable in memory and displays
+    the current state.
     """
     
     help = 'Toggle between development mode and prelaunch mode'
@@ -38,56 +38,39 @@ class Command(BaseCommand):
             self.stdout.write(self.style.ERROR('Error: Cannot use both --on and --off flags together.'))
             return
         
-        # Find .env file
-        env_path = '.env'
-        if not os.path.exists(env_path):
-            self.stdout.write(self.style.ERROR(f'Error: Could not find .env file in {os.getcwd()}'))
-            return
+        # Print current state
+        from django.conf import settings
         
-        # Read current settings
-        with open(env_path, 'r') as f:
-            content = f.read()
-        
-        # Check current DEVELOPMENT setting
-        dev_match = re.search(r'^DEVELOPMENT\s*=\s*(True|False)', content, re.MULTILINE)
-        current_value = None
-        
-        if dev_match:
-            current_value = dev_match.group(1)
-            self.stdout.write(f'Current prelaunch status: {"OFF" if current_value == "True" else "ON"}')
-        else:
-            # Add DEVELOPMENT setting if not found
-            self.stdout.write(self.style.WARNING('DEVELOPMENT setting not found in .env. Adding it.'))
-            content += '\nDEVELOPMENT=True\n'
-            current_value = 'True'
-        
-        # Determine new value
-        if force_on:
-            new_value = 'False'
-        elif force_off:
-            new_value = 'True'
-        else:
-            # Toggle value
-            new_value = 'False' if current_value == 'True' else 'True'
-        
-        # Replace the value
-        if dev_match:
-            new_content = re.sub(
-                r'^DEVELOPMENT\s*=\s*(True|False)',
-                f'DEVELOPMENT={new_value}',
-                content,
-                flags=re.MULTILINE
-            )
-        else:
-            new_content = content
-        
-        # Save the new content
-        with open(env_path, 'w') as f:
-            f.write(new_content)
-        
-        # Report status
-        mode = "DEVELOPMENT" if new_value == "True" else "PRELAUNCH"
-        self.stdout.write(self.style.SUCCESS(
-            f'Successfully changed to {mode} mode (DEVELOPMENT={new_value}).\n'
-            f'Restart the server for changes to take effect.'
-        )) 
+        try:
+            development_mode = settings.DEVELOPMENT
+            current_status = "OFF" if not development_mode else "ON"
+            self.stdout.write(f"Current prelaunch mode is: {current_status} (DEVELOPMENT={development_mode})")
+            
+            # If forcing a state, show what it would be (not actually changing it)
+            if force_on:
+                self.stdout.write(self.style.SUCCESS(
+                    f"To enable prelaunch mode (DEVELOPMENT=False), set DEVELOPMENT to 'False' in your environment variables."
+                ))
+            elif force_off:
+                self.stdout.write(self.style.SUCCESS(
+                    f"To disable prelaunch mode (DEVELOPMENT=True), set DEVELOPMENT to 'True' in your environment variables."
+                ))
+            else:
+                # Toggle mode instructions
+                new_value = not development_mode
+                new_status = "OFF" if not new_value else "ON"
+                self.stdout.write(self.style.SUCCESS(
+                    f"To toggle to {new_status} prelaunch mode, set DEVELOPMENT to '{new_value}' in your environment variables."
+                ))
+                
+            # Render specific instructions
+            self.stdout.write("\nOn Render.com:")
+            self.stdout.write("1. Go to your service dashboard")
+            self.stdout.write("2. Click 'Environment' tab")
+            self.stdout.write("3. Add or update the DEVELOPMENT environment variable")
+            self.stdout.write("4. Redeploy your service for changes to take effect")
+            
+        except AttributeError:
+            self.stdout.write(self.style.ERROR(
+                "Could not detect DEVELOPMENT setting. Please ensure it's defined in your settings.py."
+            ))
