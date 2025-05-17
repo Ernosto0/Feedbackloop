@@ -41,28 +41,31 @@ class PrelaunchMiddleware:
         
     def __call__(self, request):
         # Only apply redirection if we're in prelaunch mode (DEVELOPMENT = False)
-        if not settings.DEVELOPMENT:
-            # Define allowed URLs during prelaunch
-            allowed_paths = [
-                '/waitlist/',                  # Waitlist page
-                '/admin/',                     # Admin access
-                '/static/',                    # Static files
-                '/media/',                     # Media files
-                '/about/',                     # About page
-                '/privacy-policy/',            # Privacy policy
-                '/terms-of-service/',          # Terms of service
-            ]
+        if settings.DEVELOPMENT:
+            # In development mode, allow all URLs
+            return self.get_response(request)
             
-            # Check if the current path is allowed
-            is_allowed = False
-            for path in allowed_paths:
-                if request.path.startswith(path):
-                    is_allowed = True
-                    break
-            
-            # If path is not allowed and not the home page, redirect to waitlist
-            if not is_allowed and request.path != '/':
-                return redirect('waitlist')
+        # Define allowed URLs during prelaunch
+        allowed_paths = [
+            '/waitlist/',                  # Waitlist page
+            '/admin/',                     # Admin access
+            '/static/',                    # Static files
+            '/media/',                     # Media files
+            '/about/',                     # About page
+            '/privacy-policy/',            # Privacy policy
+            '/terms-of-service/',          # Terms of service
+        ]
+        
+        # Check if the current path is allowed
+        is_allowed = False
+        for path in allowed_paths:
+            if request.path.startswith(path):
+                is_allowed = True
+                break
+        
+        # If path is not allowed or is the home page, redirect to waitlist
+        if not is_allowed or request.path == '/':
+            return redirect('waitlist')
         
         response = self.get_response(request)
         return response 
