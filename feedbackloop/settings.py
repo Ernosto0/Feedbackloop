@@ -41,7 +41,7 @@ print(DEVELOPMENT)
 # Disable Google Auth in development environment
 ENABLE_GOOGLE_AUTH = not DEVELOPMENT
 
-ALLOWED_HOSTS = ['feedbackloop-k2nl.onrender.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['feedbackloop-k2nl.onrender.com', 'localhost', '127.0.0.1','loopfeedback.dev']
 SITE_ID = 2
 LOGIN_REDIRECT_URL = '/'
 ACCOUNT_LOGOUT_REDIRECT_URL = '/'
@@ -117,12 +117,22 @@ WSGI_APPLICATION = 'feedbackloop.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+import dj_database_url
+
+# Database configuration - defaults to SQLite locally
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+# Use PostgreSQL on Render
+if 'RENDER' in os.environ:
+    DATABASES['default'] = dj_database_url.config(
+        conn_max_age=600,
+        conn_health_checks=True,
+    )
 
 
 # Password validation
