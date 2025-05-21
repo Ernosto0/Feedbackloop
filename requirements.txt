@@ -26,3 +26,7 @@ typing_extensions==4.13.2
 tzdata==2025.2
 urllib3==2.4.0 
 gunicorn
+
+# PostgreSQL support
+dj-database-url==2.1.0
+psycopg2-binary==2.9.9
