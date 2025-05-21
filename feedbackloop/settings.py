@@ -30,9 +30,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-default-key-for-development')
-
+RENDER = True
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = 'RENDER' not in os.environ
+DEBUG = RENDER 
 
 # Development environment flag - set to False for prelaunch mode
 DEVELOPMENT = False
@@ -206,7 +206,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Production settings
-if 'RENDER' in os.environ:
+if RENDER:
     CSRF_COOKIE_SECURE = True
     SESSION_COOKIE_SECURE = True
     SECURE_SSL_REDIRECT = True
@@ -218,8 +218,8 @@ if 'RENDER' in os.environ:
     SECURE_HSTS_PRELOAD = True
     
     # Configure media files for production
-    MEDIA_ROOT = os.path.join(BASE_DIR, 'staticfiles', 'media')
-    MEDIA_URL = '/static/media/'
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'staticfiles', 'mediafiles')
+    MEDIA_URL = '/mediafiles/'
 
 # Crispy Forms
 CRISPY_ALLOWED_TEMPLATE_PACKS = 'tailwind'
