@@ -35,7 +35,7 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-default-key-for-developmen
 DEBUG = 'RENDER' not in os.environ
 
 # Development environment flag - set to False for prelaunch mode
-DEVELOPMENT = False
+DEVELOPMENT = True
 print(DEVELOPMENT)
 
 # Disable Google Auth in development environment
