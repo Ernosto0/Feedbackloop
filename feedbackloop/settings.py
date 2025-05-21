@@ -216,6 +216,10 @@ if 'RENDER' in os.environ:
     SECURE_HSTS_SECONDS = 31536000  # 1 year
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
+    
+    # Configure media files for production
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'staticfiles', 'media')
+    MEDIA_URL = '/static/media/'
 
 # Crispy Forms
 CRISPY_ALLOWED_TEMPLATE_PACKS = 'tailwind'
