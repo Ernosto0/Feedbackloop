@@ -233,7 +233,7 @@ LOGOUT_REDIRECT_URL = 'home'
 # Email settings
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # For development
 # Site URL for links in emails
-SITE_URL = 'http://localhost:8000'  # Change in production
+SITE_URL = 'loopfeedback.dev'  # Change in production
 
 # Email notifications toggle
 SEND_EMAIL_NOTIFICATIONS = False  # Set to False to disable email notifications

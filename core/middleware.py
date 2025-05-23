@@ -43,6 +43,7 @@ class PrelaunchMiddleware:
         # Only apply redirection if we're in prelaunch mode (DEVELOPMENT = False)
         if settings.DEVELOPMENT:
             # In development mode, allow all URLs
+            
             return self.get_response(request)
             
         # Define allowed URLs during prelaunch
@@ -54,6 +55,7 @@ class PrelaunchMiddleware:
             '/about/',                     # About page
             '/privacy-policy/',            # Privacy policy
             '/terms-of-service/',          # Terms of service
+            '/favicon.ico',                # Favicon
         ]
         
         # Check if the current path is allowed
