@@ -30,13 +30,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-default-key-for-development')
-RENDER = True
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = RENDER 
 
-# Development environment flag - set to False for prelaunch mode
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = True  # Set to True for development
+
+# Development environment flag
 DEVELOPMENT = False
-print(DEVELOPMENT)
+
+# Render platform flag
+RENDER = True
 
 # Disable Google Auth in development environment
 ENABLE_GOOGLE_AUTH = not DEVELOPMENT
@@ -210,7 +212,6 @@ if RENDER:
     CSRF_COOKIE_SECURE = True
     SESSION_COOKIE_SECURE = True
     SECURE_SSL_REDIRECT = True
-    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     SECURE_BROWSER_XSS_FILTER = True
     SECURE_CONTENT_TYPE_NOSNIFF = True
     SECURE_HSTS_SECONDS = 31536000  # 1 year
@@ -218,8 +219,8 @@ if RENDER:
     SECURE_HSTS_PRELOAD = True
     
     # Configure media files for production
-    MEDIA_ROOT = os.path.join(BASE_DIR, 'staticfiles', 'mediafiles')
-    MEDIA_URL = '/mediafiles/'
+    MEDIA_URL = '/media/'
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Crispy Forms
 CRISPY_ALLOWED_TEMPLATE_PACKS = 'tailwind'
