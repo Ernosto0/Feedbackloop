@@ -32,7 +32,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-default-key-for-development')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True  # Set to True for development
+DEBUG = False  # Set to True for development
 
 # Development environment flag
 DEVELOPMENT = False
@@ -231,12 +231,30 @@ LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
 
 # Email settings
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # For development
+if DEBUG:
+    # Use console backend in development - emails will be printed to console
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+else:
+    # Use SMTP in production
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_HOST = 'smtp.mailersend.net'
+    EMAIL_PORT = 587
+    EMAIL_USE_TLS = True
+    EMAIL_HOST_USER = os.getenv('MAILERSEND_SMTP_USER')
+    EMAIL_HOST_PASSWORD = os.getenv('MAILERSEND_SMTP_PASSWORD')
+
+DEFAULT_FROM_EMAIL = os.getenv('MAILERSEND_FROM_EMAIL', 'noreply@trial-69oxl5e2dzzl785k.mlsender.net')
+
+# Site configuration
+
+SITE_DOMAIN = 'localhost:8000' if DEBUG else 'loopfeedback.dev'
+SITE_NAME = 'FeedbackLoop'
+
 # Site URL for links in emails
-SITE_URL = 'loopfeedback.dev'  # Change in production
+SITE_URL = f'http://{SITE_DOMAIN}' if DEBUG else f'https://{SITE_DOMAIN}'
 
 # Email notifications toggle
-SEND_EMAIL_NOTIFICATIONS = False  # Set to False to disable email notifications
+SEND_EMAIL_NOTIFICATIONS = True  # Enable email notifications
 
 # MailerSend API settings (override in .env)
 MAILERSEND_API_KEY = os.getenv('MAILERSEND_API_KEY')

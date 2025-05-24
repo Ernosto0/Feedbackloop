@@ -1,25 +1,32 @@
 from django.core.management.base import BaseCommand
 from django.contrib.sites.models import Site
+from django.conf import settings
 
 
 class Command(BaseCommand):
-    help = 'Sets up the Site configuration required for django-allauth'
+    help = 'Set up the site domain for password reset and other functionality'
 
     def handle(self, *args, **options):
-        # Get or create Site with ID 2
-        try:
-            site = Site.objects.get(id=2)
-            site.domain = 'feedbackloop-k2nl.onrender.com'
-            site.name = 'FeedbackLoop'
+        # Get or create the site with ID 1
+        site, created = Site.objects.get_or_create(
+            id=settings.SITE_ID,
+            defaults={
+                'domain': settings.SITE_DOMAIN,
+                'name': settings.SITE_NAME
+            }
+        )
+
+        if not created:
+            # Update the existing site
+            site.domain = settings.SITE_DOMAIN
+            site.name = settings.SITE_NAME
             site.save()
-            self.stdout.write(self.style.SUCCESS(f'Updated existing Site: {site}'))
-        except Site.DoesNotExist:
-            site = Site.objects.create(
-                id=2,
-                domain='feedbackloop-k2nl.onrender.com',
-                name='FeedbackLoop'
+
+        self.stdout.write(
+            self.style.SUCCESS(
+                f'Successfully {"created" if created else "updated"} site: {site.domain}'
             )
-            self.stdout.write(self.style.SUCCESS(f'Created new Site: {site}'))
+        )
 
         # Output all sites for verification
         self.stdout.write('All sites in database:')
