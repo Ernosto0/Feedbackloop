@@ -89,7 +89,7 @@
         <div class="container mx-auto px-4 py-3">
             <div class="flex justify-between items-center">
                 <a href="{% url 'waitlist' %}" class="flex items-center space-x-2">
-                    <img src="{{ MEDIA_URL }}logo.png" alt="FeedbackLoop Logo" class="h-10 w-auto">
+                    <img src="{% static 'logo.png' %}" alt="FeedbackLoop Logo" class="h-10 w-auto">
                     <span class="text-xl font-bold">FeedbackLoop</span>
                 </a>
                 
@@ -140,7 +140,7 @@
                 <div class="max-w-5xl mx-auto text-center">
                     <!-- Hero Section with Logo -->
                     <div class="mb-12 animate__animated animate__fadeIn">
-                       <img src="{{ MEDIA_URL }}logo.png" alt="FeedbackLoop Logo" class="h-24 w-auto mx-auto mb-6">
+                        <img src="{% static 'logo.png' %}" alt="FeedbackLoop Logo" class="h-24 w-auto mx-auto mb-6">
                         <h1 class="text-5xl md:text-7xl font-extrabold mb-6 animate__animated animate__fadeInUp">FeedbackLoop</h1>
                         <p class="text-2xl md:text-4xl text-indigo-100 mb-6 animate__animated animate__fadeInUp animate__delay-1s">Give feedback to get feedback</p>
                         <p class="text-lg md:text-xl text-indigo-200 mb-10 max-w-3xl mx-auto animate__animated animate__fadeInUp animate__delay-2s">
@@ -360,7 +360,7 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div>
                     <div class="flex items-center mb-4">
-                        <img src="{{ MEDIA_URL }}logo.png" alt="FeedbackLoop Logo" class="h-10 w-auto mr-2">
+                        <img src="{% static 'logo.png' %}" alt="FeedbackLoop Logo" class="h-10 w-auto mr-2">
                         <h3 class="text-2xl font-bold">FeedbackLoop</h3>
                     </div>
                     <p class="text-indigo-200 mb-4">Connect, share, and grow with peer feedback</p>
