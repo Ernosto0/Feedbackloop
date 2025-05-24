@@ -38,7 +38,7 @@ DEBUG = False  # Set to True for development
 DEVELOPMENT = False
 
 # Render platform flag
-RENDER = True
+RENDER = False
 
 # Disable Google Auth in development environment
 ENABLE_GOOGLE_AUTH = not DEVELOPMENT
