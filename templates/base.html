@@ -6,6 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}FeedbackLoop{% endblock %}</title>
     
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="{% block og_title %}FeedbackLoop{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}Connect, share, and grow with peer feedback{% endblock %}">
+    <meta property="og:image" content="{% block og_image %}{{ request.scheme }}://{{ request.get_host }}{% static 'img/favicon/logo.png' %}{% endblock %}">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta property="og:type" content="website">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{% block twitter_title %}FeedbackLoop{% endblock %}">
+    <meta name="twitter:description" content="{% block twitter_description %}Connect, share, and grow with peer feedback{% endblock %}">
+    <meta name="twitter:image" content="{% block twitter_image %}{{ request.scheme }}://{{ request.get_host }}{% static 'img/favicon/logo.png' %}{% endblock %}">
+    
     <!-- Favicon -->
     <link rel="icon" type="image/png" sizes="32x32" href="{% static 'img/favicon/logo.png' %}">
     <link rel="icon" type="image/png" sizes="16x16" href="{% static 'img/favicon/logo.png' %}">
