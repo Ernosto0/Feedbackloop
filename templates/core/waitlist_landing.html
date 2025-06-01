@@ -6,6 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FeedbackLoop - Join Our Waitlist</title>
     
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="FeedbackLoop - Join Our Waitlist">
+    <meta property="og:description" content="Give feedback to get feedback. Join our waitlist to be among the first to experience FeedbackLoop - the platform that connects creators for quality, structured feedback.">
+    <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'img/favicon/logo.png' %}">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta property="og:type" content="website">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="FeedbackLoop - Join Our Waitlist">
+    <meta name="twitter:description" content="Give feedback to get feedback. Join our waitlist to be among the first to experience FeedbackLoop - the platform that connects creators for quality, structured feedback.">
+    <meta name="twitter:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'img/favicon/logo.png' %}">
+    
     <!-- Favicon -->
     <link rel="icon" type="image/png" sizes="32x32" href="{% static 'img/favicon/logo.png' %}">
     <link rel="icon" type="image/png" sizes="16x16" href="{% static 'img/favicon/logo.png' %}">
