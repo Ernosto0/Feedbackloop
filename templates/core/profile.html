@@ -512,7 +512,7 @@
                             <div class="bg-gray-50 rounded-lg p-3 sm:p-4 mb-3 sm:mb-4 border border-gray-100">
                                 <div class="flex items-center mb-2">
                                     <div class="flex-1 bg-gray-200 rounded-full h-2 sm:h-2.5">
-                                        <div class="bg-indigo-600 h-2 sm:h-2.5 rounded-full" style="width: {% widthratio request.fulfilled_count request.requested_count 100 %}%"></div>
+                                        <div class="bg-indigo-600 h-2 sm:h-2.5 rounded-full progress-bar" data-fulfilled="{{ request.fulfilled_count }}" data-requested="{{ request.requested_count }}"></div>
                                     </div>
                                     <span class="ml-3 text-xs sm:text-sm text-gray-600 whitespace-nowrap">{{ request.fulfilled_count }}/{{ request.requested_count }}</span>
                                 </div>
@@ -1165,5 +1165,16 @@
             });
         });
     });
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.progress-bar').forEach(bar => {
+        const fulfilled = parseInt(bar.dataset.fulfilled);
+        const requested = parseInt(bar.dataset.requested);
+        const percentage = (fulfilled / requested) * 100;
+        bar.style.width = percentage + '%';
+    });
+});
 </script>
 {% endblock %} 
