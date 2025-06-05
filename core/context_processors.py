@@ -13,5 +13,5 @@ def notification_context(request):
 def settings_context(request):
     """Provide selected settings to all templates"""
     return {
-        'ENABLE_GOOGLE_AUTH': getattr(settings, 'ENABLE_GOOGLE_AUTH', False)
+        'ENABLE_GOOGLE_AUTH': getattr(settings, 'ENABLE_GOOGLE_AUTH', True)
     } 
