@@ -37,7 +37,7 @@ ONLOCALHOST = False
 DEBUG = False  # Set to True for development
 
 # Development environment flag
-DEVELOPMENT = True
+DEVELOPMENT = False
 
 # Render platform flag
 RENDER = False
