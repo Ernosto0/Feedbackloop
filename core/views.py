@@ -24,7 +24,7 @@ from django.conf import settings
 def home(request):
     """Home page view."""
     # If in development mode, show the regular home page
-    if settings.DEVELOPMENT:
+    if not settings.DEVELOPMENT:
         # Get stats for homepage
         total_projects_count = Project.objects.count()
         total_feedback_count = Feedback.objects.count()
