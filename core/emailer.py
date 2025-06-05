@@ -39,7 +39,7 @@ def send_email(recipient_name, recipient_email, subject, html_content, text_cont
     from_email = os.getenv('MAILERSEND_FROM_EMAIL')
     if not from_email:
         print("WARNING: No sender email found, using default domain")
-        from_email = 'noreply@trial-69oxl5e2dzzl785k.mlsender.net'
+        from_email = 'noreply@loopfeedback.dev'
         
     mail_from = {
         "name": "FeedbackLoop",

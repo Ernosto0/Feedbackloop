@@ -246,7 +246,7 @@ else:
     EMAIL_HOST_USER = os.getenv('MAILERSEND_SMTP_USER')
     EMAIL_HOST_PASSWORD = os.getenv('MAILERSEND_SMTP_PASSWORD')
 
-DEFAULT_FROM_EMAIL = os.getenv('MAILERSEND_FROM_EMAIL', 'noreply@trial-69oxl5e2dzzl785k.mlsender.net')
+DEFAULT_FROM_EMAIL = os.getenv('MAILERSEND_FROM_EMAIL', 'noreply@loopfeedback.dev')
 
 # Site configuration
 
@@ -261,7 +261,7 @@ SEND_EMAIL_NOTIFICATIONS = True  # Enable email notifications
 
 # MailerSend API settings (override in .env)
 MAILERSEND_API_KEY = os.getenv('MAILERSEND_API_KEY')
-MAILERSEND_FROM_EMAIL = os.getenv('MAILERSEND_FROM_EMAIL', 'noreply@trial-69oxl5e2dzzl785k.mlsender.net')
+MAILERSEND_FROM_EMAIL = os.getenv('MAILERSEND_FROM_EMAIL', 'noreply@loopfeedback.dev')
 MAILERSEND_REPLY_EMAIL = os.getenv('MAILERSEND_REPLY_EMAIL', 'support@trial-69oxl5e2dzzl785k.mlsender.net')
 
 # Django Allauth Settings
