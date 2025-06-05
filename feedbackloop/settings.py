@@ -42,8 +42,8 @@ DEVELOPMENT = False
 # Render platform flag
 RENDER = False
 
-# Disable Google Auth in development environment
-ENABLE_GOOGLE_AUTH = not DEVELOPMENT
+# Enable Google Auth
+ENABLE_GOOGLE_AUTH = True
 
 ALLOWED_HOSTS = ['*.onrender.com', 'localhost', '127.0.0.1', 'loopfeedback.dev']
 SITE_ID = 2

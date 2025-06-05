@@ -40,10 +40,8 @@ class PrelaunchMiddleware:
         self.get_response = get_response
         
     def __call__(self, request):
-        # Only apply redirection if we're in prelaunch mode (DEVELOPMENT = False)
-        if settings.DEVELOPMENT:
-            # In development mode, allow all URLs
-            
+        # In production mode (DEVELOPMENT = False), allow all URLs
+        if not settings.DEVELOPMENT:
             return self.get_response(request)
             
         # Define allowed URLs during prelaunch
