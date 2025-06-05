@@ -45,7 +45,7 @@ RENDER = False
 # Enable Google Auth
 ENABLE_GOOGLE_AUTH = True
 
-ALLOWED_HOSTS = ['*.onrender.com', 'localhost', '127.0.0.1', 'loopfeedback.dev']
+ALLOWED_HOSTS = ['*.onrender.com', 'localhost', '127.0.0.1', 'loopfeedback.dev', 'feedbackloop-k2nl.onrender.com']
 SITE_ID = 2
 LOGIN_REDIRECT_URL = '/'
 ACCOUNT_LOGOUT_REDIRECT_URL = '/'
