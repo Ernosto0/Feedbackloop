@@ -263,10 +263,13 @@
         // Check initially when page loads
         document.addEventListener('DOMContentLoaded', checkNotifications);
         
-        // Check every 60 seconds
-        setInterval(checkNotifications, 60000);
-        
-        // Mobile menu toggle
+        // Check every 120 seconds
+        setInterval(checkNotifications, 120000);
+    </script>
+    {% endif %}
+    
+    <!-- Mobile menu toggle script -->
+    <script>
         document.addEventListener('DOMContentLoaded', function() {
             const menuButton = document.getElementById('mobile-menu-button');
             const mobileMenu = document.getElementById('mobile-menu');
@@ -280,6 +283,5 @@
             });
         });
     </script>
-    {% endif %}
 </body>
 </html> 
