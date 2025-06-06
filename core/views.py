@@ -20,9 +20,14 @@ from django.db.models import Count, Q, F, OuterRef, Subquery, IntegerField
 from django.db.models.functions import Coalesce
 from django.contrib.auth.models import User
 from django.conf import settings
+from .analytics import track_feedback_given, track_project_created, track_waitlist_signup, track_homepage_view, track_signup
 
 def home(request):
     """Home page view."""
+    # Track homepage view if analytics is enabled
+    if settings.ENABLE_ANALYTICS:
+        track_homepage_view(request)
+    
     # If in development mode, show the regular home page
     if not settings.DEVELOPMENT:
         # Get stats for homepage
@@ -67,6 +72,11 @@ def signup(request):
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=user.username, password=raw_password)
             login(request, user)
+            
+            # Track signup if analytics is enabled
+            if settings.ENABLE_ANALYTICS:
+                track_signup(request, user)
+            
             messages.success(request, 'Account created successfully! You now have 1 credit to start.')
             return redirect('home')
     else:
@@ -300,7 +310,7 @@ def give_feedback(request, project_id):
     
     # Check if user has already given feedback to this project
     if Feedback.objects.filter(project=project, giver=request.user).exists():
-        messages.error(request, "You have already provided feedback for this project.") # Add a error handling for this at the future.
+        messages.error(request, "You have already provided feedback for this project.")
         return redirect('feedback_dashboard')
         
     if request.method == 'POST':
@@ -316,6 +326,10 @@ def give_feedback(request, project_id):
                 feedback.vote_type = vote_type
             
             feedback.save()
+            
+            # Track feedback event
+            if settings.ENABLE_ANALYTICS:
+                track_feedback_given(request, feedback)
             
             # Create notification for project owner
             create_feedback_notification(feedback)
@@ -338,7 +352,6 @@ def give_feedback(request, project_id):
             check_and_award_badges(request.user)
             
             messages.success(request, "Thank you for your feedback! You've gained 1 credit.")
-            # Redirect to profile with the given feedback tab active
             return redirect(reverse('profile') + '?active_tab=given_feedback')
     else:
         form = FeedbackForm()

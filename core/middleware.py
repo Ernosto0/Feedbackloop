@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.urls import resolve
 from django.urls import reverse
 from django.conf import settings
+from .analytics import track_page_view
 
 class BannedUserMiddleware:
     """
@@ -68,4 +69,27 @@ class PrelaunchMiddleware:
             return redirect('waitlist')
         
         response = self.get_response(request)
+        return response 
+
+
+class AnalyticsMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        response = self.get_response(request)
+        
+        # Only track if analytics is enabled
+        if settings.ENABLE_ANALYTICS:
+            # Don't track static/media files and admin pages
+            if not any([
+                request.path.startswith('/static/'),
+                request.path.startswith('/media/'),
+                request.path.startswith('/admin/'),
+                request.path.startswith('/_debug_/'),
+            ]):
+                # Get the view name from request if available
+                view_name = request.resolver_match.view_name if request.resolver_match else request.path
+                track_page_view(request, view_name)
+        
         return response 

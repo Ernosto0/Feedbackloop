@@ -96,6 +96,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'core.middleware.BannedUserMiddleware',
     'core.middleware.PrelaunchMiddleware',  # Prelaunch mode middleware
+    'core.middleware.AnalyticsMiddleware',  # Analytics middleware
     'allauth.account.middleware.AccountMiddleware',  # Allauth middleware
 ]
 
@@ -305,3 +306,7 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 WHITENOISE_USE_FINDERS = True
 WHITENOISE_MANIFEST_STRICT = False
 WHITENOISE_ALLOW_ALL_ORIGINS = True
+
+# Mixpanel Configuration
+MIXPANEL_TOKEN = os.getenv('MIXPANEL_TOKEN', '')  # Get from environment variables
+ENABLE_ANALYTICS = True  # Only enable in production by default
