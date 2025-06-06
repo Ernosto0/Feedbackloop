@@ -43,7 +43,7 @@ DEVELOPMENT = False
 RENDER = False
 
 # Enable Google Auth
-ENABLE_GOOGLE_AUTH = True
+ENABLE_GOOGLE_AUTH = False
 
 ALLOWED_HOSTS = ['*.onrender.com', 'localhost', '127.0.0.1', 'loopfeedback.dev', 'feedbackloop-k2nl.onrender.com','feedbackloop-production.up.railway.app']
 SITE_ID = 2
