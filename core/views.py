@@ -327,9 +327,6 @@ def give_feedback(request, project_id):
             
             feedback.save()
             
-            # Track feedback event
-            if settings.ENABLE_ANALYTICS:
-                track_feedback_given(request, feedback)
             
             # Create notification for project owner
             create_feedback_notification(feedback)
