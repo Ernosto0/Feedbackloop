@@ -53,7 +53,7 @@ CSRF_TRUSTED_ORIGINS = [
 
 ALLOWED_HOSTS = ['*.onrender.com', 'localhost', '127.0.0.1', 'loopfeedback.dev', 'feedbackloop-k2nl.onrender.com','feedbackloop-production.up.railway.app','https://loopfeedback.dev','https://www.loopfeedback.dev']
 
-SITE_ID = 2
+SITE_ID = 1
 LOGIN_REDIRECT_URL = '/'
 ACCOUNT_LOGOUT_REDIRECT_URL = '/'
 
@@ -69,7 +69,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.sites',  # Required for django-allauth
+    'django.contrib.sites',  
     
     # Third-party apps
     'whitenoise.runserver_nostatic',
