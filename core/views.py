@@ -846,9 +846,9 @@ def review_preparation(request, project_id):
 def about(request):
     """About page view."""
     # Check if we're in prelaunch mode
-    if not settings.DEVELOPMENT:
+    # if settings.DEVELOPMENT:
         # Use a simplified about page in prelaunch mode
-        return render(request, 'core/about_prelaunch.html')
+        # return render(request, 'core/about_prelaunch.html')
     
     # Standard about page in development mode
     return render(request, 'core/about.html')
