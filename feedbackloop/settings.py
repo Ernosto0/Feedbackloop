@@ -43,7 +43,7 @@ DEVELOPMENT = False
 RENDER = False
 
 # Enable Google Auth
-ENABLE_GOOGLE_AUTH = False
+ENABLE_GOOGLE_AUTH = True
 
 CSRF_TRUSTED_ORIGINS = [
     "https://feedbackloop-production.up.railway.app",
