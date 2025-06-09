@@ -48,6 +48,9 @@ RENDER = False
 # Enable Google Auth
 ENABLE_GOOGLE_AUTH = True
 
+
+ALLOWED_HOSTS = ['*.onrender.com', 'localhost', '127.0.0.1', 'loopfeedback.dev', 'feedbackloop-k2nl.onrender.com','feedbackloop-production.up.railway.app','www.loopfeedback.dev']
+
 CSRF_TRUSTED_ORIGINS = [
     "https://feedbackloop-production.up.railway.app",
     "https://loopfeedback.dev",
@@ -84,7 +87,11 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-    'allauth.socialaccount.providers.google'
+    'allauth.socialaccount.providers.google',
+
+    # Cloudinary apps
+    'cloudinary',
+    'cloudinary_storage',
     
 ]
 
@@ -169,8 +176,13 @@ else:
 }
 
     
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
-
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': 'dybanm1fc',
+    'API_KEY': os.getenv("CLOUDINARY_API_KEY"),
+    'API_SECRET': os.getenv("CLOUDINARY_API_SECRET")
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
