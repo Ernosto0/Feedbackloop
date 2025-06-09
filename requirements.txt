@@ -34,3 +34,6 @@ psycopg2-binary==2.9.10
 whitenoise==6.1.0
 
 mixpanel
+
+ cloudinary
+ django-cloudinary-storage
