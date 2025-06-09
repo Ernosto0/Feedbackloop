@@ -25,6 +25,9 @@ except Exception as e:
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+SECURE_SSL_REDIRECT = True
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
@@ -45,7 +48,17 @@ RENDER = False
 # Enable Google Auth
 ENABLE_GOOGLE_AUTH = True
 
+
 ALLOWED_HOSTS = ['*.onrender.com', 'localhost', '127.0.0.1', 'loopfeedback.dev', 'feedbackloop-k2nl.onrender.com','feedbackloop-production.up.railway.app','www.loopfeedback.dev']
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://feedbackloop-production.up.railway.app",
+    "https://loopfeedback.dev",
+    "https://www.loopfeedback.dev",
+]
+
+ALLOWED_HOSTS = ['*.onrender.com', 'localhost', '127.0.0.1', 'loopfeedback.dev', 'feedbackloop-k2nl.onrender.com','feedbackloop-production.up.railway.app','https://loopfeedback.dev','https://www.loopfeedback.dev', 'www.loopfeedback.dev']
+
 SITE_ID = 2
 LOGIN_REDIRECT_URL = '/'
 ACCOUNT_LOGOUT_REDIRECT_URL = '/'
@@ -62,7 +75,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.sites',  # Required for django-allauth
+    'django.contrib.sites',  
     
     # Third-party apps
     'whitenoise.runserver_nostatic',
