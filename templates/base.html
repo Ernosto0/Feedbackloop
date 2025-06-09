@@ -9,7 +9,7 @@
     <!-- Open Graph Meta Tags -->
     <meta property="og:title" content="{% block og_title %}FeedbackLoop{% endblock %}">
     <meta property="og:description" content="{% block og_description %}Connect, share, and grow with peer feedback{% endblock %}">
-    <meta property="og:image" content="{% block og_image %}{{ request.scheme }}://{{ request.get_host }}{% static 'img/favicon/logo.png' %}{% endblock %}">
+    <meta property="og:image" content="{% block og_image %}{{ request.scheme }}://{{ request.get_host }}{% static 'img/favicon/logo2.png' %}{% endblock %}">
     <meta property="og:url" content="{{ request.build_absolute_uri }}">
     <meta property="og:type" content="website">
     
@@ -17,13 +17,13 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="{% block twitter_title %}FeedbackLoop{% endblock %}">
     <meta name="twitter:description" content="{% block twitter_description %}Connect, share, and grow with peer feedback{% endblock %}">
-    <meta name="twitter:image" content="{% block twitter_image %}{{ request.scheme }}://{{ request.get_host }}{% static 'img/favicon/logo.png' %}{% endblock %}">
+    <meta name="twitter:image" content="{% block twitter_image %}{{ request.scheme }}://{{ request.get_host }}{% static 'img/favicon/logo2.png' %}{% endblock %}">
     
     <!-- Favicon -->
-    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'img/favicon/logo.png' %}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'img/favicon/logo.png' %}">
-    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'img/favicon/logo.png' %}">
-    <link rel="shortcut icon" href="{% static 'img/favicon/logo.png' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'img/favicon/logo2.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'img/favicon/logo2.png' %}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'img/favicon/logo2.png' %}">
+    <link rel="shortcut icon" href="{% static 'img/favicon/logo2.png' %}">
     <meta name="theme-color" content="#ffffff">
     
     <!-- Tailwind CSS via CDN for now (will install properly later) -->
@@ -47,7 +47,7 @@
         <div class="container mx-auto px-4 py-3">
             <div class="flex justify-between items-center">
                 <a href="{% url 'home' %}" class="flex items-center space-x-2">
-                    <img src="{% static 'logo.png' %}" alt="FeedbackLoop Logo" class="h-10 w-auto">
+                    <img src="{% static 'logo2.png' %}" alt="FeedbackLoop Logo" class="h-10 w-auto">
                     <span class="text-xl font-bold text-white">FeedbackLoop</span>
                 </a>
                 
