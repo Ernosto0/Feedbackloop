@@ -54,7 +54,7 @@ CSRF_TRUSTED_ORIGINS = [
     "https://www.loopfeedback.dev",
 ]
 
-ALLOWED_HOSTS = ['*.onrender.com', 'localhost', '127.0.0.1', 'loopfeedback.dev', 'feedbackloop-k2nl.onrender.com','feedbackloop-production.up.railway.app','https://loopfeedback.dev','https://www.loopfeedback.dev']
+ALLOWED_HOSTS = ['*.onrender.com', 'localhost', '127.0.0.1', 'loopfeedback.dev', 'feedbackloop-k2nl.onrender.com','feedbackloop-production.up.railway.app','https://loopfeedback.dev','https://www.loopfeedback.dev', 'www.loopfeedback.dev']
 
 SITE_ID = 2
 LOGIN_REDIRECT_URL = '/'
